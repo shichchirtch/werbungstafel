@@ -14,5 +14,5 @@ services:
       - --agree-tos
       - --no-eff-email
       - -d
-      - financetrackerbot.org
+      - werbungstafel.org
 
