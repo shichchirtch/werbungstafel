@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Telegram Test</title>
+</head>
+<body>
+
+<h1>Hello Werbungstafel</h1>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<script>
+const tg = window.Telegram.WebApp
+
+document.body.innerHTML +=
+`<pre>${JSON.stringify(tg.initDataUnsafe, null, 2)}</pre>`
+</script>
+
+</body>
+</html>
