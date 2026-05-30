@@ -1,5 +1,4 @@
 from sqlalchemy import select
-
 from postgres_table import User
 from postgres_table import session_marker
 

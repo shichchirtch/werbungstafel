@@ -20,13 +20,13 @@ async def command_start_process(message: Message,dialog_manager: DialogManager, 
     user_name = message.from_user.first_name
     user_lan = message.from_user.language_code
     print(user_name, user_id)
-    user = await ensure_user(redis_db, user_id, user_name, user_lan)
-    print('user = ', user)
-    await message.answer(text=f"<b>{start_dict[user_lan]}, {user_name} !</b>")
-    await dialog_manager.start(
-        state=ROOT_WIND.lan_select,
-        mode=StartMode.RESET_STACK
+    await create_user_if_not_exists(
+        tg_id=user_id,
+        first_name=first_name
     )
+    await message.answer(text=f'👋\n\n<b>Hello, {message.from_user.first_name}!</b>\n'
+                              'This is a bot scheduler. Tell me when an important event happens'
+                              " and I'll remind you about it ahead of time!\n\nConvenient, isn't it?")
 
 
 
