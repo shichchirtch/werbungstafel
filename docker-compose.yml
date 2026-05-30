@@ -1,7 +1,10 @@
 services:
 
   nginx:
-    image: nginx:1.27-alpine
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+
     restart: always
 
     ports:
@@ -9,7 +12,7 @@ services:
 
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./front/index.html:/usr/share/nginx/html/index.html:ro
+      - ./certbot/www:/var/www/certbot
 
 
 
