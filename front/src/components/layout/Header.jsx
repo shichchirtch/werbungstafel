@@ -1,7 +1,7 @@
-import { useNavigate, useLocation } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { setUser, logout} from '../../features/user/userSlice'
-import { useState, useRef, useEffect  } from 'react'
+import {useNavigate, useLocation} from 'react-router-dom'
+import {useDispatch, useSelector} from 'react-redux'
+import {setUser, logout} from '../../features/user/userSlice'
+import {useState, useRef, useEffect} from 'react'
 
 
 function Header() {
@@ -86,29 +86,27 @@ function Header() {
                 <div className="relative">
 
                     {!user.isAuth ? (
+                                <button
+                                    onClick={() =>
+                                        window.open(
+                                            'https://t.me/werbungstafel_bot',
+                                            '_blank'
+                                        )
+                                    }
+                                    className="
+            px-4 py-2 rounded-xl
+            font-semibold text-sm text-gray-300
+            bg-gradient-to-br
+            from-gray-700 to-gray-900
+            shadow-lg shadow-gray-500/20
+            active:scale-95 transition
+        "
+                                >
+                                    📲 Telegram Login
+                                </button>
 
-                        <button
-                            onClick={() =>
-                                dispatch(
-                                    setUser({
-                                        id: 'user_1',
-                                        name: 'Ivan',
-                                    })
-                                )
-                            }
-                            className="
-                px-4 py-2 rounded-xl
-                font-semibold text-sm text-gray-300
-                bg-gradient-to-br
-                from-gray-700 to-gray-900
-                shadow-lg shadow-gray-500/20
-                active:scale-95 transition
-            "
-                        >
-                            Login
-                        </button>
 
-                    ) : (
+                            ) : (
 
                         <>
                             <button
@@ -209,13 +207,13 @@ function Header() {
 
                         </>
 
-                    )}
+                        )}
 
                 </div>
             </div>
 
-            </div>
-            )
-            }
+        </div>
+    )
+}
 
-            export default Header
+export default Header
