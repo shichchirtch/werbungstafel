@@ -5,11 +5,15 @@ from start_menu import set_main_menu
 from aiogram_dialog import setup_dialogs
 from admin_dialog import admin_dialog # about_dialog
 from dialogs import root_dialog  #, create_dialog
+from postgres_table import init_models
+
 
 
 
 async def main():
     # стартовые действия
+
+    await init_models()
     dp.startup.register(set_main_menu)
 
     # инициализация FSM-хранилища
