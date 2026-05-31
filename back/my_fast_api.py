@@ -47,9 +47,12 @@ logger = logging.getLogger("fastapi")
 @f_api.post("/api/auth/telegram")
 async def auth_telegram(data: dict):
     print('DATA = ', data)
-    tg_id = data["id"]
-    first_name = data["first_name"]
-    username = data.get("username")
+
+    tg_user = data["user"]
+
+    tg_id = tg_user["id"]
+    first_name = tg_user["first_name"]
+    username = tg_user.get("username")
 
     user = await create_user_if_not_exists(
         tg_id=tg_id,
