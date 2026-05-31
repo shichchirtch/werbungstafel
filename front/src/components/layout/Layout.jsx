@@ -13,6 +13,8 @@ function Layout() {
     const wa = window.Telegram?.WebApp
     const tgUser = wa?.initDataUnsafe?.user
 
+    console.log('User = ', tgUser)
+
     useEffect(() => {
 
         if (!wa || !tgUser) return
