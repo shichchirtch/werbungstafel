@@ -10,6 +10,8 @@ function Header() {
     const location = useLocation()
     const dispatch = useDispatch()
 
+    const [showLoginModal, setShowLoginModal] = useState(false)
+
     const user = useSelector((state) => state.user)
 
     const [showMenu, setShowMenu] = useState(false)
@@ -87,12 +89,9 @@ function Header() {
 
                     {!user.isAuth ? (
                                 <button
-                                    onClick={() =>
-                                        window.open(
-                                            'https://t.me/werbungstafel_bot',
-                                            '_blank'
-                                        )
-                                    }
+
+                                    onClick={() => setShowLoginModal(true)}
+
                                     className="
             px-4 py-2 rounded-xl
             font-semibold text-sm text-gray-300
@@ -212,8 +211,72 @@ function Header() {
                 </div>
             </div>
 
+            {showLoginModal && (
+    <div className="
+        fixed inset-0
+        bg-black/70
+        flex items-center justify-center
+        z-50
+    "
+    onClick={() => setShowLoginModal(false)}
+
+    >
+        <div
+            onClick={(e) => e.stopPropagation()}
+            className="
+                w-full max-w-md
+                mx-4
+                bg-zinc-900
+                rounded-3xl
+                p-6
+                border border-white/10
+            "
+        >
+            <h2 className="text-xl font-bold text-white mb-4">
+                Anmeldung erforderlich
+            </h2>
+
+            <p className="text-gray-300 mb-6">
+                Um Anzeigen zu veröffentlichen und Nachrichten
+                zu senden, melden Sie sich bitte über Telegram an.
+            </p>
+
+            <div className="flex gap-3">
+                <button
+                    onClick={() =>{
+                        setShowLoginModal(false)
+                        window.open(
+                            'https://t.me/bedienung_bot',
+                            '_blank'
+                        )
+                    }}
+                    className="
+                        flex-1 py-3 rounded-2xl
+                        bg-blue-500 text-white
+                        font-bold
+                    "
+                >
+                    📲 Telegram öffnen
+                </button>
+
+                <button
+                    onClick={() => setShowLoginModal(false)}
+                    className="
+                        flex-1 py-3 rounded-2xl
+                        bg-white/10 text-white
+                    "
+                >
+                    Schließen
+                </button>
+            </div>
+        </div>
+    </div>
+)}
+
         </div>
     )
 }
+
+
 
 export default Header
