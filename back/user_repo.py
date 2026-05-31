@@ -38,3 +38,15 @@ async def create_user_if_not_exists(tg_id: int, first_name: str,username: str | 
         first_name=first_name,
         username=username,
     )
+
+async def get_user(user_id: int):
+
+    async with session_marker() as session:
+
+        result = await session.execute(
+            select(User).where(
+                User.telegram_id == user_id
+            )
+        )
+
+        return result.scalar_one_or_none()

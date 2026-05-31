@@ -1,7 +1,7 @@
 from aiogram.types import Message
 from aiogram.filters import BaseFilter
 # from bot_instance import redis_db
-from user_repo import get_user
+
 
 
 

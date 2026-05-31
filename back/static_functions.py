@@ -1,7 +1,6 @@
 import translators
 
 from bot_instance import ROOT_WIND
-from my_fast_api import redis_db
 from aiogram_dialog.widgets.kbd import Button
 from user_repo import *
 from aiogram.types import CallbackQuery
@@ -15,13 +14,13 @@ from requests.exceptions import HTTPError
 
 async def ru_stellen(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
     user_id = callback.from_user.id
-    user = await get_user(redis_db, user_id)
+    user = await get_user(user_id)
     if not user:
         await callback.message.answer("Ошибка: пользователь не найден")
         return
 
     user['lan'] = 'ru'
-    await update_user(redis_db, user_id, user) # Обновляем базу
+    # await update_user(user_id, user) # Обновляем базу
     print('user= ', user)
     await callback.message.answer('В качестве языка интерфейса выбран <b>русский</b> язык')
     dialog_manager.show_mode = ShowMode.SEND
@@ -30,26 +29,26 @@ async def ru_stellen(callback: CallbackQuery, widget: Button, dialog_manager: Di
 
 async def uk_stellen(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
     user_id = callback.from_user.id
-    user = await get_user(redis_db, user_id)
+    user = await get_user( user_id)
     if not user:
         await callback.message.answer("Ошибка: пользователь не найден")
         return
 
     user['lan'] = 'uk'
-    await update_user(redis_db, user_id, user)
+    # await update_user(redis_db, user_id, user)
     await callback.message.answer('В якості мови інтерфейсу обрано <b>українську</b> мову')
     dialog_manager.show_mode = ShowMode.SEND
     await dialog_manager.next()
 
 async def de_stellen(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
     user_id = callback.from_user.id
-    user = await get_user(redis_db, user_id)
+    user = await get_user(user_id)
     if not user:
         await callback.message.answer("Ошибка: пользователь не найден")
         return
 
     user['lan'] = 'de'
-    await update_user(redis_db, user_id, user)
+    # await update_user(redis_db, user_id, user)
     await callback.message.answer('Als Benutzerschnittstellensprache wurde <b>Deutsch</b> ausgewählt.')
     dialog_manager.show_mode = ShowMode.SEND
     await dialog_manager.next()
@@ -57,13 +56,13 @@ async def de_stellen(callback: CallbackQuery, widget: Button, dialog_manager: Di
 
 async def tr_stellen(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
     user_id = callback.from_user.id
-    user = await get_user(redis_db, user_id)
+    user = await get_user( user_id)
     if not user:
         await callback.message.answer("Ошибка: пользователь не найден")
         return
 
     user['lan'] = 'tr'
-    await update_user(redis_db, user_id, user)
+    # await update_user(redis_db, user_id, user)
     await callback.message.answer('Arayüz dili olarak <b>Türkçe</b> seçilmiştir.')
     dialog_manager.show_mode = ShowMode.SEND
     await dialog_manager.next()

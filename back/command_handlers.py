@@ -5,7 +5,7 @@ from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 from bot_instance import ROOT_WIND, ADMIN, ABOUT
 from aiogram_dialog import  DialogManager, StartMode
-from my_fast_api import redis_db
+
 from lexicon import *
 from user_repo import *
 
@@ -22,7 +22,7 @@ async def command_start_process(message: Message,dialog_manager: DialogManager, 
     print(user_name, user_id)
     await create_user_if_not_exists(
         tg_id=user_id,
-        first_name=first_name
+        first_name=user_name
     )
     await message.answer(text=f'👋\n\n<b>Hello, {message.from_user.first_name}!</b>\n'
                               'This is a bot scheduler. Tell me when an important event happens'
@@ -32,7 +32,7 @@ async def command_start_process(message: Message,dialog_manager: DialogManager, 
 
 @ch_router.message(Command('help'))
 async def command_help(message: Message, dialog_manager: DialogManager):
-    user = await get_user(redis_db, message.from_user.id)
+    user = await get_user(message.from_user.id)
     lan =user['lan']
     await message.answer(text=help_msg[lan])
     await dialog_manager.reset_stack()

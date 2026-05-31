@@ -3,8 +3,8 @@ from bot_instance import bot, dp, bot_storage_key
 from command_handlers import ch_router
 from start_menu import set_main_menu
 from aiogram_dialog import setup_dialogs
-from admin_dialog import admin_dialog, about_dialog
-from dialogs import root_dialog, create_dialog
+from admin_dialog import admin_dialog # about_dialog
+from dialogs import root_dialog  #, create_dialog
 
 
 
