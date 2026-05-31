@@ -25,6 +25,12 @@ services:
     restart: always
     volumes:
       - redis_data:/data
+  postgres_main3105:
+    image: postgres:16.2
+    env_file:
+      - main.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
   bot:
     build: ./back
     command: python main.py
@@ -32,6 +38,7 @@ services:
     env_file: main.env
     depends_on:
       - redis3105
+      - postgres_main3105
 
   backend:
     build: ./back
@@ -39,6 +46,7 @@ services:
     env_file: main.env
     depends_on:
       - redis3105
+      - postgres_main3105
 
   nginx:
     build:
@@ -57,6 +65,8 @@ services:
       - backend
 
 volumes:
+  postgres_data:
   redis_data:
+
 
 
