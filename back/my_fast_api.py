@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware import Middleware
 import os
@@ -9,9 +9,10 @@ import json
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime, timezone
-from user_repo import create_user_if_not_exists
+from user_repo import create_user_if_not_exists, create_session, get_user_by_session, delete_session
 from lexicon import *
 from collections import defaultdict
+import uuid
 
 
 ADMIN_ID = 6685637602
@@ -44,8 +45,28 @@ f_api = FastAPI(
 logger = logging.getLogger("fastapi")
 
 
+@f_api.get("/api/me")
+async def get_me(request: Request):
+
+    session_id = request.cookies.get("session_id")
+
+    if not session_id:
+        return {"is_auth": False}
+
+    user = await get_user_by_session(session_id)
+
+    if not user:
+        return {"is_auth": False}
+
+    return {
+        "is_auth": True,
+        "telegram_id": user.telegram_id,
+        "first_name": user.first_name,
+    }
+
+
 @f_api.post("/api/auth/telegram")
-async def auth_telegram(data: dict):
+async def auth_telegram( data: dict, response: Response):
 
     tg_id = data["telegram_id"]
     first_name = data["first_name"]
@@ -57,11 +78,36 @@ async def auth_telegram(data: dict):
         username=username,
     )
 
+    session_id = str(uuid.uuid4())
+
+    await create_session(session_id=session_id, user_id=user.id)
+
+    response.set_cookie(
+        key="session_id",
+        value=session_id,
+        httponly=True,
+        secure=True,
+        samesite="lax",
+        max_age=60 * 60 * 24 * 30,  # 30 дней
+    )
+
     return {
         "user_id": user.id,
         "telegram_id": user.telegram_id,
         "first_name": user.first_name,
     }
+
+@f_api.post("/api/logout")
+async def logout(request: Request, response: Response):
+
+    session_id = request.cookies.get("session_id")
+
+    if session_id:
+        await delete_session(session_id)
+
+    response.delete_cookie("session_id")
+
+    return {"ok": True}
 
 
 # @f_api.post("/api/receive_telegram_data")

@@ -17,17 +17,20 @@ function Layout() {
 
     useEffect(() => {
 
-        if (!wa || !tgUser) return
+    async function initUser() {
 
-        wa.ready()
-        wa.expand()
+        try {
 
-        wa.setHeaderColor('#18181b')
-        wa.setBackgroundColor('#18181b')
+            // ==========================
+            // Telegram авторизация
+            // ==========================
+            if (wa && tgUser) {
 
-        async function initUser() {
+                wa.ready()
+                wa.expand()
 
-            try {
+                wa.setHeaderColor('#18181b')
+                wa.setBackgroundColor('#18181b')
 
                 const response = await fetch(
                     '/api/auth/telegram',
@@ -36,7 +39,7 @@ function Layout() {
                         headers: {
                             'Content-Type': 'application/json',
                         },
-
+                        credentials: 'include',
                         body: JSON.stringify({
                             telegram_id: tgUser.id,
                             first_name: tgUser.first_name,
@@ -44,7 +47,6 @@ function Layout() {
                         }),
                     }
                 )
-
 
                 const user = await response.json()
 
@@ -56,14 +58,40 @@ function Layout() {
                     })
                 )
 
-            } catch (error) {
-                console.error(error)
+                return
             }
+
+            // ==========================
+            // Обычный браузер
+            // ==========================
+            const response = await fetch(
+                '/api/me',
+                {
+                    credentials: 'include'
+                }
+            )
+
+            const user = await response.json()
+
+            if (user.is_auth) {
+
+                dispatch(
+                    setUser({
+                        id: user.telegram_id,
+                        name: user.first_name,
+                        isAuth: true,
+                    })
+                )
+            }
+
+        } catch (error) {
+            console.error(error)
         }
+    }
 
-        initUser()
+    initUser()
 
-    }, [dispatch, tgUser, wa])
+}, [dispatch])
 
     return (
         <div className="

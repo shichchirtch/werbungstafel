@@ -24,9 +24,13 @@ const userSlice = createSlice({
         },
 
         logout(state) {
+
+            console.log('LOGOUT')
+
             state.id = null
             state.name = null
             state.isAuth = false
+            state.role = 'user'
 
             localStorage.removeItem('user')
         },
