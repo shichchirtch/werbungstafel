@@ -2,7 +2,7 @@ from sqlalchemy import Integer, BigInteger, String, ARRAY, ForeignKey, DateTime
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from config import settings
-import datetime
+from datetime import datetime, UTC
 
 engine = create_async_engine(settings.DATABASE_URL, echo=True)
 
@@ -30,41 +30,14 @@ class Ad(Base):
 
     __tablename__ = "ads"
 
-    id: Mapped[int] = mapped_column(
-        Integer,
-        primary_key=True,
-        autoincrement=True
-    )
-
-    owner_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id")
-    )
-
-    category: Mapped[str] = mapped_column(
-        String(100)
-    )
-
-    title: Mapped[str] = mapped_column(
-        String(200)
-    )
-
-    description: Mapped[str] = mapped_column(
-        String(5000)
-    )
-
-    price: Mapped[str] = mapped_column(
-        String(100),
-        default=""
-    )
-
-    plz: Mapped[str] = mapped_column(
-        String(10)
-    )
-
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime,
-        default=datetime.utcnow
-    )
+    id: Mapped[int] = mapped_column(Integer,primary_key=True,autoincrement=True)
+    owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    category: Mapped[str] = mapped_column(String(100) )
+    title: Mapped[str] = mapped_column(String(200))
+    description: Mapped[str] = mapped_column(String(5000))
+    price: Mapped[str] = mapped_column(String(100),default="")
+    plz: Mapped[str] = mapped_column(String(10))
+    created_at: Mapped[datetime] = mapped_column(DateTime,default=datetime.now(UTC))
 
 class AdPhoto(Base):
 
