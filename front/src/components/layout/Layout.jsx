@@ -45,6 +45,7 @@ function Layout() {
                     }
                 )
 
+
                 const user = await response.json()
 
                 dispatch(
