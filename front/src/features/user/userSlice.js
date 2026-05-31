@@ -3,13 +3,13 @@ import { createSlice } from '@reduxjs/toolkit'
 const savedUser = JSON.parse(localStorage.getItem('user'))
 
 const initialState = savedUser || {
-    id: 'user_1',
-    name: 'Ivan',
-    isAuth: true,
+    id: null,
+    name: '',
+    isAuth: false,
     avatar: null,
     bio: '',
     location: '',
-    role: 'admin'
+    role: 'user'
 }
 const userSlice = createSlice({
     name: 'user',
@@ -19,12 +19,16 @@ const userSlice = createSlice({
             state.id = action.payload.id
             state.name = action.payload.name
             state.isAuth = true
+
+            localStorage.setItem('user', JSON.stringify(state))
         },
 
         logout(state) {
             state.id = null
             state.name = null
             state.isAuth = false
+
+            localStorage.removeItem('user')
         },
 
         updateProfile(state, action) {

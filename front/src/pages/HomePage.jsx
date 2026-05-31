@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 
 function HomePage() {
     const name = useSelector((state) => state.user.name)
+    const isAuth = useSelector(state => state.user.isAuth)
     const navigate = useNavigate()
 
     const [showModal, setShowModal] = useState(false)
@@ -47,7 +48,10 @@ function HomePage() {
                         textShadow: '0 0 10px rgba(255,255,255,0.6)',
                     }}
                 >
-                    Привет, {name}
+                    {isAuth
+    ? `Hallo, ${name}`
+    : 'Willkommen auf Werbungstafel'
+}
                 </h1>
 
                 <p className="text-gray-400 text-center mb-8">

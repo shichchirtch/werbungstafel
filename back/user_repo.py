@@ -16,11 +16,7 @@ async def get_user_by_tg_id(tg_id: int):
 
 async def create_user(tg_id: int,first_name: str, username: str | None = None):
     async with session_marker() as session:
-        user = User(
-            telegram_id=tg_id,
-            first_name=first_name,
-            username=username,
-        )
+        user = User(telegram_id=tg_id,first_name=first_name,username=username)
         session.add(user)
         await session.commit()
         return user
