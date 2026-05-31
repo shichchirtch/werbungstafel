@@ -44,7 +44,7 @@ f_api = FastAPI(
 logger = logging.getLogger("fastapi")
 
 
-@f_api.post("/auth/telegram")
+@f_api.post("/api/auth/telegram")
 async def auth_telegram(data: dict):
     print('DATA = ', data)
     tg_id = data["id"]
