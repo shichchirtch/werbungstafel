@@ -70,7 +70,7 @@ async def get_me(request: Request):
 
 @f_api.post("/api/auth/telegram")
 async def auth_telegram( data: dict, response: Response):
-
+    print("AAAAAAAAAAAAAAAAAAAA")
     tg_id = data["telegram_id"]
     first_name = data["first_name"]
     username = data.get("username")
@@ -86,7 +86,7 @@ async def auth_telegram( data: dict, response: Response):
     await delete_all_user_sessions(user.id)
 
     session_id = str(uuid.uuid4())
-
+    print("SEssion id = ", session_id)
     await create_session(session_id=session_id, user_id=user.id)
 
     # response.set_cookie(
@@ -98,7 +98,7 @@ async def auth_telegram( data: dict, response: Response):
     #     max_age=60 * 60 * 24 * 30,  # 30 дней
     # )
 
-    print("SET COOKIE =", session_id)
+    print("SET COOKIE2 =", session_id)
     response = JSONResponse(
         content={
             "user_id": user.id,
@@ -118,7 +118,7 @@ async def auth_telegram( data: dict, response: Response):
 
 
     return response
-    print("RETURN RESPONSE")
+
 
         # {
         # "user_id": user.id,
