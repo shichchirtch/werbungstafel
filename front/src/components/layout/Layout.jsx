@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux'
 import { setUser } from '../../features/user/userSlice'
 
 function Layout() {
-
+    console.log("LAYOUT VERSION 777")
     const dispatch = useDispatch()
 
     const wa = window.Telegram?.WebApp
