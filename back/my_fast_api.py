@@ -50,7 +50,7 @@ logger = logging.getLogger("fastapi")
 async def get_me(request: Request):
 
     session_id = request.cookies.get("session_id")
-
+    print("SESSION_ID =", session_id)
     if not session_id:
         return {"is_auth": False}
 
@@ -58,6 +58,7 @@ async def get_me(request: Request):
 
     if not user:
         return {"is_auth": False}
+
 
     return {
         "is_auth": True,
@@ -72,6 +73,9 @@ async def auth_telegram( data: dict, response: Response):
     tg_id = data["telegram_id"]
     first_name = data["first_name"]
     username = data.get("username")
+
+    print("\nAUTH TELEGRAM")
+    print("DATA =", data)
 
     user = await create_user_if_not_exists(
         tg_id=tg_id,

@@ -13,96 +13,125 @@ function Layout() {
     const wa = window.Telegram?.WebApp
     const tgUser = wa?.initDataUnsafe?.user
 
-    console.log('User = ', tgUser)
+    console.log('WA = ', wa)
+    console.log('TG USER = ', tgUser)
 
     useEffect(() => {
 
-    async function initUser() {
+        async function initUser() {
 
-        try {
+            console.log('INIT USER START')
 
-            // ==========================
-            // Telegram авторизация
-            // ==========================
-            if (wa && tgUser) {
+            try {
 
-                wa.ready()
-                wa.expand()
+                // ==========================
+                // Telegram авторизация
+                // ==========================
+                if (wa && tgUser) {
 
-                wa.setHeaderColor('#18181b')
-                wa.setBackgroundColor('#18181b')
+                    console.log('TELEGRAM BRANCH')
+
+                    wa.ready()
+                    wa.expand()
+
+                    wa.setHeaderColor('#18181b')
+                    wa.setBackgroundColor('#18181b')
+
+                    const payload = {
+                        telegram_id: tgUser.id,
+                        first_name: tgUser.first_name,
+                        username: tgUser.username,
+                    }
+
+                    console.log('SEND TO BACKEND = ', payload)
+
+                    const response = await fetch(
+                        '/api/auth/telegram',
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            credentials: 'include',
+                            body: JSON.stringify(payload),
+                        }
+                    )
+
+                    console.log('AUTH STATUS = ', response.status)
+
+                    const user = await response.json()
+
+                    console.log('AUTH RESPONSE = ', user)
+
+                    dispatch(
+                        setUser({
+                            id: user.telegram_id,
+                            name: user.first_name,
+                            isAuth: true,
+                        })
+                    )
+
+                    console.log('USER SAVED TO REDUX')
+
+                    return
+                }
+
+                // ==========================
+                // Авторизация через cookie
+                // ==========================
+                console.log('COOKIE BRANCH')
 
                 const response = await fetch(
-                    '/api/auth/telegram',
+                    '/api/me',
                     {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        credentials: 'include',
-                        body: JSON.stringify({
-                            telegram_id: tgUser.id,
-                            first_name: tgUser.first_name,
-                            username: tgUser.username,
-                        }),
+                        credentials: 'include'
                     }
                 )
 
+                console.log('ME STATUS = ', response.status)
+
                 const user = await response.json()
-                console.log("AUTH RESPONSE =", user)
 
-                dispatch(
-                    setUser({
-                        id: user.telegram_id,
-                        name: user.first_name,
-                        isAuth: true,
-                    })
-                )
+                console.log('ME RESPONSE = ', user)
 
-                return
-            }
+                if (user.is_auth) {
 
-            // ==========================
-            // Обычный браузер
-            // ==========================
-            const response = await fetch(
-                '/api/me',
-                {
-                    credentials: 'include'
+                    dispatch(
+                        setUser({
+                            id: user.telegram_id,
+                            name: user.first_name,
+                            isAuth: true,
+                        })
+                    )
+
+                    console.log('USER RESTORED FROM COOKIE')
                 }
-            )
+                else {
 
-            const user = await response.json()
+                    console.log('COOKIE NOT FOUND')
+                }
 
-            if (user.is_auth) {
-
-                dispatch(
-                    setUser({
-                        id: user.telegram_id,
-                        name: user.first_name,
-                        isAuth: true,
-                    })
-                )
             }
+            catch (error) {
 
-        } catch (error) {
-            console.error(error)
+                console.error('INIT ERROR = ', error)
+            }
         }
-    }
 
-    initUser()
+        initUser()
 
-}, [dispatch])
+    }, [])
 
     return (
-        <div className="
-            min-h-screen
-            bg-gradient-to-b
-            from-zinc-900
-            to-black
-            px-4 py-4
-        ">
-
+        <div
+            className="
+                min-h-screen
+                bg-gradient-to-b
+                from-zinc-900
+                to-black
+                px-4 py-4
+            "
+        >
             <div className="max-w-xl mx-auto">
 
                 <Header />
@@ -110,9 +139,129 @@ function Layout() {
                 <Outlet />
 
             </div>
-
         </div>
     )
 }
 
 export default Layout
+
+
+
+// import { Outlet } from 'react-router-dom'
+// import Header from './Header'
+//
+// import { useEffect } from 'react'
+// import { useDispatch } from 'react-redux'
+//
+// import { setUser } from '../../features/user/userSlice'
+//
+// function Layout() {
+//
+//     const dispatch = useDispatch()
+//
+//     const wa = window.Telegram?.WebApp
+//     const tgUser = wa?.initDataUnsafe?.user
+//
+//     console.log('User = ', tgUser)
+//
+//     useEffect(() => {
+//
+//     async function initUser() {
+//
+//         try {
+//
+//             // ==========================
+//             // Telegram авторизация
+//             // ==========================
+//             if (wa && tgUser) {
+//
+//                 wa.ready()
+//                 wa.expand()
+//
+//                 wa.setHeaderColor('#18181b')
+//                 wa.setBackgroundColor('#18181b')
+//
+//                 const response = await fetch(
+//                     '/api/auth/telegram',
+//                     {
+//                         method: 'POST',
+//                         headers: {
+//                             'Content-Type': 'application/json',
+//                         },
+//                         credentials: 'include',
+//                         body: JSON.stringify({
+//                             telegram_id: tgUser.id,
+//                             first_name: tgUser.first_name,
+//                             username: tgUser.username,
+//                         }),
+//                     }
+//                 )
+//
+//                 const user = await response.json()
+//                 console.log("AUTH RESPONSE =", user)
+//
+//                 dispatch(
+//                     setUser({
+//                         id: user.telegram_id,
+//                         name: user.first_name,
+//                         isAuth: true,
+//                     })
+//                 )
+//
+//                 return
+//             }
+//
+//             // ==========================
+//             // Обычный браузер
+//             // ==========================
+//             const response = await fetch(
+//                 '/api/me',
+//                 {
+//                     credentials: 'include'
+//                 }
+//             )
+//
+//             const user = await response.json()
+//
+//             if (user.is_auth) {
+//
+//                 dispatch(
+//                     setUser({
+//                         id: user.telegram_id,
+//                         name: user.first_name,
+//                         isAuth: true,
+//                     })
+//                 )
+//             }
+//
+//         } catch (error) {
+//             console.error(error)
+//         }
+//     }
+//
+//     initUser()
+//
+// }, [dispatch])
+//
+//     return (
+//         <div className="
+//             min-h-screen
+//             bg-gradient-to-b
+//             from-zinc-900
+//             to-black
+//             px-4 py-4
+//         ">
+//
+//             <div className="max-w-xl mx-auto">
+//
+//                 <Header />
+//
+//                 <Outlet />
+//
+//             </div>
+//
+//         </div>
+//     )
+// }
+//
+// export default Layout
