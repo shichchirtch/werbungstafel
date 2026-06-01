@@ -9,7 +9,8 @@ import json
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime, timezone
-from user_repo import create_user_if_not_exists, create_session, get_user_by_session, delete_session
+from user_repo import (create_user_if_not_exists, create_session, get_user_by_session,
+                       delete_session, delete_all_user_sessions)
 from lexicon import *
 from collections import defaultdict
 import uuid
@@ -77,6 +78,7 @@ async def auth_telegram( data: dict, response: Response):
         first_name=first_name,
         username=username,
     )
+    await delete_all_user_sessions(user.id)
 
     session_id = str(uuid.uuid4())
 
@@ -102,10 +104,14 @@ async def logout(request: Request, response: Response):
 
     session_id = request.cookies.get("session_id")
 
+    print("\nLOGOUT")
+    print("SESSION_ID =", session_id)
+
     if session_id:
         await delete_session(session_id)
 
     response.delete_cookie("session_id")
+    print("COOKIE DELETED")
 
     return {"ok": True}
 

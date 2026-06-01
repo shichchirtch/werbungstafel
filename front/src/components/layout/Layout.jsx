@@ -49,6 +49,7 @@ function Layout() {
                 )
 
                 const user = await response.json()
+                console.log("AUTH RESPONSE =", user)
 
                 dispatch(
                     setUser({
