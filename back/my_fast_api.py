@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, Request, Response
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware import Middleware
 import os
@@ -88,20 +89,42 @@ async def auth_telegram( data: dict, response: Response):
 
     await create_session(session_id=session_id, user_id=user.id)
 
+    # response.set_cookie(
+    #     key="session_id",
+    #     value=session_id,
+    #     httponly=True,
+    #     secure=True,
+    #     samesite="lax",
+    #     max_age=60 * 60 * 24 * 30,  # 30 дней
+    # )
+
+    print("SET COOKIE =", session_id)
+    response = JSONResponse(
+        content={
+            "user_id": user.id,
+            "telegram_id": user.telegram_id,
+            "first_name": user.first_name,
+        }
+    )
+
     response.set_cookie(
         key="session_id",
         value=session_id,
         httponly=True,
         secure=True,
         samesite="lax",
-        max_age=60 * 60 * 24 * 30,  # 30 дней
+        max_age=60 * 60 * 24 * 30,
     )
 
-    return {
-        "user_id": user.id,
-        "telegram_id": user.telegram_id,
-        "first_name": user.first_name,
-    }
+
+    return response
+    print("RETURN RESPONSE")
+
+        # {
+        # "user_id": user.id,
+        # "first_name": user.first_name,
+        # }
+
 
 @f_api.post("/api/logout")
 async def logout(request: Request, response: Response):
