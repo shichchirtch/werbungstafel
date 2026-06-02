@@ -112,7 +112,7 @@ async def auth_telegram( data: dict, response: Response):
         value=session_id,
         httponly=True,
         secure=True,
-        samesite="lax",
+        samesite="none",
         max_age=60 * 60 * 24 * 30,
     )
 
@@ -132,6 +132,7 @@ async def logout(request: Request, response: Response):
     session_id = request.cookies.get("session_id")
 
     print("\nLOGOUT")
+    print("COOKIES =", request.cookies)
     print("SESSION_ID =", session_id)
 
     if session_id:
