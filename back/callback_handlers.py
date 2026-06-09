@@ -15,9 +15,21 @@ async def login_callback(callback: CallbackQuery,):
 
     tg_id = callback.from_user.id
 
-    await confirm_login(
+    success = await confirm_login(
         token=token,
         telegram_id=tg_id
+    )
+    if not success:
+        await callback.answer(
+            "⚠️ Dieser Login-Link ist ungültig oder wurde bereits verwendet.",
+            show_alert=True,
+        )
+
+        return
+
+    await callback.message.edit_text(
+        "✅ Die Anmeldung wurde erfolgreich bestätigt.\n\n"
+        "Sie können jetzt zum Browser zurückkehren."
     )
 
     await callback.answer(

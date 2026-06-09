@@ -21,6 +21,18 @@ async def command_start_process(message: Message, command: CommandObject):
 
     token = command.args
     print(user_name, user_id,'\n\ntoken = ', token)
+
+    if not token:
+        await message.answer(
+            f"👋 Hallo, {user_name}!\n\n"
+            "Das ist WerbungsTafel.\n\n"
+            "Wenn Sie sich auf der Website <a>https://werbungstafel.org</a> anmelden möchten, "
+            "klicken Sie dort auf "
+            "\"Mit Telegram anmelden\"."
+        )
+
+        return
+
     await create_user_if_not_exists(
         tg_id=user_id,
         first_name=user_name
