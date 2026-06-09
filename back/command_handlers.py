@@ -48,7 +48,7 @@ async def start_common(
 
     await message.answer(
         "👋 Willkommen bei WerbungsTafel!\n\n"
-        "Um sich auf der Website anzumelden, "
+        "Um sich auf der Website <a>https://werbungstafel.org/</a> anzumelden, "
         "klicken Sie dort auf "
         "\"Mit Telegram anmelden\"."
     )
