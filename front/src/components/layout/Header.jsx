@@ -11,6 +11,7 @@ function Header() {
     const dispatch = useDispatch()
 
     const [showLoginModal, setShowLoginModal] = useState(false)
+    const [loginToken, setLoginToken] = useState(null)
 
     const user = useSelector((state) => state.user)
 
@@ -38,6 +39,45 @@ function Header() {
         }
 
     }, [])
+    // обработака интервала на залогиненость
+
+    useEffect(() => {
+
+    if (!loginToken) return
+    console.log("CHECK LOGIN =", loginToken)
+
+    const interval = setInterval(async () => {
+
+        const response = await fetch(
+            `/api/login-status/${loginToken}`
+        )
+
+        const data = await response.json()
+        console.log("LOGIN STATUS =", data)
+        if (data.confirmed) {
+
+            clearInterval(interval)
+
+            dispatch(
+                setUser({
+                    id: data.telegram_id,
+                    name: data.first_name,
+                })
+            )
+
+            setShowLoginModal(false)
+
+            setLoginToken(null)
+            console.log("LOGIN SUCCESS")
+        }
+
+    }, 2000)
+
+    return () => clearInterval(interval)
+
+}, [loginToken])
+
+
 
     return (
 
@@ -249,10 +289,18 @@ function Header() {
 
                         <div className="flex gap-3">
                             <button
-                                onClick={() => {
-                                    setShowLoginModal(false)
+                                onClick={async () => {
+
+                                    const response =
+                                        await fetch('/api/login')
+
+                                    const data =
+                                        await response.json()
+
+                                    setLoginToken(data.token)
+
                                     window.open(
-                                        'https://t.me/bedienung_bot',
+                                        data.telegram_url,
                                         '_blank'
                                     )
                                 }}

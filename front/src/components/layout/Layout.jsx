@@ -18,109 +18,53 @@ function Layout() {
 
     useEffect(() => {
 
-        async function initUser() {
+    async function initUser() {
 
-            console.log('INIT USER START')
+        try {
 
-            try {
+            if (!wa || !tgUser) {
+                return
+            }
 
-                // ==========================
-                // Telegram авторизация
-                // ==========================
-                if (wa && tgUser) {
+            wa.ready()
+            wa.expand()
 
-                    console.log('TELEGRAM BRANCH')
+            wa.setHeaderColor('#18181b')
+            wa.setBackgroundColor('#18181b')
 
-                    wa.ready()
-                    wa.expand()
-
-                    wa.setHeaderColor('#18181b')
-                    wa.setBackgroundColor('#18181b')
-
-                    const payload = {
+            const response = await fetch(
+                '/api/auth/telegram',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
                         telegram_id: tgUser.id,
                         first_name: tgUser.first_name,
                         username: tgUser.username,
-                    }
-
-                    console.log('SEND TO BACKEND = ', payload)
-
-                    const response = await fetch(
-                        '/api/auth/telegram',
-                        {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            credentials: 'include',
-                            body: JSON.stringify(payload),
-                        }
-                    )
-
-                    console.log('AUTH STATUS = ', response.status)
-
-                    const user = await response.json()
-
-                    console.log('AUTH RESPONSE = ', user)
-
-                    dispatch(
-                        setUser({
-                            id: user.telegram_id,
-                            name: user.first_name,
-                            isAuth: true,
-                        })
-                    )
-
-                    console.log('USER SAVED TO REDUX')
-
-                    return
+                    }),
                 }
+            )
 
-                // ==========================
-                // Авторизация через cookie
-                // ==========================
-                console.log('COOKIE BRANCH')
+            const user = await response.json()
 
-                const response = await fetch(
-                    '/api/me',
-                    {
-                        credentials: 'include'
-                    }
-                )
+            dispatch(
+                setUser({
+                    id: user.telegram_id,
+                    name: user.first_name,
+                })
+            )
 
-                console.log('ME STATUS = ', response.status)
+        } catch (error) {
 
-                const user = await response.json()
-
-                console.log('ME RESPONSE = ', user)
-
-                if (user.is_auth) {
-
-                    dispatch(
-                        setUser({
-                            id: user.telegram_id,
-                            name: user.first_name,
-                            isAuth: true,
-                        })
-                    )
-
-                    console.log('USER RESTORED FROM COOKIE')
-                }
-                else {
-
-                    console.log('COOKIE NOT FOUND')
-                }
-
-            }
-            catch (error) {
-
-                console.error('INIT ERROR = ', error)
-            }
+            console.error(error)
         }
+    }
 
-        initUser()
+    initUser()
 
-    }, [])
+}, [])
 
     return (
         <div

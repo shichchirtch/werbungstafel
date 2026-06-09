@@ -1,7 +1,7 @@
 from aiogram import Router
 from filters import IS_ADMIN
-from aiogram.types import Message
-from aiogram.filters import CommandStart, Command
+from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.filters import CommandStart, Command, CommandObject
 from aiogram.fsm.context import FSMContext
 from bot_instance import ROOT_WIND, ADMIN, ABOUT
 from aiogram_dialog import  DialogManager, StartMode
@@ -13,20 +13,32 @@ from user_repo import *
 ch_router = Router()
 
 
-@ch_router.message(CommandStart())
-async def command_start_process(message: Message,dialog_manager: DialogManager, state: FSMContext
-):
+@ch_router.message(CommandStart(deep_link=True))
+async def command_start_process(message: Message, command: CommandObject):
     user_id = message.from_user.id
     user_name = message.from_user.first_name
     user_lan = message.from_user.language_code
-    print(user_name, user_id)
+
+    token = command.args
+    print(user_name, user_id,'\n\ntoken = ', token)
     await create_user_if_not_exists(
         tg_id=user_id,
         first_name=user_name
     )
+
+    login_button = InlineKeyboardButton(
+        text="🔑 Login",
+        callback_data=f"login:{token}"
+    )
+
+    start_keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[[login_button]])
+
     await message.answer(text=f'👋\n\n<b>Hello, {message.from_user.first_name}!</b>\n'
-                              'This is a bot scheduler. Tell me when an important event happens'
-                              " and I'll remind you about it ahead of time!\n\nConvenient, isn't it?")
+                              'Das ist WerbungsTafel, um zu login kliclen Sie bitta auf den Taste',
+                         reply_markup=start_keyboard)
+
+
 
 
 

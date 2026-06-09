@@ -11,7 +11,8 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime, timezone
 from user_repo import (create_user_if_not_exists, create_session, get_user_by_session,
-                       delete_session, delete_all_user_sessions)
+                       delete_session, delete_all_user_sessions, get_user_by_tg_id,
+                       get_confirmed_login, create_login_token,  delete_login_request)
 from lexicon import *
 from collections import defaultdict
 import uuid
@@ -67,6 +68,44 @@ async def get_me(request: Request):
         "first_name": user.first_name,
     }
 
+@f_api.get("/api/login")
+async def browser_login():
+    print("\nCREATE LOGIN")
+
+
+    token = str(uuid.uuid4())
+    print("TOKEN =", token)
+    await create_login_token(token)
+
+    return {
+        "token": token,
+        "telegram_url":
+            f"https://t.me/bedienung_bot?start={token}"
+    }
+
+
+@f_api.get("/api/login-status/{token}")
+async def login_status(token: str):
+
+    login_request = await get_confirmed_login(token)
+
+    if not login_request:
+
+        return {
+            "confirmed": False
+        }
+
+    user = await get_user_by_tg_id(
+        login_request.telegram_id
+    )
+
+    await delete_login_request(token)
+
+    return {
+        "confirmed": True,
+        "telegram_id": user.telegram_id,
+        "first_name": user.first_name,
+    }
 
 @f_api.post("/api/auth/telegram")
 async def auth_telegram( data: dict, response: Response):
@@ -88,15 +127,6 @@ async def auth_telegram( data: dict, response: Response):
     session_id = str(uuid.uuid4())
     print("SEssion id = ", session_id)
     await create_session(session_id=session_id, user_id=user.id)
-
-    # response.set_cookie(
-    #     key="session_id",
-    #     value=session_id,
-    #     httponly=True,
-    #     secure=True,
-    #     samesite="lax",
-    #     max_age=60 * 60 * 24 * 30,  # 30 дней
-    # )
 
     print("SET COOKIE2 =", session_id)
     response = JSONResponse(
@@ -120,10 +150,7 @@ async def auth_telegram( data: dict, response: Response):
     return response
 
 
-        # {
-        # "user_id": user.id,
-        # "first_name": user.first_name,
-        # }
+
 
 
 @f_api.post("/api/logout")
@@ -131,7 +158,7 @@ async def logout(request: Request, response: Response):
 
     session_id = request.cookies.get("session_id")
 
-    print("\nLOGOUT")
+    print("\nLOGOUT2")
     print("COOKIES =", request.cookies)
     print("SESSION_ID =", session_id)
 

@@ -47,6 +47,15 @@ class Session(Base):
     session_id: Mapped[str] = mapped_column(String(100), unique=True,index=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
 
+class LoginRequest(Base):
+    __tablename__ = "login_requests"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    token: Mapped[str] = mapped_column(String(100),unique=True,index=True)
+    telegram_id: Mapped[int | None] = mapped_column(BigInteger,nullable=True)
+    confirmed: Mapped[bool] = mapped_column(default=False)
+
+
 
 class AdPhoto(Base):
 
