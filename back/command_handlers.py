@@ -1,4 +1,4 @@
-from aiogram import Router
+from aiogram import Router, F
 from filters import IS_ADMIN
 from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.filters import CommandStart, Command, CommandObject
@@ -22,16 +22,6 @@ async def command_start_process(message: Message, command: CommandObject):
     token = command.args
     print(user_name, user_id,'\n\ntoken = ', token)
 
-    if not token:
-        await message.answer(
-            f"👋 Hallo, {user_name}!\n\n"
-            "Das ist WerbungsTafel.\n\n"
-            "Wenn Sie sich auf der Website <a>https://werbungstafel.org</a> anmelden möchten, "
-            "klicken Sie dort auf "
-            "\"Mit Telegram anmelden\"."
-        )
-
-        return
 
     await create_user_if_not_exists(
         tg_id=user_id,
@@ -49,6 +39,19 @@ async def command_start_process(message: Message, command: CommandObject):
     await message.answer(text=f'👋\n\n<b>Hello, {message.from_user.first_name}!</b>\n'
                               'Das ist WerbungsTafel, um zu login kliclen Sie bitta auf den Taste',
                          reply_markup=start_keyboard)
+
+
+@ch_router.message(CommandStart(), F.text == "/start")
+async def start_common(
+    message: Message,
+):
+
+    await message.answer(
+        "👋 Willkommen bei WerbungsTafel!\n\n"
+        "Um sich auf der Website anzumelden, "
+        "klicken Sie dort auf "
+        "\"Mit Telegram anmelden\"."
+    )
 
 
 
