@@ -6,7 +6,7 @@ from user_repo import *
 from aiogram.types import CallbackQuery
 from aiogram_dialog import DialogManager
 from aiogram_dialog import ShowMode
-from requests.exceptions import HTTPError
+# from requests.exceptions import HTTPError
 
 
 
@@ -101,9 +101,9 @@ async def get_translate(slovo:str, lan:str, temp_dict:dict)->str:
         except AttributeError:
                 print('\n\n произошла ошибка AttributeError')
                 res = 'Es ist ein Fehler aufgetreten, versuchen Sie bitte noch mal'
-        except HTTPError:
-            print('Произошла ошибка HTTPError:\n\n')
-            res = slovo
+        # except HTTPError:
+        #     print('Произошла ошибка HTTPError:\n\n')
+        #     res = slovo
         except Exception as err:
             print(f'Other error occurred: {err}')
             res = slovo

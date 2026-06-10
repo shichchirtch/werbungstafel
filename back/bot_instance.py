@@ -43,5 +43,9 @@ class ABOUT(StatesGroup):
     one = State()
     accepting = State()
 
+class ROOT_WIND(StatesGroup):
+    lan_select = State()
+    do_nothing = State()
+
 
 
