@@ -295,9 +295,10 @@ function Header() {
     flex-1
     py-3
     rounded-2xl
-    bg-green-600
+    bg-pink-400
     text-white
-    font-bold
+    font-semibold
+    active:scale-95
 "
                                         onClick={async () => {
 
@@ -322,7 +323,7 @@ function Header() {
                                         onClick={() => setShowLoginModal(false)}
                                         className="
                         flex-1 py-3 rounded-2xl
-                        bg-white/10 text-white
+                        bg-white/10 text-white active:scale-95
                     "
                                     >
                                         Schließen
@@ -346,9 +347,9 @@ function Header() {
                                         )
                                     }}
                                     className="
-                        flex-1 py-3 rounded-2xl
-                        bg-blue-500 text-white
-                        font-bold
+                        w-full py-3 rounded-2xl
+                        bg-blue-400 text-white
+                        font-semibold active:scale-95
                     "
                                 >
                                     📲 Telegram öffnen
