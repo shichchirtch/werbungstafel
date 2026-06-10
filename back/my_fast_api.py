@@ -2,20 +2,16 @@ from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware import Middleware
-import os
-from bot_instance import bot
 import logging
-import redis.asyncio as aioredis
-import json
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime, timezone
-from user_repo import (create_user_if_not_exists, create_session, get_user_by_session,
-                       delete_session, delete_all_user_sessions, get_user_by_tg_id,
+from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_confirmed_login, create_login_token,  delete_login_request)
+import secrets
+import string
 from lexicon import *
-from collections import defaultdict
-import uuid
+# import uuid
 
 
 ADMIN_ID = 6685637602
@@ -48,32 +44,19 @@ f_api = FastAPI(
 logger = logging.getLogger("fastapi")
 
 
-@f_api.get("/api/me")
-async def get_me(request: Request):
-
-    session_id = request.cookies.get("session_id")
-    print("SESSION_ID =", session_id)
-    if not session_id:
-        return {"is_auth": False}
-
-    user = await get_user_by_session(session_id)
-
-    if not user:
-        return {"is_auth": False}
-
-
-    return {
-        "is_auth": True,
-        "telegram_id": user.telegram_id,
-        "first_name": user.first_name,
-    }
-
 @f_api.get("/api/login")
 async def browser_login():
     print("\nCREATE LOGIN")
 
+    # token = str(uuid.uuid4())
+    alphabet = string.ascii_uppercase + string.digits
 
-    token = str(uuid.uuid4())
+    token = ''.join(
+        secrets.choice(alphabet)
+        for _ in range(6)
+    )
+
+
     print("TOKEN =", token)
     await create_login_token(token)
 
@@ -108,67 +91,24 @@ async def login_status(token: str):
     }
 
 @f_api.post("/api/auth/telegram")
-async def auth_telegram( data: dict, response: Response):
-    print("AAAAAAAAAAAAAAAAAAAA")
+async def auth_telegram(data: dict):
+
     tg_id = data["telegram_id"]
     first_name = data["first_name"]
     username = data.get("username")
-
-    print("\nAUTH TELEGRAM")
-    print("DATA =", data)
-
+    print('tg_id =', tg_id, 'first_name =', first_name, 'username =', username)
     user = await create_user_if_not_exists(
         tg_id=tg_id,
         first_name=first_name,
         username=username,
     )
-    await delete_all_user_sessions(user.id)
 
-    session_id = str(uuid.uuid4())
-    print("SEssion id = ", session_id)
-    await create_session(session_id=session_id, user_id=user.id)
+    return {
+        "user_id": user.id,
+        "telegram_id": user.telegram_id,
+        "first_name": user.first_name,
+    }
 
-    print("SET COOKIE2 =", session_id)
-    response = JSONResponse(
-        content={
-            "user_id": user.id,
-            "telegram_id": user.telegram_id,
-            "first_name": user.first_name,
-        }
-    )
-
-    response.set_cookie(
-        key="session_id",
-        value=session_id,
-        httponly=True,
-        secure=True,
-        samesite="none",
-        max_age=60 * 60 * 24 * 30,
-    )
-
-
-    return response
-
-
-
-
-
-@f_api.post("/api/logout")
-async def logout(request: Request, response: Response):
-
-    session_id = request.cookies.get("session_id")
-
-    print("\nLOGOUT2")
-    print("COOKIES =", request.cookies)
-    print("SESSION_ID =", session_id)
-
-    if session_id:
-        await delete_session(session_id)
-
-    response.delete_cookie("session_id")
-    print("COOKIE DELETED")
-
-    return {"ok": True}
 
 
 # @f_api.post("/api/receive_telegram_data")

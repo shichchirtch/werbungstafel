@@ -1,17 +1,18 @@
 from aiogram.types import Message
 from aiogram.filters import BaseFilter
-# from bot_instance import redis_db
 
 
 
 
-# class PRE_START(BaseFilter):
-#     async def __call__(self, message: Message):
-#         user_id = message.from_user.id
-#         check_user = await get_user(redis_db, user_id)
-#         if check_user:
-#             return True
-#         return False
+class KODE_FILTER(BaseFilter):
+    async def __call__(self, message: Message):
+        if not message.text:
+            return False
+        token = message.text.strip().upper()
+
+        if len(token) == 6 and token.isalnum():
+            return True
+        return False
 
 class TEXT_FILTER(BaseFilter):
     async def __call__(self, message: Message):

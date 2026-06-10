@@ -40,13 +40,6 @@ class Ad(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime,default=datetime.now(UTC))
 
 
-class Session(Base):
-    __tablename__ = "sessions"
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-    session_id: Mapped[str] = mapped_column(String(100), unique=True,index=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-
 class LoginRequest(Base):
     __tablename__ = "login_requests"
 

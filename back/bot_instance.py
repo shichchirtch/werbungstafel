@@ -30,26 +30,14 @@ bot_storage_key = StorageKey(bot_id=bot.id, user_id=bot.id, chat_id=bot.id)
 dp = Dispatcher(storage=redis_storage)
 
 
-class ROOT_WIND(StatesGroup):
-    lan_select = State()
-    do_nothing = State()
+class FSM_ST(StatesGroup):
+    accept_login = State()
 
 class ADMIN(StatesGroup):
     first = State()
     accept_msg= State()
     admin_send_msg = State()
 
-class CREATE(StatesGroup):
-    einstellen = State()
-    ask_capture = State()
-    enter_capture = State()
-    finish = State()
-
-
-class ZEIGEN(StatesGroup):
-    clava = State()
-    list_notes = State()
-    schlist = State()
 
 class ABOUT(StatesGroup):
     one = State()

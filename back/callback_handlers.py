@@ -29,7 +29,7 @@ async def login_callback(callback: CallbackQuery,):
 
     await callback.message.edit_text(
         "✅ Die Anmeldung wurde erfolgreich bestätigt.\n\n"
-        "Sie können jetzt zum Browser zurückkehren."
+        "Sie können jetzt zum Browser \n\n<a>https://werbungstafel.org/</a> \n\n zurückkehren."
     )
 
     await callback.answer(
