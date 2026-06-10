@@ -1,5 +1,5 @@
 from aiogram_dialog import Dialog, Window, ShowMode
-from bot_instance import ROOT_WIND, ZEIGEN, CREATE
+from bot_instance import ROOT_WIND
 from aiogram.types import User, ContentType, Message, CallbackQuery
 from aiogram_dialog.widgets.kbd import Button, Row, Cancel, Radio, Next, Start
 from aiogram_dialog.widgets.input import MessageInput
@@ -59,14 +59,14 @@ root_dialog = Dialog(
         Button(Const('◀️'),
         id='second_window_root_dialog',
         on_click=do_nothing),
-            Start(
-                text=Format('{Neue_Notiz_erstellen}'),
-                id='kuck_start',
-                state=CREATE.einstellen),
-            Start(
-                text=Format('{Kuck_meine_Notizen}'),
-                id='save_bd',
-                state=ZEIGEN.clava),
+            # Start(
+            #     text=Format('{Neue_Notiz_erstellen}'),
+            #     id='kuck_start',
+            #     state=CREATE.einstellen),
+            # Start(
+            #     text=Format('{Kuck_meine_Notizen}'),
+            #     id='save_bd',
+            #     state=ZEIGEN.clava),
         state=ROOT_WIND.do_nothing,
         getter=do_nothing_getter
     )
