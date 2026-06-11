@@ -290,8 +290,8 @@ function Header() {
                         <div className="space-y-3">
                             <div className="flex gap-3">
 
-                                    <button
-                                        className="
+                                <button
+                                    className="
     flex-1
     py-3
     rounded-2xl
@@ -300,37 +300,6 @@ function Header() {
     font-semibold
     active:scale-95
 "
-                                        onClick={async () => {
-
-                                            const response =
-                                                await fetch('/api/login')
-
-                                            const data =
-                                                await response.json()
-
-                                            setLoginToken(data.token)
-
-                                            setCodeToken(data.token)
-
-                                            setShowLoginModal(false)
-
-                                            setShowCodeModal(true)
-                                        }}
-                                    >
-                                        📱 Smartphone
-                                    </button>
-                                    <button
-                                        onClick={() => setShowLoginModal(false)}
-                                        className="
-                        flex-1 py-3 rounded-2xl
-                        bg-white/10 text-white active:scale-95
-                    "
-                                    >
-                                        Schließen
-                                    </button>
-                                </div>
-
-                                <button
                                     onClick={async () => {
 
                                         const response =
@@ -341,23 +310,54 @@ function Header() {
 
                                         setLoginToken(data.token)
 
-                                        window.open(
-                                            data.telegram_url,
-                                            '_blank'
-                                        )
+                                        setCodeToken(data.token)
+
+                                        setShowLoginModal(false)
+
+                                        setShowCodeModal(true)
                                     }}
+                                >
+                                    📱 Smartphone
+                                </button>
+                                <button
+                                    onClick={() => setShowLoginModal(false)}
                                     className="
+                        flex-1 py-3 rounded-2xl
+                        bg-white/10 text-white active:scale-95
+                    "
+                                >
+                                    Schließen
+                                </button>
+                            </div>
+
+                            <button
+                                onClick={async () => {
+
+                                    const response =
+                                        await fetch('/api/login')
+
+                                    const data =
+                                        await response.json()
+
+                                    setLoginToken(data.token)
+
+                                    window.open(
+                                        data.telegram_url,
+                                        '_blank'
+                                    )
+                                }}
+                                className="
                         w-full py-3 rounded-2xl
                         bg-blue-400 text-white
                         font-semibold active:scale-95
                     "
-                                >
-                                    📲 Telegram öffnen
-                                </button>
+                            >
+                                📲 Telegram öffnen
+                            </button>
 
-                            </div>
                         </div>
                     </div>
+                </div>
 
             )}
 
@@ -392,8 +392,8 @@ function Header() {
                         </p>
 
                         <p className="text-xs text-gray-500 mt-4 text-center">
-    Der Code ist nur wenige Minuten gültig.
-</p>
+                            Der Code ist nur wenige Minuten gültig.
+                        </p>
 
                         <div className="
     text-center
@@ -423,6 +423,12 @@ function Header() {
                         <button
                             onClick={() => {
                                 setShowCodeModal(false)
+
+                                // остановить polling
+                                setLoginToken(null)
+
+                                // убрать код с экрана
+                                setCodeToken(null)
 
                             }}
                             className="
