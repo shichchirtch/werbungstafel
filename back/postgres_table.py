@@ -47,6 +47,7 @@ class LoginRequest(Base):
     token: Mapped[str] = mapped_column(String(100),unique=True,index=True)
     telegram_id: Mapped[int | None] = mapped_column(BigInteger,nullable=True)
     confirmed: Mapped[bool] = mapped_column(default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime,default=datetime.now(UTC))
 
 
 
@@ -116,6 +117,6 @@ class Message(Base):
 
 async def init_models():
     async with engine.begin() as conn:
-        # await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
 

@@ -1,6 +1,7 @@
 from sqlalchemy import select, delete
 from postgres_table import User, LoginRequest
 from postgres_table import session_marker
+from datetime import datetime, timedelta, UTC
 
 async def get_user_by_tg_id(tg_id: int):
 
@@ -51,10 +52,7 @@ async def create_login_token(token: str):
         await session.commit()
 
 
-async def confirm_login(
-    token: str,
-    telegram_id: int
-):
+async def confirm_login( token: str, telegram_id: int):
     async with session_marker() as session:
 
         # Ищем в таблице login_requests
@@ -71,6 +69,10 @@ async def confirm_login(
 
         # Если токен не найден —
         if not login_request:
+            return False
+        if datetime.now(UTC) - login_request.created_at > timedelta(minutes=2):
+            await session.delete(login_request)
+            await session.commit()
             return False
 
         # Связываем этот токен

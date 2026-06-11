@@ -80,7 +80,27 @@ function Header() {
 
         }, 2000)
 
-        return () => clearInterval(interval)
+         const timeout = setTimeout(() => {
+
+        console.log("LOGIN TIMEOUT")
+
+        clearInterval(interval)
+
+        setLoginToken(null)
+
+        setCodeToken(null)
+
+        setShowCodeModal(false)
+
+    }, 2 * 60 * 1000) // 2 минуты
+
+    return () => {
+
+        clearInterval(interval)
+
+        clearTimeout(timeout)
+    }
+
 
     }, [loginToken, dispatch])
 
@@ -320,7 +340,10 @@ function Header() {
                                     📱 Smartphone
                                 </button>
                                 <button
-                                    onClick={() => setShowLoginModal(false)}
+                                    onClick={() => {setShowLoginModal(false)
+                                        // остановить polling
+                                        setLoginToken(null)}
+                                    }
                                     className="
                         flex-1 py-3 rounded-2xl
                         bg-white/10 text-white active:scale-95
