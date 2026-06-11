@@ -47,7 +47,7 @@ class LoginRequest(Base):
     token: Mapped[str] = mapped_column(String(100),unique=True,index=True)
     telegram_id: Mapped[int | None] = mapped_column(BigInteger,nullable=True)
     confirmed: Mapped[bool] = mapped_column(default=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime,default=lambda: datetime.now(UTC))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default= lambda : datetime.now(UTC))
 
 
 
