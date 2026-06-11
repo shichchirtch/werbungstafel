@@ -47,7 +47,7 @@ class LoginRequest(Base):
     token: Mapped[str] = mapped_column(String(100),unique=True,index=True)
     telegram_id: Mapped[int | None] = mapped_column(BigInteger,nullable=True)
     confirmed: Mapped[bool] = mapped_column(default=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime,default=datetime.now(UTC))
+    created_at: Mapped[datetime] = mapped_column(DateTime,default=lambda: datetime.now(UTC))
 
 
 
@@ -89,30 +89,12 @@ class Message(Base):
 
     __tablename__ = "messages"
 
-    id: Mapped[int] = mapped_column(
-        Integer,
-        primary_key=True
-    )
-
-    ad_id: Mapped[int] = mapped_column(
-        ForeignKey("ads.id")
-    )
-
-    sender_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id")
-    )
-
-    receiver_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id")
-    )
-
-    text: Mapped[str] = mapped_column(
-        String(5000)
-    )
-
-    is_read: Mapped[bool] = mapped_column(
-        default=False
-    )
+    id: Mapped[int] = mapped_column(Integer,primary_key=True )
+    ad_id: Mapped[int] = mapped_column(ForeignKey("ads.id"))
+    sender_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    receiver_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    text: Mapped[str] = mapped_column(String(3900))
+    is_read: Mapped[bool] = mapped_column(default=False)
 
 
 async def init_models():
