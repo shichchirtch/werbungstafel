@@ -57,6 +57,7 @@ async def start_common(
 
 @ch_router.message(Command('login'))
 async def command_login(message: Message, state: FSMContext):
+    print("ENTER /LOGIN")
     user_id = int(message.from_user.id)
     await state.set_state(FSM_ST.accept_login)
 
@@ -65,6 +66,8 @@ async def command_login(message: Message, state: FSMContext):
 
 @ch_router.message(StateFilter(FSM_ST.accept_login), KODE_FILTER())
 async def accept_login(message: Message, state: FSMContext):
+    print("ACCEPT LOGIN")
+    print("TEXT =", message.text)
     user_id = int(message.from_user.id)
     token = message.text
 
@@ -86,6 +89,8 @@ async def accept_login(message: Message, state: FSMContext):
         )
         await state.clear()
         return
+    print("CONFIRM LOGIN START")
+    print("TOKEN =", token)
 
     await state.clear()
 
