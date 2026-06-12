@@ -86,7 +86,6 @@ class Favorite(Base):
     )
 
 class Message(Base):
-
     __tablename__ = "messages"
 
     id: Mapped[int] = mapped_column(Integer,primary_key=True )
@@ -99,6 +98,6 @@ class Message(Base):
 
 async def init_models():
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
+        # await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
 

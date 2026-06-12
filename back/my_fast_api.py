@@ -82,6 +82,11 @@ async def login_status(token: str):
         login_request.telegram_id
     )
 
+    if not user:
+        return {
+            "confirmed": False
+        }
+
     await delete_login_request(token)
 
     return {
