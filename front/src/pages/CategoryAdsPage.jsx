@@ -35,31 +35,17 @@ function CategoryAdsPage() {
         async function loadAds() {
 
             try {
-
                 const response = await fetch(`/api/ads/${slug}`)
-
                 const data = await response.json()
-
                 console.log('ADS = ', data)
-                if (!data.ok) {
-                    alert(data.error || "Fehler")
-                    return
-                }
-
-
                 setAllWerbungen(data)
 
             } catch (error) {
-
                 console.error(error)
             }
         }
-
         loadAds()
-
     }, [slug])
-
-
     const werbungen = allWerbungen
 
     return (
