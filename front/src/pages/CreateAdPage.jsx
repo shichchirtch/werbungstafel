@@ -42,30 +42,67 @@ function CreateAdPage() {
 
     const categoryTitle = categoryNames[slug] || 'Kategorie'
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
+    const handleSubmit = async (e) => {
 
-        if (!title || !plz || !description) {
-            alert('Bitte Pflichtfelder ausfüllen')
+    e.preventDefault()
+
+    if (!title || !plz || !description) {
+
+        alert('Bitte Pflichtfelder ausfüllen')
+
+        return
+    }
+
+    if (!user.isAuth) {
+
+        alert('Bitte zuerst einloggen')
+
+        return
+    }
+
+    try {
+
+        const response = await fetch(
+            '/api/ads',
+            {
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+
+                body: JSON.stringify({
+                    telegram_id: user.id,
+                    category: slug,
+                    title,
+                    plz,
+                    description,
+                    price,
+                }),
+            }
+        )
+
+        const data = await response.json()
+
+        console.log('CREATE AD = ', data)
+
+        if (!data.ok) {
+
+            alert(data.error || 'Fehler')
+
             return
         }
 
-        const newWerbung = {
-            id: Date.now().toString(), // формируем ID  объявления
-            ownerId: user.id,
-            category: slug,
-            title,
-            plz,
-            description,
-            price,
-            photos: photos.map((p) => p.preview),
-            createdAt: new Date().toISOString(),
-        }
-
-        dispatch(addWerbung(newWerbung))
-
         setSuccessModal(true)
+
     }
+    catch (error) {
+
+        console.error(error)
+
+        alert('Serverfehler')
+    }
+}
 
     const handlePhotoChange = (e) => {
         const files = Array.from(e.target.files)

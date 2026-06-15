@@ -1,5 +1,5 @@
 from sqlalchemy import select, delete
-from postgres_table import User, LoginRequest
+from postgres_table import User, LoginRequest, Ad
 from postgres_table import session_marker
 from datetime import datetime, timedelta, UTC
 
@@ -128,3 +128,58 @@ async def delete_login_request(token: str):
         await session.commit()
 
         print("LOGIN REQUEST DELETED =", token)
+
+async def create_ad_db(owner_id: int, category: str, title: str, description: str, price: str, plz: str,):
+
+    async with session_marker() as session:
+
+        ad = Ad(
+            owner_id=owner_id,
+            category=category,
+            title=title,
+            description=description,
+            price=price,
+            plz=plz,
+        )
+
+        session.add(ad)
+
+        await session.commit()
+
+        await session.refresh(ad)
+
+        return ad
+
+
+async def get_ads_by_category(category: str):
+
+    async with session_marker() as session:
+
+        stmt = (
+            select(Ad)
+            .where(
+                Ad.category == category
+            )
+            .order_by(
+                Ad.id.desc()
+            )
+        )
+
+        result = await session.execute(stmt)
+
+        ads = result.scalars().all()
+
+        return [
+            {
+                "id": ad.id,
+                "ownerId": ad.owner_id,
+                "category": ad.category,
+                "title": ad.title,
+                "plz": ad.plz,
+                "description": ad.description,
+                "price": ad.price,
+                "photos": [],
+                "createdAt": ad.created_at.isoformat(),
+            }
+            for ad in ads
+        ]

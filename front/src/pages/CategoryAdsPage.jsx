@@ -1,15 +1,13 @@
-import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import {useEffect, useState} from 'react'
+import {useNavigate, useParams} from 'react-router-dom'
 import ButtonZuruck from "../components/common/ButtonZuruck.jsx"
 import HomeButton from "../components/common/HomeButton.jsx"
-import { useSelector } from 'react-redux'
+import {useSelector} from 'react-redux'
 
 
 function CategoryAdsPage() {
-    const { slug } = useParams()
+    const {slug} = useParams()
     const navigate = useNavigate()
-
-    // const [ads, setAds] = useState([])
 
     const categoryNames = {
         altenpflege: 'Altenpflege',
@@ -32,10 +30,39 @@ function CategoryAdsPage() {
 
     const title = categoryNames[slug] || 'Kategorie'
 
-    const allWerbungen = useSelector((state) => state.werbung.werbungen)
+    const [allWerbungen, setAllWerbungen] = useState([])
+
+    useEffect(() => {
+
+        async function loadAds() {
+
+            try {
+
+                const response = await fetch(`/api/ads/${slug}`)
+
+                const data = await response.json()
+
+                console.log('ADS = ', data)
+                if (!data.ok) {
+                    alert(data.error || "Fehler")
+                    return
+                }
+
+
+                setAllWerbungen(data)
+
+            } catch (error) {
+
+                console.error(error)
+            }
+        }
+
+        loadAds()
+
+    }, [slug])
+
+
     const werbungen = allWerbungen
-        .filter((item) => item.category === slug)
-        .sort((a, b) => b.id - a.id)
 
     return (
         <div className="px-4 py-6">

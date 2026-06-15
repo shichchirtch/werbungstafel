@@ -1,17 +1,13 @@
 import {useNavigate, useParams} from 'react-router-dom'
-import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { addMessage } from '../features/messages/messagesSlice.js'
-import { removeWerbung } from '../features/werbung/werbungSlice'
-import { toggleFavorite } from '../features/favorites/favoritesSlice'
+import {useState} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
+import {addMessage} from '../features/messages/messagesSlice.js'
+import {removeWerbung} from '../features/werbung/werbungSlice'
+import {toggleFavorite} from '../features/favorites/favoritesSlice'
 
-const currentUser = {
-    id: 'user_1',
-    name: 'Ivan'
-}
 
 function AdDetailsPage() {
-    const { id } = useParams()
+    const {id} = useParams()
     const [showChat, setShowChat] = useState(false)
     const [message, setMessage] = useState('')
     const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -24,10 +20,28 @@ function AdDetailsPage() {
     const navigate = useNavigate()
 
 
-
     const werbung = allWerbungen.find(
         (item) => String(item.id) === id
     )
+
+    // const [werbung, setWerbung] = useState(null)
+    //
+    // useEffect(() => {
+    //
+    //     async function loadAd() {
+    //
+    //         const response = await fetch(
+    //             `/api/ads/${id}`
+    //         )
+    //
+    //         const data = await response.json()
+    //
+    //         setWerbung(data)
+    //     }
+    //
+    //     loadAd()
+    //
+    // }, [id])
 
     const allMessages = useSelector((state) => state.messages.messages)
 
@@ -40,9 +54,15 @@ function AdDetailsPage() {
         werbung &&
         user.id === werbung.ownerId
 
+    // TODO:
+// после перехода на FastAPI сравнивать
+// user.dbId === werbung.owner_id
+
     const favorites = useSelector((state) => state.favorites.favorites)
 
-    const isFavorite = favorites.includes(werbung.id)
+    const isFavorite = werbung
+        ? favorites.includes(werbung.id)
+        : false
 
     const handleSend = () => {
         if (!message.trim()) return
@@ -50,8 +70,8 @@ function AdDetailsPage() {
         const newMessage = {
             id: Date.now(),
             adId: werbung.id,
-            fromUser: currentUser.id,
-            fromName: currentUser.name,
+            fromUser: user.id,
+            fromName: user.name,
             text: message,
             createdAt: new Date().toISOString(),
         }
@@ -60,6 +80,8 @@ function AdDetailsPage() {
         dispatch(addMessage(newMessage))
         setMessage('')
     }
+    // TODO:
+// заменить на POST /api/messages
     const handleToggleFavorite = () => {
 
         if (!user.isAuth) {

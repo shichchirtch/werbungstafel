@@ -7,7 +7,8 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime, timezone
 from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
-                       get_confirmed_login, create_login_token,  delete_login_request)
+                       get_confirmed_login, create_login_token,
+                       delete_login_request, create_ad_db, get_ads_by_category)
 import secrets
 import string
 from lexicon import *
@@ -27,6 +28,14 @@ class IncomeIn(BaseModel):
     title: Optional[str] = None
     amount: float
 
+
+class AdCreate(BaseModel):
+    telegram_id: int
+    category: str
+    title: str
+    description: str
+    price: str = ""
+    plz: str
 
 
 f_api = FastAPI(
@@ -114,7 +123,42 @@ async def auth_telegram(data: dict):
         "first_name": user.first_name,
     }
 
+####################       WERBUNG    ################################
 
+@f_api.post("/api/ads")
+async def create_ad(data: AdCreate):
+
+    user = await get_user_by_tg_id(
+        data.telegram_id
+    )
+
+    if not user:
+        return {
+            "ok": False,
+            "error": "User not found"
+        }
+
+    ad = await create_ad_db(
+        owner_id=user.id,
+        category=data.category,
+        title=data.title,
+        description=data.description,
+        price=data.price,
+        plz=data.plz,
+    )
+
+    return {
+        "ok": True,
+        "ad_id": ad.id
+    }
+
+
+@f_api.get("/api/ads/{category}")
+async def get_ads(category: str):
+
+    ads = await get_ads_by_category(category)
+
+    return ads
 
 # @f_api.post("/api/receive_telegram_data")
 # async def receive_telegram_data(data: dict):
