@@ -1,8 +1,6 @@
 import {useEffect, useState} from 'react'
 import {useNavigate, useParams} from 'react-router-dom'
-import ButtonZuruck from "../components/common/ButtonZuruck.jsx"
-import HomeButton from "../components/common/HomeButton.jsx"
-import {useSelector} from 'react-redux'
+
 
 
 function CategoryAdsPage() {
