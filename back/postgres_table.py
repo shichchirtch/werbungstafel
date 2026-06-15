@@ -37,7 +37,7 @@ class Ad(Base):
     description: Mapped[str] = mapped_column(String(5000))
     price: Mapped[str] = mapped_column(String(100),default="")
     plz: Mapped[str] = mapped_column(String(10))
-    created_at: Mapped[datetime] = mapped_column(DateTime,default=datetime.now(UTC))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default= lambda : datetime.now(UTC))
 
 
 class LoginRequest(Base):
