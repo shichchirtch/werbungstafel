@@ -1,5 +1,4 @@
-from fastapi import FastAPI, HTTPException, Request, Response
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware import Middleware
 import logging
@@ -8,11 +7,11 @@ from typing import Optional
 from datetime import datetime, timezone
 from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_confirmed_login, create_login_token,
-                       delete_login_request, create_ad_db, get_ads_by_category)
+                       delete_login_request, create_ad_db, get_ads_by_category,
+                       get_ad_by_id)
 import secrets
 import string
 from lexicon import *
-# import uuid
 
 
 ADMIN_ID = 6685637602
@@ -101,6 +100,7 @@ async def login_status(token: str):
     return {
         "confirmed": True,
         "telegram_id": user.telegram_id,
+        "user_id": user.id,
         "first_name": user.first_name,
     }
 
@@ -160,117 +160,32 @@ async def get_ads(category: str):
 
     return ads
 
-# @f_api.post("/api/receive_telegram_data")
-# async def receive_telegram_data(data: dict):
-#     user_id = data["user_id"]
-#     logger.warning(f"📦 Telegram data: {data}")
-#     await bot.send_message(chat_id= ADMIN_ID,
-#                            text = f"user_id from webapp: {user_id}")
-#     return {"ok": True}
+@f_api.get("/api/ad/{ad_id}")
+async def get_ad(ad_id: int):
 
-#
-# @f_api.post("/api/expenses/add")
-# async def add_expense(expense: ExpenseIn):
-#     user_id = expense.user_id
-#
-#     now = datetime.now(timezone.utc)
-#
-#     month = now.strftime("%Y-%m")
-#
-#     # 2️⃣ ключи
-#     months_key = f"user:{user_id}:months"
-#     expenses_key = f"user:{user_id}:expenses:{month}"
-#
-#     # 3️⃣ добавляем месяц в SET
-#     await redis_db.sadd(months_key, month)
-#
-#     # 4️⃣ формируем объект расхода
-#     expense_obj = {
-#         "id": f"{int(datetime.now(timezone.utc).timestamp() * 1000)}",
-#         "category": expense.category,
-#         "title": expense.title,
-#         "price": expense.price,
-#         "createdAt": now.isoformat(),
-#     }
-#
-#     # 5️⃣ кладём расход в LIST месяца
-#     await redis_db.rpush(
-#         expenses_key,
-#         json.dumps(expense_obj, ensure_ascii=False)
-#     )
-#     logger.warning(f"💾 Expense saved: {expense_obj}")
-#     return {
-#         "status": "ok",
-#         "month": month,
-#         "expense": expense_obj,
-#     }
-#
-#
-# @f_api.get("/api/expenses/{user_id}/{month}")
-# async def get_expenses(user_id: int, month: str):
-#
-#     key = f"user:{user_id}:expenses:{month}"
-#
-#     raw = await redis_db.lrange(key, 0, -1)
-#
-#     expenses = [json.loads(item) for item in raw]
-#
-#     total = sum(e["price"] for e in expenses)
-#
-#     return {
-#         "status": "ok",
-#         "expenses": expenses,
-#         "total": f"{total:.2f}",
-#     }
-#
-#
-# @f_api.post("/api/expenses/delete")
-# async def delete_expense(data: dict):
-#     user_id = data["user_id"]
-#     expense_id = data["expense_id"]
-#     month = data["month"]
-#
-#     expenses_key = f"user:{user_id}:expenses:{month}"
-#     months_key = f"user:{user_id}:months"
-#
-#     # 1️⃣ Получаем список расходов месяца
-#     raw = await redis_db.lrange(expenses_key, 0, -1)
-#
-#     expenses = []
-#     for item in raw:
-#         try:
-#             expenses.append(json.loads(item))
-#         except Exception:
-#             continue
-#
-#     # 2️⃣ Фильтруем по id
-#     updated_expenses = [
-#         expense for expense in expenses
-#         if expense["id"] != expense_id
-#     ]
-#
-#     # 3️⃣ Удаляем старый список
-#     await redis_db.delete(expenses_key)
-#
-#     # 4️⃣ Если список не пуст — записываем обратно
-#     if updated_expenses:
-#         await redis_db.rpush(
-#             expenses_key,
-#             *[json.dumps(e, ensure_ascii=False) for e in updated_expenses]
-#         )
-#     else:
-#         # если расходов не осталось — убираем месяц из SET
-#         await redis_db.srem(months_key, month)
-#
-#     # 5️⃣ Пересчитываем total расходов
-#     total = sum(e["price"] for e in updated_expenses)
-#
-#     return {
-#         "ok": True,
-#         "total": total
-#     }
-#
-#
+    ad = await get_ad_by_id(ad_id)
+
+    if not ad:
+        return {"ok": False}
+
+    return {
+        "id": ad.id,
+        "ownerId": ad.owner_id,
+        "category": ad.category,
+        "title": ad.title,
+        "description": ad.description,
+        "price": ad.price,
+        "plz": ad.plz,
+        "photos": [],
+        "createdAt": (
+            ad.created_at.isoformat()
+            if ad.created_at
+            else None
+        )
+    }
+
+
+
 # ################################INCOMES########################
 #
 # @f_api.post("/api/incomes/add")

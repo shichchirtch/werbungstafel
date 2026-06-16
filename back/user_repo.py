@@ -183,3 +183,11 @@ async def get_ads_by_category(category: str):
             }
             for ad in ads
         ]
+
+async def get_ad_by_id(ad_id: int):
+    async with session_marker() as session:
+        result = await session.execute(
+            select(Ad).where(
+                Ad.id == ad_id)
+        )
+        return result.scalar_one_or_none()

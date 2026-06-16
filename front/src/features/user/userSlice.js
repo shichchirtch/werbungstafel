@@ -1,10 +1,11 @@
-import { createSlice } from '@reduxjs/toolkit'
+import {createSlice} from '@reduxjs/toolkit'
 
 const savedUser = JSON.parse(localStorage.getItem('user'))
 
 const initialState = savedUser || {
     id: null,
     name: '',
+    dbId: null,
     isAuth: false,
     avatar: null,
     bio: '',
@@ -18,6 +19,7 @@ const userSlice = createSlice({
         setUser(state, action) {
             state.id = action.payload.id
             state.name = action.payload.name
+            state.dbId = action.payload.dbId      // users.id
             state.isAuth = true
 
             localStorage.setItem('user', JSON.stringify(state))
@@ -31,6 +33,8 @@ const userSlice = createSlice({
             state.name = null
             state.isAuth = false
             state.role = 'user'
+            state.dbId = null
+             state.location = ''
 
             localStorage.removeItem('user')
         },
@@ -46,5 +50,5 @@ const userSlice = createSlice({
     },
 })
 
-export const { setUser, logout, updateProfile } = userSlice.actions
+export const {setUser, logout, updateProfile} = userSlice.actions
 export default userSlice.reducer

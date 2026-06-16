@@ -1,5 +1,5 @@
 import {useNavigate, useParams} from 'react-router-dom'
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {addMessage} from '../features/messages/messagesSlice.js'
 import {removeWerbung} from '../features/werbung/werbungSlice'
@@ -14,34 +14,25 @@ function AdDetailsPage() {
 
     const dispatch = useDispatch()
 
-    const allWerbungen = useSelector((state) => state.werbung.werbungen)
+    const [werbung, setWerbung] = useState(null)
+
+    useEffect(() => {
+        async function loadAd() {
+            const response = await fetch(
+                `/api/ad/${id}`
+            )
+            const data = await response.json()
+            console.log("AD =", data)
+            setWerbung(data)
+        }
+
+        loadAd()
+
+    }, [id])
 
     const user = useSelector((state) => state.user)
     const navigate = useNavigate()
 
-
-    const werbung = allWerbungen.find(
-        (item) => String(item.id) === id
-    )
-
-    // const [werbung, setWerbung] = useState(null)
-    //
-    // useEffect(() => {
-    //
-    //     async function loadAd() {
-    //
-    //         const response = await fetch(
-    //             `/api/ads/${id}`
-    //         )
-    //
-    //         const data = await response.json()
-    //
-    //         setWerbung(data)
-    //     }
-    //
-    //     loadAd()
-    //
-    // }, [id])
 
     const allMessages = useSelector((state) => state.messages.messages)
 
@@ -52,7 +43,7 @@ function AdDetailsPage() {
     const isOwner =
         user.isAuth &&
         werbung &&
-        user.id === werbung.ownerId
+        user.dbId === werbung.ownerId
 
     // TODO:
 // после перехода на FastAPI сравнивать
@@ -93,7 +84,14 @@ function AdDetailsPage() {
     }
 
 
-    if (!werbung) return null
+    if (!werbung) {
+
+    return (
+        <div className="px-4 py-6 text-center text-white">
+            Anzeige wird geladen...
+        </div>
+    )
+}
 
     return (
         <div className="px-4 py-6">

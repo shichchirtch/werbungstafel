@@ -67,6 +67,8 @@ function Header() {
                     setUser({
                         id: data.telegram_id,
                         name: data.first_name,
+                        dbId: data.user_id,
+                        isAuth: true,
                     })
                 )
 

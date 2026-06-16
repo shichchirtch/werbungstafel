@@ -1,10 +1,10 @@
-import { Outlet } from 'react-router-dom'
+import {Outlet} from 'react-router-dom'
 import Header from './Header'
 
-import { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import {useEffect} from 'react'
+import {useDispatch} from 'react-redux'
 
-import { setUser } from '../../features/user/userSlice'
+import {setUser} from '../../features/user/userSlice'
 
 function Layout() {
     console.log("LAYOUT VERSION 777")
@@ -18,53 +18,56 @@ function Layout() {
 
     useEffect(() => {
 
-    async function initUser() {
+        async function initUser() {
 
-        try {
+            try {
 
-            if (!wa || !tgUser) {
-                return
-            }
-
-            wa.ready()
-            wa.expand()
-
-            wa.setHeaderColor('#18181b')
-            wa.setBackgroundColor('#18181b')
-
-            const response = await fetch(
-                '/api/auth/telegram',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        telegram_id: tgUser.id,
-                        first_name: tgUser.first_name,
-                        username: tgUser.username,
-                    }),
+                if (!wa || !tgUser) {
+                    return
                 }
-            )
 
-            const user = await response.json()
+                wa.ready()
+                wa.expand()
 
-            dispatch(
-                setUser({
-                    id: user.telegram_id,
-                    name: user.first_name,
-                })
-            )
+                wa.setHeaderColor('#18181b')
+                wa.setBackgroundColor('#18181b')
 
-        } catch (error) {
+                const response = await fetch(
+                    '/api/auth/telegram',
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            telegram_id: tgUser.id,
+                            first_name: tgUser.first_name,
+                            username: tgUser.username,
+                        }),
+                    }
+                )
 
-            console.error(error)
+                const user = await response.json()
+
+                dispatch(
+                    setUser({
+                        id: user.telegram_id,
+                        name: user.first_name,
+                        dbId: user.user_id,
+                        isAuth: true,
+
+                    })
+                )
+
+            } catch (error) {
+
+                console.error(error)
+            }
         }
-    }
 
-    initUser()
+        initUser()
 
-}, [])
+    }, [])
 
     return (
         <div
@@ -78,9 +81,9 @@ function Layout() {
         >
             <div className="max-w-xl mx-auto">
 
-                <Header />
+                <Header/>
 
-                <Outlet />
+                <Outlet/>
 
             </div>
         </div>
@@ -88,7 +91,6 @@ function Layout() {
 }
 
 export default Layout
-
 
 
 // import { Outlet } from 'react-router-dom'
