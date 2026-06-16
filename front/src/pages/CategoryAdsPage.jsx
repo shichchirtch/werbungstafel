@@ -46,6 +46,7 @@ function CategoryAdsPage() {
         }
         loadAds()
     }, [slug])
+
     const werbungen = allWerbungen
 
     return (

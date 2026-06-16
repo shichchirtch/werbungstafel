@@ -1,5 +1,5 @@
 import {useNavigate, useParams} from 'react-router-dom'
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useRef} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {addMessage} from '../features/messages/messagesSlice.js'
 import {removeWerbung} from '../features/werbung/werbungSlice'
@@ -11,6 +11,8 @@ function AdDetailsPage() {
     const [showChat, setShowChat] = useState(false)
     const [message, setMessage] = useState('')
     const [showDeleteModal, setShowDeleteModal] = useState(false)
+    const [toast, setToast] = useState(null)
+    const toastRef = useRef(null)
 
     const dispatch = useDispatch()
 
@@ -30,6 +32,7 @@ function AdDetailsPage() {
 
     }, [id])
 
+
     const user = useSelector((state) => state.user)
     const navigate = useNavigate()
 
@@ -40,8 +43,7 @@ function AdDetailsPage() {
         ? allMessages.filter((m) => m.adId === werbung.id)
         : []
 
-    const isOwner =
-        user.isAuth &&
+    const isOwner = user.isAuth &&
         werbung &&
         user.dbId === werbung.ownerId
 
@@ -73,16 +75,19 @@ function AdDetailsPage() {
     }
     // TODO:
 // заменить на POST /api/messages
+
+    const showToast = (text) => {
+        setToast(text)
+        clearTimeout(toastRef.current)
+        toastRef.current = setTimeout(() => {
+            setToast(null)
+        }, 5000)
+    }
+    // TODO:
+// заменить на POST /api/messages
     const handleToggleFavorite = () => {
-
-        if (!user.isAuth) {
-            alert('Bitte zuerst einloggen')
-            return
-        }
-
         dispatch(toggleFavorite(werbung.id))
     }
-
 
     if (!werbung) {
 
@@ -136,84 +141,93 @@ function AdDetailsPage() {
 
                 {/* ACTION */}
                 <div className="flex flex-row gap-4">
-                     {!user.isAuth ? (
+                    <button
+                        onClick={() =>
+                            navigate(`/category/${werbung.category}`)
+                        }
+                        className="flex-none px-4 py-2 rounded-2xl bg-white/10 text-white active:scale-95"
+                    >
+                        ✖️ Schließen
+                    </button>
 
-        <button
-            onClick={() => setShowLoginModal(true)}
-            className="
-                w-full py-3 rounded-2xl font-bold
-                bg-blue-500 text-white
-            "
-        >
-            🔐 Anmelden, um zu kontaktieren
-        </button>
+                    {!user.isAuth ? (
 
-    ):
-                    isOwner ? (
-
-                        <>
                             <button
-                                onClick={() => setShowDeleteModal(true)}
+                                onClick={() => showToast(
+                                    '🔐 Bitte melden Sie sich über Telegram an.')}
                                 className="
+                w-full py-3 rounded-2xl font-bold
+                bg-blue-500 text-white"
+                            >
+                                🔐 Anmelden, um zu kontaktieren
+                            </button>
+
+                        ) :
+                        isOwner ? (
+
+                            <>
+                                <button
+                                    onClick={() => setShowDeleteModal(true)}
+                                    className="
                     flex-1 py-3 rounded-2xl font-bold text-white
                     bg-gradient-to-br from-gray-700 to-gray-900
                     shadow-lg shadow-cyan-500/20
                     active:scale-95 transition
                 "
-                            >
-                                🗑 Löschen
-                            </button>
+                                >
+                                    🗑 Löschen
+                                </button>
 
-                            <button
-                                className="
+                                <button
+                                    className="
                     flex-1 py-3 rounded-2xl font-bold text-white
                     bg-gradient-to-br from-gray-500 to-gray-700
                     shadow-lg shadow-cyan-500/20
                     active:scale-95 transition
                 "
-                                onClick={() => navigate(`/edit/${werbung.id}`)}
-                            >
-                                ✏️ Bearbeiten
-                            </button>
+                                    onClick={() => navigate(`/edit/${werbung.id}`)}
+                                >
+                                    ✏️ Bearbeiten
+                                </button>
 
-                        </>
+                            </>
 
-                    ) : (
+                        ) : (
 
-                        <>
+                            <>
 
-                            <button
-                                onClick={handleToggleFavorite}
-                                className={`
+                                <button
+                                    onClick={handleToggleFavorite}
+                                    className={`
                     flex-1 py-3 rounded-2xl font-bold
                     transition active:scale-95
                     ${
-                                    isFavorite
-                                        ? 'bg-gray-500 text-white'
-                                        : 'bg-gray-700 text-gray-300'
-                                }
+                                        isFavorite
+                                            ? 'bg-gray-500 text-white'
+                                            : 'bg-gray-700 text-gray-300'
+                                    }
                 `}
-                            >
-                                {isFavorite
-                                    ? '❤️ Gespeichert'
-                                    : '🤍 Merken'}
-                            </button>
+                                >
+                                    {isFavorite
+                                        ? '❤️ Gespeichert'
+                                        : '🤍 Merken'}
+                                </button>
 
-                            <button
-                                onClick={() => setShowChat(prev => !prev)}
-                                className="
+                                <button
+                                    onClick={() => setShowChat(prev => !prev)}
+                                    className="
                     flex-1 py-4 rounded-2xl font-bold text-black text-lg
                     bg-gradient-to-br from-pink-500 via-fuchsia-500 to-violet-600
                     shadow-lg shadow-pink-500/40
                     active:scale-95 transition
                 "
-                            >
-                                💬 Kontaktieren
-                            </button>
+                                >
+                                    💬 Kontaktieren
+                                </button>
 
-                        </>
+                            </>
 
-                    )}
+                        )}
 
                 </div>
 
@@ -293,8 +307,26 @@ function AdDetailsPage() {
                             </button>
 
                             <button
-                                onClick={() => {
-                                    dispatch(removeWerbung(werbung.id))
+                                onClick={async () => {
+
+                                    const response = await fetch(
+                                        `/api/ad/${werbung.id}`,
+                                        {
+                                            method: 'DELETE',
+                                        }
+                                    )
+
+                                    const data = await response.json()
+
+                                    if (!data.ok) {
+
+                                        showToast(
+                                            data.error || 'Fehler'
+                                        )
+
+                                        return
+                                    }
+
                                     navigate('/my-ads')
                                 }}
                                 className="
@@ -310,6 +342,24 @@ function AdDetailsPage() {
                     </div>
 
                 </div>
+            )}
+
+            {toast && (
+
+                <div
+                    className="
+            fixed bottom-6 left-1/2
+            -translate-x-1/2
+            bg-zinc-900 text-white
+            px-6 py-3 rounded-2xl
+            border border-white/10
+            shadow-2xl
+            z-50
+        "
+                >
+                    {toast}
+                </div>
+
             )}
         </div>
     )

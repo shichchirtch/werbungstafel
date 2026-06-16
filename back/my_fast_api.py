@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_confirmed_login, create_login_token,
                        delete_login_request, create_ad_db, get_ads_by_category,
-                       get_ad_by_id)
+                       get_ad_by_id, delete_ad_db)
 import secrets
 import string
 from lexicon import *
@@ -184,97 +184,23 @@ async def get_ad(ad_id: int):
         )
     }
 
+@f_api.delete("/api/ad/{ad_id}")
+async def delete_ad(ad_id: int):
+
+    success = await delete_ad_db(ad_id)
+
+    if not success:
+
+        return {
+            "ok": False,
+            "error": "Anzeige nicht gefunden"
+        }
+
+    return {
+        "ok": True
+    }
 
 
-# ################################INCOMES########################
-#
-# @f_api.post("/api/incomes/add")
-# async def add_income(income: IncomeIn):
-#     logger.warning(f' income = {income}')
-#     user_id = income.user_id
-#
-#     now = datetime.now(timezone.utc)
-#
-#     month = now.strftime("%Y-%m")
-#
-#     # 2️⃣ ключи
-#     months_key = f"user:{user_id}:months_inc"
-#     incomes_key = f"user:{user_id}:incomes_inc:{month}"
-#
-#     # 3️⃣ добавляем месяц в SET
-#     await redis_db.sadd(months_key, month)
-#
-#     # 4️⃣ формируем объект дохода
-#     income_obj = {
-#         "id": str(int(now.timestamp() * 1000)),
-#         "title": income.title,
-#         "amount": income.amount,
-#         "createdAt": now.isoformat(),
-#     }
-#
-#     # 5️⃣ кладём dohod в LIST месяца
-#     await redis_db.rpush(
-#         incomes_key,
-#         json.dumps(income_obj, ensure_ascii=False)
-#     )
-#     logger.warning(f"💾 INCOME saved: {income_obj}")
-#     return {
-#         "status": "ok",
-#         "month": month,
-#         "income": income_obj,
-#     }
-#
-#
-#
-# @f_api.get("/api/incomes/{user_id}/{month}")
-# async def get_incomes(user_id: int, month: str):
-#
-#     key = f"user:{user_id}:incomes_inc:{month}"
-#
-#     raw = await redis_db.lrange(key, 0, -1)
-#
-#     user_incomes = [json.loads(item) for item in raw]
-#
-#     total = sum(i["amount"] for i in user_incomes)
-#
-#     return {
-#         "incomes": user_incomes,
-#         "total": total
-#     }
-#
-# @f_api.post("/api/incomes/delete")
-# async def delete_income(data: dict):
-#     user_id = data["user_id"]
-#     income_id = data["income_id"]
-#     month = data["month"]  # важно! нужен месяц для ключа
-#
-#     key = f"user:{user_id}:incomes_inc:{month}"
-#
-#     # 1️⃣ получаем список
-#     raw = await redis_db.lrange(key, 0, -1)
-#     incomes = [json.loads(item) for item in raw]
-#
-#     # 2️⃣ фильтруем
-#     updated_incomes = [
-#         income for income in incomes
-#         if income["id"] != income_id
-#     ]
-#
-#     # 3️⃣ полностью очищаем список в Redis
-#     await redis_db.delete(key)
-#
-#     # 4️⃣ записываем обратно
-#     if updated_incomes:
-#         await redis_db.rpush(
-#             key,
-#             *[json.dumps(i) for i in updated_incomes]
-#         )
-#
-#     total = sum(i["amount"] for i in updated_incomes)
-#
-#     return {"ok": True,
-#             "total": total}
-#
 # ## ## ## ## ## ## ## ############ Bot Report ###################################
 # bez_nazwanija = {
 #     'ru':'Без названия',

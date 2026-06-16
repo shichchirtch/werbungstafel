@@ -191,3 +191,24 @@ async def get_ad_by_id(ad_id: int):
                 Ad.id == ad_id)
         )
         return result.scalar_one_or_none()
+
+async def delete_ad_db(ad_id: int):
+
+    async with session_marker() as session:
+
+        result = await session.execute(
+            select(Ad).where(
+                Ad.id == ad_id
+            )
+        )
+
+        ad = result.scalar_one_or_none()
+
+        if not ad:
+            return False
+
+        await session.delete(ad)
+
+        await session.commit()
+
+        return True
