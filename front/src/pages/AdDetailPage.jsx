@@ -86,12 +86,12 @@ function AdDetailsPage() {
 
     if (!werbung) {
 
-    return (
-        <div className="px-4 py-6 text-center text-white">
-            Anzeige wird geladen...
-        </div>
-    )
-}
+        return (
+            <div className="px-4 py-6 text-center text-white">
+                Anzeige wird geladen...
+            </div>
+        )
+    }
 
     return (
         <div className="px-4 py-6">
@@ -136,60 +136,84 @@ function AdDetailsPage() {
 
                 {/* ACTION */}
                 <div className="flex flex-row gap-4">
+                     {!user.isAuth ? (
 
-                    {isOwner && (
-                        <button
-                            onClick={() => setShowDeleteModal(true)}
-                            className="
-                flex-1 py-3 rounded-2xl font-bold text-white
-                bg-gradient-to-br from-gray-700 to-gray-900
-                shadow-lg shadow-cyan-500/20
-                active:scale-95 transition
+        <button
+            onClick={() => setShowLoginModal(true)}
+            className="
+                w-full py-3 rounded-2xl font-bold
+                bg-blue-500 text-white
             "
-                        >
-                            🗑 Löschen
-                        </button>
+        >
+            🔐 Anmelden, um zu kontaktieren
+        </button>
+
+    ):
+                    isOwner ? (
+
+                        <>
+                            <button
+                                onClick={() => setShowDeleteModal(true)}
+                                className="
+                    flex-1 py-3 rounded-2xl font-bold text-white
+                    bg-gradient-to-br from-gray-700 to-gray-900
+                    shadow-lg shadow-cyan-500/20
+                    active:scale-95 transition
+                "
+                            >
+                                🗑 Löschen
+                            </button>
+
+                            <button
+                                className="
+                    flex-1 py-3 rounded-2xl font-bold text-white
+                    bg-gradient-to-br from-gray-500 to-gray-700
+                    shadow-lg shadow-cyan-500/20
+                    active:scale-95 transition
+                "
+                                onClick={() => navigate(`/edit/${werbung.id}`)}
+                            >
+                                ✏️ Bearbeiten
+                            </button>
+
+                        </>
+
+                    ) : (
+
+                        <>
+
+                            <button
+                                onClick={handleToggleFavorite}
+                                className={`
+                    flex-1 py-3 rounded-2xl font-bold
+                    transition active:scale-95
+                    ${
+                                    isFavorite
+                                        ? 'bg-gray-500 text-white'
+                                        : 'bg-gray-700 text-gray-300'
+                                }
+                `}
+                            >
+                                {isFavorite
+                                    ? '❤️ Gespeichert'
+                                    : '🤍 Merken'}
+                            </button>
+
+                            <button
+                                onClick={() => setShowChat(prev => !prev)}
+                                className="
+                    flex-1 py-4 rounded-2xl font-bold text-black text-lg
+                    bg-gradient-to-br from-pink-500 via-fuchsia-500 to-violet-600
+                    shadow-lg shadow-pink-500/40
+                    active:scale-95 transition
+                "
+                            >
+                                💬 Kontaktieren
+                            </button>
+
+                        </>
+
                     )}
-                    {isOwner && (
-                        <button
-                            className="
-                flex-1 py-3 rounded-2xl font-bold text-white
-                bg-gradient-to-br from-gray-500 to-gray-700
-                shadow-lg shadow-cyan-500/20
-                active:scale-95 transition
-            "
-
-                            onClick={() => navigate(`/edit/${werbung.id}`)}
-                        >
-                            ✏️ Bearbeiten
-                        </button>)}
-                    <button
-                        onClick={handleToggleFavorite}
-                        // disabled={!user.isAuth}
-                        className={`
-        flex-1 py-3 rounded-2xl font-bold
-        transition active:scale-95
-        ${isFavorite
-                            ? 'bg-gray-500 text-white'
-                            : 'bg-gray-700 text-gray-300'
-                        }
-    `}
-                    >
-
-                        {isFavorite ? '❤️ Gespeichert' : '🤍 Merken'}
-                    </button>
-
-                    <button
-                        onClick={() => setShowChat((prev) => !prev)}
-                        className="
-            flex-1 py-4 rounded-2xl font-bold text-black text-lg
-            bg-gradient-to-br from-pink-500 via-fuchsia-500 to-violet-600
-            shadow-lg shadow-pink-500/40
-            active:scale-95 transition
-        "
-                    >
-                        💬 Kontaktieren
-                    </button>
 
                 </div>
 
