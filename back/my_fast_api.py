@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_confirmed_login, create_login_token,
                        delete_login_request, create_ad_db, get_ads_by_category,
-                       get_ad_by_id, delete_ad_db)
+                       get_ad_by_id, delete_ad_db, get_ads_by_owner)
 import secrets
 import string
 from lexicon import *
@@ -200,6 +200,27 @@ async def delete_ad(ad_id: int):
         "ok": True
     }
 
+
+@f_api.get("/api/my-ads/{telegram_id}")
+async def get_my_ads(telegram_id: int):
+
+    user = await get_user_by_tg_id(telegram_id)
+
+    if not user:
+        return []
+
+    ads = await get_ads_by_owner(user.id)
+
+    return [
+        {
+            "id": ad.id,
+            "ownerId": ad.owner_id,
+            "category": ad.category,
+            "title": ad.title,
+            "plz": ad.plz,
+        }
+        for ad in ads
+    ]
 
 # ## ## ## ## ## ## ## ############ Bot Report ###################################
 # bez_nazwanija = {

@@ -1,15 +1,33 @@
-import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import {useSelector} from 'react-redux'
+import {useNavigate} from 'react-router-dom'
+import { useState, useEffect} from "react";
 
 function MyAdsPage() {
     const navigate = useNavigate()
 
     const user = useSelector((state) => state.user)
-    const allWerbungen = useSelector((state) => state.werbung.werbungen)
+    const [myAds, setMyAds] = useState([])
 
-    const myAds = allWerbungen.filter(
-        (item) => item.ownerId === user.id
-    )
+    useEffect(() => {
+
+    async function loadMyAds() {
+
+        const response = await fetch(
+            `/api/my-ads/${user.id}`
+        )
+
+        const data = await response.json()
+
+        console.log("MY ADS =", data)
+
+        setMyAds(data)
+    }
+
+    if (user.isAuth) {
+        loadMyAds()
+    }
+
+}, [user.id, user.isAuth])
 
     return (
         <div className="px-4 py-6">
@@ -57,4 +75,4 @@ function MyAdsPage() {
     )
 }
 
-            export default MyAdsPage
+export default MyAdsPage

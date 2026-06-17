@@ -212,3 +212,16 @@ async def delete_ad_db(ad_id: int):
         await session.commit()
 
         return True
+
+
+async def get_ads_by_owner(owner_id: int):
+
+    async with session_marker() as session:
+
+        result = await session.execute(
+            select(Ad)
+            .where(Ad.owner_id == owner_id)
+            .order_by(Ad.id.desc())
+        )
+
+        return result.scalars().all()

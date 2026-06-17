@@ -114,10 +114,25 @@ function AdDetailsPage() {
                 )}
 
                 {/* CARD */}
-                <div className="
+                <div className=" relative
           bg-white/5 border border-white/10
           rounded-3xl p-5 backdrop-blur-md
         ">
+                    <button
+                        onClick={() =>
+                            navigate(`/category/${werbung.category}`)
+                        }
+                        className="
+            absolute top-4 right-4
+            text-gray-600
+            hover:text-white
+            active:scale-90
+            transition
+            text-xl
+        "
+                    >
+                        ✕
+                    </button>
 
                     <h1 className="text-2xl font-bold text-gray-300 mb-2">
                         {werbung.title}
@@ -141,14 +156,6 @@ function AdDetailsPage() {
 
                 {/* ACTION */}
                 <div className="flex flex-row gap-4">
-                    <button
-                        onClick={() =>
-                            navigate(`/category/${werbung.category}`)
-                        }
-                        className="flex-none px-4 py-2 rounded-2xl bg-white/10 text-white active:scale-95"
-                    >
-                        ✖️ Schließen
-                    </button>
 
                     {!user.isAuth ? (
 
