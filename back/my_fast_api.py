@@ -162,6 +162,7 @@ async def get_ads(category: str):
 
 @f_api.get("/api/ad/{ad_id}")
 async def get_ad(ad_id: int):
+    """Хэндлер возвращающий данные вербунга на фронт из постгреса"""
 
     ad = await get_ad_by_id(ad_id)
 
@@ -222,107 +223,6 @@ async def get_my_ads(telegram_id: int):
         for ad in ads
     ]
 
-# ## ## ## ## ## ## ## ############ Bot Report ###################################
-# bez_nazwanija = {
-#     'ru':'Без названия',
-#     'uk':'Без назви',
-#     'de':'Ohne Titel',
-#     'tr':'Başlıksız'
-# }
-#
-# monthDict= {
-#     '2026-01': 'January 2026',
-#     '2026-02': 'February 2026',
-#     '2026-03': 'March 2026',
-#     '2026-04': 'April 2026',
-#     '2026-05': 'Mai 2026',
-#     '2026-06': 'June 2026',
-#     '2026-07': 'July 2026',
-#     '2026-08': 'August 2026',
-#     '2026-09': 'September 2026',
-#     '2026-10': 'October 2026',
-#     '2026-11': 'November 2026',
-#     '2026-12': 'December 2026'}
-#
-# async def build_expense_report(redis_db, user_id: int, month: str, lan: str, total:float)->dict:
-#
-#     key = f"user:{user_id}:expenses:{month}"
-#     raw = await redis_db.lrange(key, 0, -1)
-#
-#     expenses = [json.loads(item) for item in raw]
-#
-#     if not expenses:
-#         return no_expenses[lan]
-#
-#     # группировка
-#     grouped = defaultdict(list)
-#
-#     for e in expenses:
-#         grouped[e["category"]].append(e)
-#
-#     # заголовок
-#     message = f"<b>📊 {report_for[lan]} {monthDict[month]}</b>\n\n"
-#
-#
-#     for category, items in grouped.items():
-#
-#         # сортировка по дате
-#         items.sort(key=lambda x: x["createdAt"])
-#
-#         emoji = CATEGORY_EMOJI[lan].get(category, "📌")
-#
-#         category_total = 0
-#
-#         message += f"<b>{emoji} {category}</b>\n"
-#
-#         for item in items:
-#             dt = datetime.fromisoformat(item["createdAt"])
-#             date_str = dt.strftime("%d.%m")
-#
-#             title = item["title"] or bez_nazwanija[lan]
-#             price = item["price"]
-#
-#             category_total += price
-#
-#             message += f"{date_str} — {title} — {price} €\n"
-#
-#             # 👇 Показываем "Итого" только если больше одной записи
-#         if len(items) > 1:
-#             message += f"Итого: <b>{round(category_total, 2)} €</b>\n"
-#
-#         message += "\n"
-#
-#     message += f"<b>💰 Общий итог: {round(total, 2)} €</b>"
-#
-#     return message
-#
-#
-#
-#
-#
-# @f_api.post("/api/report")
-# async def receive_telegram_data(data: dict):
-#
-#     user_id = data["user_id"]
-#     month = data["month"]
-#     lan = data.get("lan", "ru")
-#     total = data.get("total", 'no_data')
-#
-#     report_text = await build_expense_report(
-#         redis_db,
-#         user_id,
-#         month,
-#         lan,
-#         total
-#     )
-#
-#     await bot.send_message(
-#         chat_id=int(user_id),
-#         text=report_text,
-#         parse_mode="HTML"
-#     )
-#
-#     return {"ok": True}
 
 
 

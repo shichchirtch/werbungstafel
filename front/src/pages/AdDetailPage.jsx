@@ -4,6 +4,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import {addMessage} from '../features/messages/messagesSlice.js'
 import {removeWerbung} from '../features/werbung/werbungSlice'
 import {toggleFavorite} from '../features/favorites/favoritesSlice'
+import {categoryNames} from '../constants/nameKategories.js'
 
 
 function AdDetailsPage() {
@@ -92,6 +93,8 @@ function AdDetailsPage() {
     if (!werbung) {
 
         return (
+
+
             <div className="px-4 py-6 text-center text-white">
                 Anzeige wird geladen...
             </div>
@@ -100,6 +103,11 @@ function AdDetailsPage() {
 
     return (
         <div className="px-4 py-6">
+            <p className="text-cyan-300 text-sm mb-3 font-semibold">
+
+                {categoryNames[werbung.category]}
+
+            </p>
 
             <div className="max-w-xl mx-auto flex flex-col gap-4">
 
