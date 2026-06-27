@@ -1,5 +1,5 @@
 from sqlalchemy import select, delete
-from postgres_table import User, LoginRequest, Ad
+from postgres_table import User, LoginRequest, Ad, Favorite
 from postgres_table import session_marker
 from datetime import datetime, timedelta, UTC
 
@@ -222,6 +222,28 @@ async def get_ads_by_owner(owner_id: int):
             select(Ad)
             .where(Ad.owner_id == owner_id)
             .order_by(Ad.id.desc())
+        )
+
+        return result.scalars().all()
+
+async def get_user_favorites(user_id: int):
+
+    async with session_marker() as session:
+
+        result = await session.execute(
+
+            select(Ad)
+            .join(
+                Favorite,
+                Favorite.ad_id == Ad.id
+            )
+            .where(
+                Favorite.user_id == user_id
+            )
+            .order_by(
+                Ad.id.desc()
+            )
+
         )
 
         return result.scalars().all()

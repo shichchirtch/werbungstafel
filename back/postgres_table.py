@@ -72,18 +72,9 @@ class Favorite(Base):
 
     __tablename__ = "favorites"
 
-    id: Mapped[int] = mapped_column(
-        Integer,
-        primary_key=True
-    )
-
-    user_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id")
-    )
-
-    ad_id: Mapped[int] = mapped_column(
-        ForeignKey("ads.id")
-    )
+    id: Mapped[int] = mapped_column(Integer,primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    ad_id: Mapped[int] = mapped_column(ForeignKey("ads.id"))
 
 class Message(Base):
     __tablename__ = "messages"
