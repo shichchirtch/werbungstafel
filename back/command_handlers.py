@@ -73,32 +73,29 @@ async def accept_login(message: Message, state: FSMContext):
     user_id = int(message.from_user.id)
     token = message.text
     us_lan = message.from_user.language_code
-    if len(token) !=6:
-        await message.answer('❌ Wrong Code')
 
-    else:
-        await create_user_if_not_exists(
-            tg_id=message.from_user.id,
-            first_name=message.from_user.first_name,
-            username=message.from_user.username,
+    await create_user_if_not_exists(
+        tg_id=message.from_user.id,
+        first_name=message.from_user.first_name,
+        username=message.from_user.username,
+    )
+
+
+    success = await confirm_login(
+        token=token.upper(),
+        telegram_id=user_id
+    )
+
+    if not success:
+        await message.answer(
+            code_dict[us_lan]
         )
-
-
-        success = await confirm_login(
-            token=token.upper(),
-            telegram_id=user_id
-        )
-
-        if not success:
-            await message.answer(
-                code_dict[us_lan]
-            )
-            await state.clear()
-            return
-        print("CONFIRM LOGIN START")
-        print("TOKEN =", token)
-
         await state.clear()
+        return
+    print("CONFIRM LOGIN START")
+    print("TOKEN =", token)
+
+    await state.clear()
 
     await message.answer(
         "✅ Авторизация прошла успешно.\n"
