@@ -62,10 +62,7 @@ f_api = FastAPI(
 logger = logging.getLogger("fastapi")
 
 
-f_api.mount("/uploads",
-    StaticFiles(directory="uploads"),
-    name="uploads",
-)
+f_api.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 
 @f_api.get("/api/login")
