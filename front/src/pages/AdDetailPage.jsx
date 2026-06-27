@@ -14,6 +14,8 @@ function AdDetailsPage() {
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [toast, setToast] = useState(null)
     const toastRef = useRef(null)
+    const user = useSelector((state) => state.user)
+    const navigate = useNavigate()
 
     const dispatch = useDispatch()
 
@@ -22,40 +24,36 @@ function AdDetailsPage() {
 
     useEffect(() => {
 
-    async function loadAd() {
+        async function loadAd() {
 
-        const response = await fetch(
-            `/api/ad/${id}`
-        )
-
-        const data = await response.json()
-
-        console.log("AD =", data)
-
-        setWerbung(data)
-
-        if (user.isAuth) {
-
-            const responseMerkList = await fetch(
-                `/api/favorites/${user.id}/${id}`
+            const response = await fetch(
+                `/api/ad/${id}`
             )
 
-            const dataMerkList = await responseMerkList.json()
+            const data = await response.json()
 
-            console.log("IS FAVORITE =", dataMerkList)
+            console.log("AD =", data)
 
-            setIsFavorite(dataMerkList.isFavorite)
+            setWerbung(data)
+
+            if (user.isAuth) {
+
+                const responseMerkList = await fetch(
+                    `/api/favorites/${user.id}/${id}`
+                )
+
+                const dataMerkList = await responseMerkList.json()
+
+                console.log("IS FAVORITE =", dataMerkList)
+
+                setIsFavorite(dataMerkList.isFavorite)
+            }
+
         }
 
-    }
+        loadAd()
 
-    loadAd()
-
-}, [id, user.id, user.isAuth])
-
-
-    const user = useSelector((state) => state.user)
-    const navigate = useNavigate()
+    }, [id, user.id, user.isAuth])
 
 
     const allMessages = useSelector((state) => state.messages.messages)
