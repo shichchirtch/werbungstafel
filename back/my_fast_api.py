@@ -9,7 +9,7 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_confirmed_login, create_login_token,
                        delete_login_request, create_ad_db, get_ads_by_category,
                        get_ad_by_id, delete_ad_db, get_ads_by_owner,
-                       get_user_favorites, create_favorite)
+                       get_user_favorites, create_favorite, delete_favorite_db, check_favorite)
 import secrets
 import string
 from lexicon import *
@@ -37,9 +37,11 @@ class AdCreate(BaseModel):
     price: str = ""
     plz: str
 
-class FavoriteCreate(BaseModel):
+class Favorite(BaseModel):
     telegram_id: int
     ad_id: int
+
+
 
 
 f_api = FastAPI(
@@ -231,7 +233,7 @@ async def get_my_ads(telegram_id: int):
 ########################## MerkList ####################################
 
 @f_api.post("/api/favorites")
-async def add_favorite(data: FavoriteCreate):
+async def add_favorite(data: Favorite):
 
     user = await get_user_by_tg_id(
         data.telegram_id
@@ -281,4 +283,45 @@ async def get_favorites(telegram_id: int):
     ]
 
 
+@f_api.delete("/api/favorites")
+async def delete_favorite(data: Favorite):
+
+    user = await get_user_by_tg_id(
+        data.telegram_id
+    )
+
+    if not user:
+        return {
+            "ok": False,
+            "error": "User not found"
+        }
+
+    success = await delete_favorite_db(
+        user_id=user.id,
+        ad_id=data.ad_id,
+    )
+
+    if not success:
+        return {
+            "ok": False,
+            "error": "Favorite not found"
+        }
+
+    return {
+        "ok": True
+    }
+
+@f_api.get("/api/favorites/{telegram_id}/{ad_id}")
+async def is_favorite(telegram_id: int,ad_id: int):
+    user = await get_user_by_tg_id(telegram_id)
+    if not user:
+        return {
+            "isFavorite": False
+        }
+
+    check = await check_favorite(user_id=user.id,ad_id=ad_id,)
+
+    return {
+        "isFavorite": check
+    }
 

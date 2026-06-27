@@ -18,20 +18,40 @@ function AdDetailsPage() {
     const dispatch = useDispatch()
 
     const [werbung, setWerbung] = useState(null)
+    const [isFavorite, setIsFavorite] = useState(false)
 
     useEffect(() => {
-        async function loadAd() {
-            const response = await fetch(
-                `/api/ad/${id}`
+
+    async function loadAd() {
+
+        const response = await fetch(
+            `/api/ad/${id}`
+        )
+
+        const data = await response.json()
+
+        console.log("AD =", data)
+
+        setWerbung(data)
+
+        if (user.isAuth) {
+
+            const responseMerkList = await fetch(
+                `/api/favorites/${user.id}/${id}`
             )
-            const data = await response.json()
-            console.log("AD =", data)
-            setWerbung(data)
+
+            const dataMerkList = await responseMerkList.json()
+
+            console.log("IS FAVORITE =", dataMerkList)
+
+            setIsFavorite(dataMerkList.isFavorite)
         }
 
-        loadAd()
+    }
 
-    }, [id])
+    loadAd()
+
+}, [id, user.id, user.isAuth])
 
 
     const user = useSelector((state) => state.user)
@@ -48,15 +68,6 @@ function AdDetailsPage() {
         werbung &&
         user.dbId === werbung.ownerId
 
-    // TODO:
-// после перехода на FastAPI сравнивать
-// user.dbId === werbung.owner_id
-
-    const favorites = useSelector((state) => state.favorites.favorites)
-
-    const isFavorite = werbung
-        ? favorites.includes(werbung.id)
-        : false
 
     const handleSend = () => {
         if (!message.trim()) return
@@ -86,16 +97,35 @@ function AdDetailsPage() {
     }
 
     const handleToggleFavorite = async () => {
-        await fetch('/api/favorites', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                telegram_id: user.id,
-                ad_id: werbung.id,
-            }),
-        })
+
+        const method = isFavorite
+            ? 'DELETE'
+            : 'POST'
+
+        const response = await fetch(
+            '/api/favorites',
+            {
+                method,
+
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+
+                body: JSON.stringify({
+                    telegram_id: user.id,
+                    ad_id: werbung.id,
+                }),
+            }
+        )
+
+        const data = await response.json()
+
+        if (!data.ok) {
+            showToast(data.error || "Fehler")
+            return
+        }
+
+        setIsFavorite(!isFavorite)
     }
 
     if (!werbung) {

@@ -272,3 +272,51 @@ async def create_favorite(user_id: int, ad_id: int,):
         await session.commit()
 
         return True
+
+async def delete_favorite_db(
+    user_id: int,
+    ad_id: int,
+):
+
+    async with session_marker() as session:
+
+        result = await session.execute(
+
+            select(Favorite).where(
+                Favorite.user_id == user_id,
+                Favorite.ad_id == ad_id,
+            )
+
+        )
+
+        favorite = result.scalar_one_or_none()
+
+        if not favorite:
+            return False
+
+        await session.delete(favorite)
+
+        await session.commit()
+
+        return True
+
+
+async def check_favorite(
+    user_id: int,
+    ad_id: int,
+):
+
+    async with session_marker() as session:
+
+        result = await session.execute(
+
+            select(Favorite).where(
+                Favorite.user_id == user_id,
+                Favorite.ad_id == ad_id,
+            )
+
+        )
+
+        favorite = result.scalar_one_or_none()
+
+        return favorite is not None
