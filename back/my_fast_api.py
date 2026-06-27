@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware import Middleware
 import logging
@@ -13,6 +13,9 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
 import secrets
 import string
 from lexicon import *
+from fastapi.staticfiles import StaticFiles
+import os
+import shutil
 
 
 ADMIN_ID = 6685637602
@@ -57,6 +60,12 @@ f_api = FastAPI(
 )
 
 logger = logging.getLogger("fastapi")
+
+
+f_api.mount("/uploads",
+    StaticFiles(directory="uploads"),
+    name="uploads",
+)
 
 
 @f_api.get("/api/login")
@@ -325,3 +334,31 @@ async def is_favorite(telegram_id: int,ad_id: int):
         "isFavorite": check
     }
 
+######################### Загрузка фото ##############################
+
+@f_api.post("/api/upload-photo")
+async def upload_photos(ad_id: int = Form(...),photos: list[UploadFile] = File(...)):
+    folder = f"uploads/{ad_id}"
+
+
+    os.makedirs(
+        folder,
+        exist_ok=True
+    )
+
+    urls = []
+
+    for photo in photos:
+        file_path = (
+            f"{folder}/{photo.filename}"
+        )
+
+        with open(file_path,"wb") as buffer:
+            shutil.copyfileobj(photo.file,buffer)
+
+        urls.append(file_path)
+
+    return {
+        "ok": True,
+        "photos": urls,
+    }

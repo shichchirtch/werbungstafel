@@ -3,7 +3,6 @@ import {useState, useEffect, useRef} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {addMessage} from '../features/messages/messagesSlice.js'
 import {removeWerbung} from '../features/werbung/werbungSlice'
-import {toggleFavorite} from '../features/favorites/favoritesSlice'
 import {categoryNames} from '../constants/nameKategories.js'
 
 

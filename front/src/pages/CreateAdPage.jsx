@@ -1,12 +1,12 @@
-import { useParams, useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import {useParams, useNavigate} from 'react-router-dom'
+import {useState} from 'react'
 import {useEffect} from "react";
-import { useDispatch, useSelector } from 'react-redux'
-import { addWerbung } from '../features/werbung/werbungSlice'
+import {useDispatch, useSelector} from 'react-redux'
+import {addWerbung} from '../features/werbung/werbungSlice'
 
 
 function CreateAdPage() {
-    const { slug } = useParams()
+    const {slug} = useParams()
     const navigate = useNavigate()
 
     const [title, setTitle] = useState('')
@@ -44,65 +44,110 @@ function CreateAdPage() {
 
     const handleSubmit = async (e) => {
 
-    e.preventDefault()
+        e.preventDefault()
 
-    if (!title || !plz || !description) {
+        if (!title || !plz || !description) {
 
-        alert('Bitte Pflichtfelder ausfüllen')
-
-        return
-    }
-
-    if (!user.isAuth) {
-
-        alert('Bitte zuerst einloggen')
-
-        return
-    }
-
-    try {
-
-        const response = await fetch(
-            '/api/ads',
-            {
-                method: 'POST',
-
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-
-                body: JSON.stringify({
-                    telegram_id: user.id,
-                    category: slug,
-                    title,
-                    plz,
-                    description,
-                    price,
-                }),
-            }
-        )
-
-        const data = await response.json()
-
-        console.log('CREATE AD = ', data)
-
-        if (!data.ok) {
-
-            alert(data.error || 'Fehler')
+            alert('Bitte Pflichtfelder ausfüllen')
 
             return
         }
 
-        setSuccessModal(true)
+        if (!user.isAuth) {
 
+            alert('Bitte zuerst einloggen')
+
+            return
+        }
+
+        try {
+
+            const response = await fetch(
+                '/api/ads',
+                {
+                    method: 'POST',
+
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+
+                    body: JSON.stringify({
+                        telegram_id: user.id,
+                        category: slug,
+                        title,
+                        plz,
+                        description,
+                        price,
+                    }),
+                }
+            )
+
+            const data = await response.json()
+
+            console.log('CREATE AD = ', data)
+
+            if (!data.ok) {
+
+                alert(data.error || 'Fehler')
+
+                return
+            }
+
+            if (photos.length > 0) {
+
+                const formData = new FormData()
+
+                formData.append(
+                    'ad_id',
+                    data.ad_id
+                )
+
+                photos.forEach((photo) => {
+
+                    formData.append(
+                        'photos',
+                        photo.file
+                    )
+
+                })
+
+                const uploadResponse = await fetch(
+                    '/api/upload-photo',
+                    {
+                        method: 'POST',
+                        body: formData,
+                    }
+                )
+
+                const uploadData =
+                    await uploadResponse.json()
+
+                console.log(
+                    'UPLOAD = ',
+                    uploadData
+                )
+
+                if (!uploadData.ok) {
+
+                    alert(
+                        uploadData.error ||
+                        'Fehler beim Hochladen'
+                    )
+
+                    return
+                }
+
+            }
+
+            setSuccessModal(true)
+
+        } catch (error) {
+
+            console.error(error)
+
+            alert('Serverfehler')
+        }
     }
-    catch (error) {
-
-        console.error(error)
-
-        alert('Serverfehler')
-    }
-}
 
     const handlePhotoChange = (e) => {
         const files = Array.from(e.target.files)

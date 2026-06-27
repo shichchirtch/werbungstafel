@@ -8,5 +8,6 @@ aiogram-dialog==2.1.0
 translators==5.9.2
 sqlalchemy==2.0.23
 asyncpg==0.29.0
+pillow==11.3.0
 
 

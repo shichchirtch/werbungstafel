@@ -24,6 +24,7 @@ class User(Base):
     description: Mapped[str] = mapped_column(String(2000),default="")
     city: Mapped[str] = mapped_column(String(200),default="")
     role: Mapped[str] = mapped_column(String(20),default="user")
+    paid: Mapped[bool] = mapped_column(default=False)
 
 
 class Ad(Base):
