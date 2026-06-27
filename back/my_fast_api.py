@@ -8,8 +8,8 @@ from datetime import datetime, timezone
 from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_confirmed_login, create_login_token,
                        delete_login_request, create_ad_db, get_ads_by_category,
-                       get_ad_by_id, delete_ad_db, get_ads_by_owner, get_user_favorites
-                       )
+                       get_ad_by_id, delete_ad_db, get_ads_by_owner,
+                       get_user_favorites, create_favorite)
 import secrets
 import string
 from lexicon import *
@@ -36,6 +36,10 @@ class AdCreate(BaseModel):
     description: str
     price: str = ""
     plz: str
+
+class FavoriteCreate(BaseModel):
+    telegram_id: int
+    ad_id: int
 
 
 f_api = FastAPI(
@@ -225,6 +229,37 @@ async def get_my_ads(telegram_id: int):
     ]
 
 ########################## MerkList ####################################
+
+@f_api.post("/api/favorites")
+async def add_favorite(data: FavoriteCreate):
+
+    user = await get_user_by_tg_id(
+        data.telegram_id
+    )
+
+    if not user:
+        return {
+            "ok": False,
+            "error": "User not found"
+        }
+
+    success = await create_favorite(
+        user_id=user.id,
+        ad_id=data.ad_id,
+    )
+
+    if not success:
+        return {
+            "ok": False,
+            "error": "Anzeige bereits gespeichert"
+        }
+
+    return {
+        "ok": True
+    }
+
+
+
 
 @f_api.get("/api/favorites/{telegram_id}")
 async def get_favorites(telegram_id: int):

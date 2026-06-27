@@ -84,10 +84,18 @@ function AdDetailsPage() {
             setToast(null)
         }, 5000)
     }
-    // TODO:
-// заменить на POST /api/messages
-    const handleToggleFavorite = () => {
-        dispatch(toggleFavorite(werbung.id))
+
+    const handleToggleFavorite = async () => {
+        await fetch('/api/favorites', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                telegram_id: user.id,
+                ad_id: werbung.id,
+            }),
+        })
     }
 
     if (!werbung) {

@@ -55,18 +55,10 @@ class AdPhoto(Base):
 
     __tablename__ = "ad_photos"
 
-    id: Mapped[int] = mapped_column(
-        Integer,
-        primary_key=True
-    )
+    id: Mapped[int] = mapped_column(Integer,primary_key=True)
+    ad_id: Mapped[int] = mapped_column(ForeignKey("ads.id"))
+    photo_url: Mapped[str] = mapped_column(String(500))
 
-    ad_id: Mapped[int] = mapped_column(
-        ForeignKey("ads.id")
-    )
-
-    photo_url: Mapped[str] = mapped_column(
-        String(500)
-    )
 
 class Favorite(Base):
 
@@ -75,6 +67,7 @@ class Favorite(Base):
     id: Mapped[int] = mapped_column(Integer,primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     ad_id: Mapped[int] = mapped_column(ForeignKey("ads.id"))
+
 
 class Message(Base):
     __tablename__ = "messages"

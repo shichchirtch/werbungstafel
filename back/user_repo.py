@@ -247,3 +247,28 @@ async def get_user_favorites(user_id: int):
         )
 
         return result.scalars().all()
+
+async def create_favorite(user_id: int, ad_id: int,):
+    async with session_marker() as session:
+        result = await session.execute(
+            select(Favorite).where(
+                Favorite.user_id == user_id,
+                Favorite.ad_id == ad_id,
+            )
+        )
+
+        favorite = result.scalar_one_or_none()
+
+        if favorite:
+            return False
+
+        favorite = Favorite(
+            user_id=user_id,
+            ad_id=ad_id,
+        )
+
+        session.add(favorite)
+
+        await session.commit()
+
+        return True
