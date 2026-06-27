@@ -9,7 +9,8 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_confirmed_login, create_login_token,
                        delete_login_request, create_ad_db, get_ads_by_category,
                        get_ad_by_id, delete_ad_db, get_ads_by_owner,
-                       get_user_favorites, create_favorite, delete_favorite_db, check_favorite)
+                       get_user_favorites, create_favorite, delete_favorite_db, check_favorite,
+                       get_ad_photos, create_ad_photo)
 import secrets
 import string
 from lexicon import *
@@ -182,6 +183,8 @@ async def get_ad(ad_id: int):
     if not ad:
         return {"ok": False}
 
+    photos = await get_ad_photos(ad.id)
+
     return {
         "id": ad.id,
         "ownerId": ad.owner_id,
@@ -190,7 +193,7 @@ async def get_ad(ad_id: int):
         "description": ad.description,
         "price": ad.price,
         "plz": ad.plz,
-        "photos": [],
+        "photos":  [photo.photo_url for photo in photos],
         "createdAt": (
             ad.created_at.isoformat()
             if ad.created_at
@@ -337,11 +340,7 @@ async def is_favorite(telegram_id: int,ad_id: int):
 async def upload_photos(ad_id: int = Form(...),photos: list[UploadFile] = File(...)):
     folder = f"uploads/{ad_id}"
 
-
-    os.makedirs(
-        folder,
-        exist_ok=True
-    )
+    os.makedirs(folder, exist_ok=True)
 
     urls = []
 
@@ -353,7 +352,14 @@ async def upload_photos(ad_id: int = Form(...),photos: list[UploadFile] = File(.
         with open(file_path,"wb") as buffer:
             shutil.copyfileobj(photo.file,buffer)
 
-        urls.append(file_path)
+        photo_url = f"/uploads/{ad_id}/{photo.filename}"
+
+        await create_ad_photo(
+            ad_id=ad_id,
+            photo_url=photo_url,
+        )
+
+        urls.append(photo_url)
 
     return {
         "ok": True,

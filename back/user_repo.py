@@ -1,5 +1,5 @@
 from sqlalchemy import select, delete
-from postgres_table import User, LoginRequest, Ad, Favorite
+from postgres_table import User, LoginRequest, Ad, Favorite, AdPhoto
 from postgres_table import session_marker
 from datetime import datetime, timedelta, UTC
 
@@ -320,3 +320,33 @@ async def check_favorite(
         favorite = result.scalar_one_or_none()
 
         return favorite is not None
+
+
+async def create_ad_photo(
+        ad_id: int,
+        photo_url: str,
+):
+    async with session_marker() as session:
+
+        photo = AdPhoto(
+            ad_id=ad_id,
+            photo_url=photo_url,
+        )
+
+        session.add(photo)
+
+        await session.commit()
+
+async def get_ad_photos(ad_id: int):
+
+    async with session_marker() as session:
+
+        result = await session.execute(
+
+            select(AdPhoto).where(
+                AdPhoto.ad_id == ad_id
+            )
+
+        )
+
+        return result.scalars().all()
