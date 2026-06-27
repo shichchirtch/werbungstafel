@@ -259,8 +259,6 @@ async def add_favorite(data: FavoriteCreate):
     }
 
 
-
-
 @f_api.get("/api/favorites/{telegram_id}")
 async def get_favorites(telegram_id: int):
 

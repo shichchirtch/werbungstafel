@@ -9,7 +9,7 @@ import MyAdsPage from './pages/MyAdsPage';
 import EditAdPage from "./pages/EditAdPage.jsx";
 import ProfilePage  from "./pages/ProfilePage.jsx";
 import EditProfilePage  from "./pages/EditProfilePage.jsx";
-import FavoritesPage from "./pages/FavoritePage.jsx";
+import MyFavoritesPage from "./pages/FavoritePage.jsx";
 
 const router = createBrowserRouter([
     {
@@ -54,7 +54,7 @@ const router = createBrowserRouter([
             },
             {
                 path: 'favorites',
-                element: <FavoritesPage />,
+                element: <MyFavoritesPage />,
             }
 
         ],
