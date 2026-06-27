@@ -295,7 +295,14 @@ no_expenses = {
 
 }
 
-report_for = {'ru':'Отчёт за ',
-              'uk':'Звіт за ',
-              'de':'Bericht für ',
-              'tr':'Rapor için '}
+report_for = {'ru': 'Отчёт за ',
+              'uk': 'Звіт за ',
+              'de': 'Bericht für ',
+              'tr': 'Rapor için '}
+
+code_dict = {
+    'ru': '❌ Код неверный или уже использован\n\nОтправьте мне команду /login ещё раз. Код действителен 2 минтуты',
+    'uk': '❌ Код неправильний або вже використаний\n\nНадішліть мені команду /login ще раз. Код дійсний 2 хв.',
+    'de': '❌ Der Code ist ungültig oder wurde bereits verwendet.\n\n Senden Sie mir den Befehl /login erneut. Der Code ist 2 Minuten gültig.',
+    'tr': '❌ Kod geçersiz veya daha önce kullanılmış.\n\nBana tekrar /login komutunu gönderin. Kod 2 dakika geçerlidir.'
+}

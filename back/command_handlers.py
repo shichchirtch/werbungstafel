@@ -58,7 +58,6 @@ async def start_common(
 @ch_router.message(Command('login'))
 async def command_login(message: Message, state: FSMContext):
     print("ENTER /LOGIN")
-    user_id = int(message.from_user.id)
     await state.set_state(FSM_ST.accept_login)
 
     await message.answer('Отправьте мне код с экрана')
@@ -68,31 +67,38 @@ async def command_login(message: Message, state: FSMContext):
 async def accept_login(message: Message, state: FSMContext):
     print("ACCEPT LOGIN")
     print("TEXT =", message.text)
+
+
+
     user_id = int(message.from_user.id)
     token = message.text
+    us_lan = message.from_user.language_code
+    if len(token) !=6:
+        await message.answer('❌ Wrong Code')
 
-    await create_user_if_not_exists(
-        tg_id=message.from_user.id,
-        first_name=message.from_user.first_name,
-        username=message.from_user.username,
-    )
-
-
-    success = await confirm_login(
-        token=token.upper(),
-        telegram_id=user_id
-    )
-
-    if not success:
-        await message.answer(
-            "❌ Код неверный или уже использован."
+    else:
+        await create_user_if_not_exists(
+            tg_id=message.from_user.id,
+            first_name=message.from_user.first_name,
+            username=message.from_user.username,
         )
-        await state.clear()
-        return
-    print("CONFIRM LOGIN START")
-    print("TOKEN =", token)
 
-    await state.clear()
+
+        success = await confirm_login(
+            token=token.upper(),
+            telegram_id=user_id
+        )
+
+        if not success:
+            await message.answer(
+                code_dict[us_lan]
+            )
+            await state.clear()
+            return
+        print("CONFIRM LOGIN START")
+        print("TOKEN =", token)
+
+        await state.clear()
 
     await message.answer(
         "✅ Авторизация прошла успешно.\n"
