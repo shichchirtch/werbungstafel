@@ -12,7 +12,7 @@ class KODE_FILTER(BaseFilter):
 
         if len(token) == 6 and token.isalnum():
             return True
-        await message.answer('❌ Wrong Code')
+        await message.answer('❌ Wrong Code\n\n/login again')
         return False
 
 class TEXT_FILTER(BaseFilter):
