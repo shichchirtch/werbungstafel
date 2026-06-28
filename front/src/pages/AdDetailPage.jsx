@@ -176,7 +176,7 @@ function AdDetailsPage() {
                 {/* IMAGE */}
                 {/* IMAGE */}
                 {werbung.photos?.length > 0 && (
-
+                    <>
                     <div
                         className="
             relative
@@ -202,31 +202,6 @@ function AdDetailsPage() {
             "
                         />
 
-                        {werbung.photos.length > 1 && (
-
-                            <div className="flex justify-center gap-2 mt-3">
-
-                                {werbung.photos.map((_, index) => (
-
-                                    <button
-                                        key={index}
-                                        onClick={() => setCurrentPhoto(index)}
-                                        className={`
-                                            rounded-full
-                                            transition-all
-                                                            ${
-                                            currentPhoto === index
-                                                ? 'w-4 h-4 bg-cyan-400'
-                                                : 'w-3 h-3 bg-gray-600'
-                                        }
-                `}
-                                    />
-
-                                ))}
-
-                            </div>
-
-                        )}
 
                         {currentPhoto > 0 && (
                             <button
@@ -278,18 +253,47 @@ function AdDetailsPage() {
 
                     </div>
 
+                      {werbung.photos.length > 1 && (
 
-                )}
-                {/* CARD */}
-                <div className=" relative
+            <div className="flex justify-center gap-2 mt-3">
+
+                {werbung.photos.map((_, index) => (
+
+                    <button
+                        key={index}
+                        onClick={() => setCurrentPhoto(index)}
+                        className={`
+                            rounded-full
+                            transition-all
+                            ${
+                                currentPhoto === index
+                                    ? 'w-4 h-4 bg-cyan-400'
+                                    : 'w-3 h-3 bg-gray-600'
+                            }
+                        `}
+                    />
+
+                ))}
+
+            </div>
+
+        )}
+
+    </>
+
+)}
+
+
+                    {/* CARD */}
+                    <div className=" relative
           bg-white/5 border border-white/10
           rounded-3xl p-5 backdrop-blur-md
         ">
-                    <button
-                        onClick={() =>
-                            navigate(`/category/${werbung.category}`)
-                        }
-                        className="
+                        <button
+                            onClick={() =>
+                                navigate(`/category/${werbung.category}`)
+                            }
+                            className="
             absolute top-4 right-4
             text-gray-600
             hover:text-white
@@ -297,159 +301,159 @@ function AdDetailsPage() {
             transition
             text-xl
         "
-                    >
-                        ✕
-                    </button>
+                        >
+                            ✕
+                        </button>
 
-                    <h1 className="text-2xl font-bold text-gray-300 mb-2">
-                        {werbung.title}
-                    </h1>
+                        <h1 className="text-2xl font-bold text-gray-300 mb-2">
+                            {werbung.title}
+                        </h1>
 
-                    <p className="text-gray-400 mb-2">
-                        PLZ: {werbung.plz}
-                    </p>
-
-                    {werbung.price && (
-                        <p className="text-cyan-300 font-semibold mb-3">
-                            {werbung.price}
+                        <p className="text-gray-400 mb-2">
+                            PLZ: {werbung.plz}
                         </p>
-                    )}
 
-                    <p className="text-gray-300 leading-relaxed">
-                        {werbung.description}
-                    </p>
+                        {werbung.price && (
+                            <p className="text-cyan-300 font-semibold mb-3">
+                                {werbung.price}
+                            </p>
+                        )}
 
-                </div>
+                        <p className="text-gray-300 leading-relaxed">
+                            {werbung.description}
+                        </p>
 
-                {/* ACTION */}
-                <div className="flex flex-row gap-4">
+                    </div>
 
-                    {!user.isAuth ? (
+                    {/* ACTION */}
+                    <div className="flex flex-row gap-4">
 
-                            <button
-                                onClick={() => showToast(
-                                    '🔐 Bitte melden Sie sich über Telegram an.')}
-                                className="
+                        {!user.isAuth ? (
+
+                                <button
+                                    onClick={() => showToast(
+                                        '🔐 Bitte melden Sie sich über Telegram an.')}
+                                    className="
                 w-full py-3 rounded-2xl font-bold
                 bg-blue-500 text-white"
-                            >
-                                🔐 Anmelden, um zu kontaktieren
-                            </button>
+                                >
+                                    🔐 Anmelden, um zu kontaktieren
+                                </button>
 
-                        ) :
-                        isOwner ? (
+                            ) :
+                            isOwner ? (
 
-                            <>
-                                <button
-                                    onClick={() => setShowDeleteModal(true)}
-                                    className="
+                                <>
+                                    <button
+                                        onClick={() => setShowDeleteModal(true)}
+                                        className="
                     flex-1 py-3 rounded-2xl font-bold text-white
                     bg-gradient-to-br from-gray-700 to-gray-900
                     shadow-lg shadow-cyan-500/20
                     active:scale-95 transition
                 "
-                                >
-                                    🗑 Löschen
-                                </button>
+                                    >
+                                        🗑 Löschen
+                                    </button>
 
-                                <button
-                                    className="
+                                    <button
+                                        className="
                     flex-1 py-3 rounded-2xl font-bold text-white
                     bg-gradient-to-br from-gray-500 to-gray-700
                     shadow-lg shadow-cyan-500/20
                     active:scale-95 transition
                 "
-                                    onClick={() => navigate(`/edit/${werbung.id}`)}
-                                >
-                                    ✏️ Bearbeiten
-                                </button>
+                                        onClick={() => navigate(`/edit/${werbung.id}`)}
+                                    >
+                                        ✏️ Bearbeiten
+                                    </button>
 
-                            </>
+                                </>
 
-                        ) : (
+                            ) : (
 
-                            <>
+                                <>
 
-                                <button
-                                    onClick={handleToggleFavorite}
-                                    className={`
+                                    <button
+                                        onClick={handleToggleFavorite}
+                                        className={`
                     flex-1 py-3 rounded-2xl font-bold
                     transition active:scale-95
                     ${
-                                        isFavorite
-                                            ? 'bg-gray-500 text-white'
-                                            : 'bg-gray-700 text-gray-300'
-                                    }
+                                            isFavorite
+                                                ? 'bg-gray-500 text-white'
+                                                : 'bg-gray-700 text-gray-300'
+                                        }
                 `}
-                                >
-                                    {isFavorite
-                                        ? '❤️ Gespeichert'
-                                        : '🤍 Merken'}
-                                </button>
+                                    >
+                                        {isFavorite
+                                            ? '❤️ Gespeichert'
+                                            : '🤍 Merken'}
+                                    </button>
 
-                                <button
-                                    onClick={() => setShowChat(prev => !prev)}
-                                    className="
+                                    <button
+                                        onClick={() => setShowChat(prev => !prev)}
+                                        className="
                     flex-1 py-4 rounded-2xl font-bold text-black text-lg
                     bg-gradient-to-br from-pink-500 via-fuchsia-500 to-violet-600
                     shadow-lg shadow-pink-500/40
                     active:scale-95 transition
                 "
-                                >
-                                    💬 Kontaktieren
-                                </button>
-
-                            </>
-
-                        )}
-
-                </div>
-
-                {showChat && (
-                    <div className="mt-4 bg-white/5 border border-white/10 rounded-3xl p-4 backdrop-blur-md">
-
-                        <div className="max-h-60 overflow-y-auto flex flex-col gap-2 mb-3">
-
-                            {messages.length === 0 ? (
-                                <p className="text-gray-400 text-sm">Noch keine Nachrichten</p>
-                            ) : (
-                                messages.map((msg) => (
-                                    <div
-                                        key={msg.id}
-                                        className="bg-cyan-500/20 text-gray-300 p-2 rounded-xl text-sm self-start"
                                     >
-                                        {msg.text}
-                                    </div>
-                                ))
+                                        💬 Kontaktieren
+                                    </button>
+
+                                </>
+
                             )}
 
+                    </div>
+
+                    {showChat && (
+                        <div className="mt-4 bg-white/5 border border-white/10 rounded-3xl p-4 backdrop-blur-md">
+
+                            <div className="max-h-60 overflow-y-auto flex flex-col gap-2 mb-3">
+
+                                {messages.length === 0 ? (
+                                    <p className="text-gray-400 text-sm">Noch keine Nachrichten</p>
+                                ) : (
+                                    messages.map((msg) => (
+                                        <div
+                                            key={msg.id}
+                                            className="bg-cyan-500/20 text-gray-300 p-2 rounded-xl text-sm self-start"
+                                        >
+                                            {msg.text}
+                                        </div>
+                                    ))
+                                )}
+
+                            </div>
+
+                            <div className="flex gap-2">
+                                <input
+                                    value={message}
+                                    onChange={(e) => setMessage(e.target.value)}
+                                    placeholder="Nachricht..."
+                                    className="flex-1 bg-black/40 text-white p-3 rounded-xl border border-white/10 outline-none"
+                                />
+
+                                <button
+                                    onClick={handleSend}
+                                    className="px-4 rounded-xl bg-cyan-400 text-black font-bold"
+                                >
+                                    →
+                                </button>
+
+
+                            </div>
+
                         </div>
-
-                        <div className="flex gap-2">
-                            <input
-                                value={message}
-                                onChange={(e) => setMessage(e.target.value)}
-                                placeholder="Nachricht..."
-                                className="flex-1 bg-black/40 text-white p-3 rounded-xl border border-white/10 outline-none"
-                            />
-
-                            <button
-                                onClick={handleSend}
-                                className="px-4 rounded-xl bg-cyan-400 text-black font-bold"
-                            >
-                                →
-                            </button>
-
-
-                        </div>
+                    )}
 
                     </div>
-                )}
-
-            </div>
-            {/*modalka*/}
-            {showDeleteModal && (
-                <div className="
+                {/*modalka*/}
+                {showDeleteModal && (
+                    <div className="
         fixed inset-0 bg-black/70
         flex items-center justify-center z-50
     ">
@@ -460,68 +464,70 @@ function AdDetailsPage() {
             rounded-3xl p-6 text-center
         ">
 
-                        <h2 className="text-white text-xl font-bold mb-4">
-                            Anzeige löschen?
-                        </h2>
+                    <h2 className="text-white text-xl font-bold mb-4">
+                    Anzeige löschen?
+                    </h2>
 
-                        <p className="text-gray-400 mb-6">
-                            Diese Aktion kann nicht rückgängig gemacht werden.
-                        </p>
+                    <p className="text-gray-400 mb-6">
+                    Diese Aktion kann nicht rückgängig gemacht werden.
+                    </p>
 
-                        <div className="flex gap-3">
+                    <div className="flex gap-3">
 
-                            <button
-                                onClick={() => setShowDeleteModal(false)}
-                                className="
+                    <button
+                    onClick={() => setShowDeleteModal(false)}
+                 className="
                         flex-1 py-3 rounded-2xl
                         bg-white/10 text-white
                     "
-                            >
-                                Abbrechen
-                            </button>
+            >
+                Abbrechen
+            </button>
 
-                            <button
-                                onClick={async () => {
+            <button
+                onClick={async () => {
 
-                                    const response = await fetch(
-                                        `/api/ad/${werbung.id}`,
-                                        {
-                                            method: 'DELETE',
-                                        }
-                                    )
+                    const response = await fetch(
+                        `/api/ad/${werbung.id}`,
+                        {
+                            method: 'DELETE',
+                        }
+                    )
 
-                                    const data = await response.json()
+                    const data = await response.json()
 
-                                    if (!data.ok) {
+                    if (!data.ok) {
 
-                                        showToast(
-                                            data.error || 'Fehler'
-                                        )
+                        showToast(
+                            data.error || 'Fehler'
+                        )
 
-                                        return
-                                    }
+                        return
+                    }
 
-                                    navigate('/my-ads')
-                                }}
-                                className="
+                    navigate('/my-ads')
+                }}
+                className="
                         flex-1 py-3 rounded-2xl
                         bg-red-500 text-white font-bold
                     "
-                            >
-                                Löschen
-                            </button>
+            >
+                Löschen
+            </button>
 
-                        </div>
+        </div>
 
-                    </div>
+</div>
 
-                </div>
-            )}
+</div>
+)
+}
 
-            {toast && (
+    {
+        toast && (
 
-                <div
-                    className="
+            <div
+                className="
             fixed bottom-6 left-1/2
             -translate-x-1/2
             bg-zinc-900 text-white
@@ -530,13 +536,14 @@ function AdDetailsPage() {
             shadow-2xl
             z-50
         "
-                >
-                    {toast}
-                </div>
+            >
+                {toast}
+            </div>
 
-            )}
-        </div>
-    )
+        )
+    }
+</div>
+)
 }
 
 export default AdDetailsPage
