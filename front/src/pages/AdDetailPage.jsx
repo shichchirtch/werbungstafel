@@ -234,7 +234,9 @@ function AdDetailsPage() {
                             className="
         relative
         w-full
-        h-[320px] md:h-[500px]
+        max-w-xl
+        aspect-[3/2]
+        md:aspect-[3/2]
         rounded-3xl
         border border-white/10
         bg-black
@@ -264,18 +266,25 @@ function AdDetailsPage() {
                                 <button
                                     onClick={handlePrevPhoto}
                                     className="
-                    absolute
-                    left-3
-                    top-1/2
-                    -translate-y-1/2
-                    w-10 h-10
-                    rounded-full
-                    bg-black/60
-                    text-white
-                    text-2xl
-                    hover:bg-black/80
-                    transition
-                "
+absolute
+left-3
+top-1/2
+-translate-y-1/2
+
+w-10
+h-10
+
+rounded-full
+
+bg-black/40
+backdrop-blur-sm
+
+text-white
+text-2xl
+
+hover:bg-black/70
+transition
+"
                                 >
                                     ‹
                                 </button>
@@ -285,21 +294,25 @@ function AdDetailsPage() {
                                 <button
                                     onClick={handleNextPhoto}
                                     className="
-                    absolute
-                    right-3
-                    top-1/2
-                    -translate-y-1/2
+absolute
+left-3
+top-1/2
+-translate-y-1/2
 
-                    w-10 h-10
-                    rounded-full
+w-10
+h-10
 
-                    bg-black/60
-                    text-white
-                    text-2xl
+rounded-full
 
-                    hover:bg-black/80
-                    transition
-                "
+bg-black/40
+backdrop-blur-sm
+
+text-white
+text-2xl
+
+hover:bg-black/70
+transition
+"
                                 >
                                     ›
                                 </button>
@@ -321,8 +334,8 @@ function AdDetailsPage() {
                             transition-all
                             ${
                                             currentPhoto === index
-                                                ? 'w-4 h-4 bg-cyan-400'
-                                                : 'w-3 h-3 bg-gray-600'
+                                                ? 'w-3 h-3 bg-cyan-400'
+                                                : 'w-2 h-2 bg-gray-600'
                                         }
                         `}
                                     />
