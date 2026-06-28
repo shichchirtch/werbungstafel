@@ -12,6 +12,7 @@ function AdDetailsPage() {
     const [message, setMessage] = useState('')
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [toast, setToast] = useState(null)
+    const [currentPhoto, setCurrentPhoto] = useState(0)
     const toastRef = useRef(null)
     const user = useSelector((state) => state.user)
     const navigate = useNavigate()
@@ -125,6 +126,31 @@ function AdDetailsPage() {
         setIsFavorite(!isFavorite)
     }
 
+
+    const handlePrevPhoto = () => {
+
+        if (currentPhoto > 0) {
+
+            setCurrentPhoto(currentPhoto - 1)
+
+        }
+
+    }
+
+    const handleNextPhoto = () => {
+
+        if (
+            currentPhoto <
+            werbung.photos.length - 1
+        ) {
+
+            setCurrentPhoto(currentPhoto + 1)
+
+        }
+
+    }
+
+
     if (!werbung) {
 
         return (
@@ -149,13 +175,73 @@ function AdDetailsPage() {
 
                 {/* IMAGE */}
                 {werbung.photos?.length > 0 && (
-                    <img
-                        src={werbung.photos[0]}
-                        alt="ad"
-                        className="w-full h-64 object-cover rounded-3xl border border-white/10"
-                    />
-                )}
 
+                    <div className="relative">
+
+                        <img
+                            src={werbung.photos[currentPhoto]}
+                            alt="ad"
+                            className="
+                w-full
+                max-h-[70vh]
+                object-contain
+                rounded-3xl
+                border border-white/10
+                bg-black
+            "
+                        />
+
+                        {currentPhoto > 0 && (
+
+                            <button
+                                onClick={handlePrevPhoto}
+                                className="
+                    absolute
+                    left-3
+                    top-1/2
+                    -translate-y-1/2
+
+                    w-10
+                    h-10
+
+                    rounded-full
+                    bg-black/60
+                    text-white
+                    text-2xl
+                "
+                            >
+                                ‹
+                            </button>
+
+                        )}
+
+                        {currentPhoto < werbung.photos.length - 1 && (
+
+                            <button
+                                onClick={handleNextPhoto}
+                                className="
+                    absolute
+                    right-3
+                    top-1/2
+                    -translate-y-1/2
+
+                    w-10
+                    h-10
+
+                    rounded-full
+                    bg-black/60
+                    text-white
+                    text-2xl
+                "
+                            >
+                                ›
+                            </button>
+
+                        )}
+
+                    </div>
+
+                )}
                 {/* CARD */}
                 <div className=" relative
           bg-white/5 border border-white/10
