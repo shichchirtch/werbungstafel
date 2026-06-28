@@ -295,7 +295,7 @@ transition
                                     onClick={handleNextPhoto}
                                     className="
 absolute
-left-3
+right-3
 top-1/2
 -translate-y-1/2
 
