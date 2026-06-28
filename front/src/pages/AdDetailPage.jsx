@@ -233,26 +233,40 @@ function AdDetailsPage() {
                 {werbung.photos?.length > 0 && (
                     <>
                         <div
-                            className="
-        relative
-        w-full
-        max-w-xl
-        aspect-[3/2]
-        md:aspect-[3/2]
-        rounded-3xl
-        border border-white/10
-        bg-black
-        overflow-hidden
-        flex
-        items-center
-        justify-center
-    "
+    className={`
+        ${
+            showFullscreen
+                ? `
+                    fixed
+                    inset-0
+                    z-50
 
-                            onTouchStart={handleTouchStart}
-                            onTouchMove={handleTouchMove}
-                            onTouchEnd={handleTouchEnd}
-                        >
+                    bg-black
 
+                    flex
+                    items-center
+                    justify-center
+                `
+                : `
+                    relative
+                    w-full
+                    max-w-xl
+                    aspect-[3/2]
+                    rounded-3xl
+                    border border-white/10
+                    bg-black
+                    overflow-hidden
+                    flex
+                    items-center
+                    justify-center
+                `
+        }
+    `}
+
+    onTouchStart={handleTouchStart}
+    onTouchMove={handleTouchMove}
+    onTouchEnd={handleTouchEnd}
+>
                             <img
                                 src={werbung.photos[currentPhoto]}
                                 alt="ad"
@@ -393,51 +407,29 @@ transition
                         {werbung.description}
                     </p>
 
-                    {showFullscreen && (
+                   {showFullscreen && (
 
-    <div
+    <button
         onClick={() => setShowFullscreen(false)}
         className="
-            fixed
-            inset-0
-            z-50
+            absolute
+            top-4
+            right-4
 
-            bg-black/95
+            w-10
+            h-10
 
-            flex
-            items-center
-            justify-center
+            rounded-full
+
+            bg-black/40
+            backdrop-blur-sm
+
+            text-white
+            text-xl
         "
     >
-
-        <img
-            src={werbung.photos[currentPhoto]}
-            alt="ad"
-            className="
-                max-w-full
-                max-h-full
-                object-contain
-            "
-        />
-
-        <button
-    onClick={() => setShowFullscreen(false)}
-    className="
-        absolute
-        top-5
-        right-5
-
-        text-white
-        text-4xl
-
-        hover:scale-110
-        transition
-    "
->
-    ✕
-</button>
-
-    </div>
+        ✕
+    </button>
 
 )}
 
