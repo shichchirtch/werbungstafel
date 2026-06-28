@@ -15,6 +15,8 @@ function AdDetailsPage() {
     const [currentPhoto, setCurrentPhoto] = useState(0)
     const [touchStart, setTouchStart] = useState(null)
     const [touchEnd, setTouchEnd] = useState(null)
+    const [showFullscreen, setShowFullscreen] = useState(false)
+
     const toastRef = useRef(null)
     const user = useSelector((state) => state.user)
     const navigate = useNavigate()
@@ -254,11 +256,12 @@ function AdDetailsPage() {
                             <img
                                 src={werbung.photos[currentPhoto]}
                                 alt="ad"
+                                onClick={() => setShowFullscreen(true)}
                                 className="
-                max-w-full
-                max-h-full
-                object-contain
-            "
+        max-w-full
+        max-h-full
+        object-contain
+        cursor-pointer"
                             />
 
 
@@ -389,6 +392,54 @@ transition
                     <p className="text-gray-300 leading-relaxed">
                         {werbung.description}
                     </p>
+
+                    {showFullscreen && (
+
+    <div
+        onClick={() => setShowFullscreen(false)}
+        className="
+            fixed
+            inset-0
+            z-50
+
+            bg-black/95
+
+            flex
+            items-center
+            justify-center
+        "
+    >
+
+        <img
+            src={werbung.photos[currentPhoto]}
+            alt="ad"
+            className="
+                max-w-full
+                max-h-full
+                object-contain
+            "
+        />
+
+        <button
+    onClick={() => setShowFullscreen(false)}
+    className="
+        absolute
+        top-5
+        right-5
+
+        text-white
+        text-4xl
+
+        hover:scale-110
+        transition
+    "
+>
+    ✕
+</button>
+
+    </div>
+
+)}
 
                 </div>
 
