@@ -202,6 +202,32 @@ function AdDetailsPage() {
             "
                         />
 
+                        {werbung.photos.length > 1 && (
+
+                            <div className="flex justify-center gap-2 mt-3">
+
+                                {werbung.photos.map((_, index) => (
+
+                                    <button
+                                        key={index}
+                                        onClick={() => setCurrentPhoto(index)}
+                                        className={`
+                                            rounded-full
+                                            transition-all
+                                                            ${
+                                            currentPhoto === index
+                                                ? 'w-4 h-4 bg-cyan-400'
+                                                : 'w-3 h-3 bg-gray-600'
+                                        }
+                `}
+                                    />
+
+                                ))}
+
+                            </div>
+
+                        )}
+
                         {currentPhoto > 0 && (
                             <button
                                 onClick={handlePrevPhoto}
@@ -251,6 +277,7 @@ function AdDetailsPage() {
                         )}
 
                     </div>
+
 
                 )}
                 {/* CARD */}
