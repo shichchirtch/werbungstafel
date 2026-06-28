@@ -233,10 +233,10 @@ function AdDetailsPage() {
                 {werbung.photos?.length > 0 && (
                     <>
                         <div
-    className={`
+                            className={`
         ${
-            showFullscreen
-                ? `
+                                showFullscreen
+                                    ? `
                     fixed
                     inset-0
                     z-50
@@ -247,7 +247,7 @@ function AdDetailsPage() {
                     items-center
                     justify-center
                 `
-                : `
+                                    : `
                     relative
                     w-full
                     max-w-xl
@@ -260,13 +260,13 @@ function AdDetailsPage() {
                     items-center
                     justify-center
                 `
-        }
+                            }
     `}
 
-    onTouchStart={handleTouchStart}
-    onTouchMove={handleTouchMove}
-    onTouchEnd={handleTouchEnd}
->
+                            onTouchStart={handleTouchStart}
+                            onTouchMove={handleTouchMove}
+                            onTouchEnd={handleTouchEnd}
+                        >
                             <img
                                 src={werbung.photos[currentPhoto]}
                                 alt="ad"
@@ -277,6 +277,28 @@ function AdDetailsPage() {
         object-contain
         cursor-pointer"
                             />
+
+                            {showFullscreen && (
+
+                                <button
+                                    onClick={() => setShowFullscreen(false)}
+                                    className="
+            absolute
+            top-4
+            right-4
+            w-10
+            h-10
+            rounded-full
+            bg-black/40
+            backdrop-blur-sm
+            text-white
+            text-xl
+        "
+                                >
+                                    ✕
+                                </button>
+
+                            )}
 
 
                             {currentPhoto > 0 && (
@@ -407,31 +429,6 @@ transition
                         {werbung.description}
                     </p>
 
-                   {showFullscreen && (
-
-    <button
-        onClick={() => setShowFullscreen(false)}
-        className="
-            absolute
-            top-4
-            right-4
-
-            w-10
-            h-10
-
-            rounded-full
-
-            bg-black/40
-            backdrop-blur-sm
-
-            text-white
-            text-xl
-        "
-    >
-        ✕
-    </button>
-
-)}
 
                 </div>
 
