@@ -174,25 +174,35 @@ function AdDetailsPage() {
 
 
                 {/* IMAGE */}
+                {/* IMAGE */}
                 {werbung.photos?.length > 0 && (
 
-                    <div className="relative">
+                    <div
+                        className="
+            relative
+            w-full
+            h-[500px]
+            rounded-3xl
+            border border-white/10
+            bg-black
+            overflow-hidden
+            flex
+            items-center
+            justify-center
+        "
+                    >
 
                         <img
                             src={werbung.photos[currentPhoto]}
                             alt="ad"
                             className="
-                w-full
-                max-h-[70vh]
+                max-w-full
+                max-h-full
                 object-contain
-                rounded-3xl
-                border border-white/10
-                bg-black
             "
                         />
 
                         {currentPhoto > 0 && (
-
                             <button
                                 onClick={handlePrevPhoto}
                                 className="
@@ -201,22 +211,22 @@ function AdDetailsPage() {
                     top-1/2
                     -translate-y-1/2
 
-                    w-10
-                    h-10
-
+                    w-10 h-10
                     rounded-full
+
                     bg-black/60
                     text-white
                     text-2xl
+
+                    hover:bg-black/80
+                    transition
                 "
                             >
                                 ‹
                             </button>
-
                         )}
 
                         {currentPhoto < werbung.photos.length - 1 && (
-
                             <button
                                 onClick={handleNextPhoto}
                                 className="
@@ -225,18 +235,19 @@ function AdDetailsPage() {
                     top-1/2
                     -translate-y-1/2
 
-                    w-10
-                    h-10
-
+                    w-10 h-10
                     rounded-full
+
                     bg-black/60
                     text-white
                     text-2xl
+
+                    hover:bg-black/80
+                    transition
                 "
                             >
                                 ›
                             </button>
-
                         )}
 
                     </div>
