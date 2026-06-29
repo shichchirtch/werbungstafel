@@ -2,6 +2,8 @@ from sqlalchemy import select, delete
 from postgres_table import User, LoginRequest, Ad, Favorite, AdPhoto
 from postgres_table import session_marker
 from datetime import datetime, timedelta, UTC
+import shutil
+import os
 
 async def get_user_by_tg_id(tg_id: int):
 
@@ -130,24 +132,18 @@ async def delete_login_request(token: str):
         print("LOGIN REQUEST DELETED =", token)
 
 async def create_ad_db(owner_id: int, category: str, title: str, description: str, price: str, plz: str,):
-
     async with session_marker() as session:
-
         ad = Ad(
             owner_id=owner_id,
             category=category,
             title=title,
             description=description,
             price=price,
-            plz=plz,
+            plz=plz
         )
-
         session.add(ad)
-
         await session.commit()
-
         await session.refresh(ad)
-
         return ad
 
 
@@ -192,20 +188,33 @@ async def get_ad_by_id(ad_id: int):
         )
         return result.scalar_one_or_none()
 
+async def delete_ad_favorites(session,ad_id: int,):
+    await session.execute(
+        delete(Favorite).where(Favorite.ad_id == ad_id))
+
+async def delete_ad_photos(session, ad_id: int,):
+    await session.execute(delete(AdPhoto).where(AdPhoto.ad_id == ad_id))
+
+async def delete_upload_folder(ad_id: int):
+    folder = f"uploads/{ad_id}"
+    if os.path.exists(folder):
+        shutil.rmtree(folder)
+
 async def delete_ad_db(ad_id: int):
-
     async with session_marker() as session:
-
         result = await session.execute(
-            select(Ad).where(
-                Ad.id == ad_id
-            )
+            select(Ad).where(Ad.id == ad_id)
         )
-
         ad = result.scalar_one_or_none()
 
         if not ad:
             return False
+        print(f"DELETE FAVORITES {ad_id}")
+        await delete_ad_favorites(session, ad_id)
+
+        await delete_ad_photos(session, ad_id)
+
+        await delete_upload_folder(ad_id)
 
         await session.delete(ad)
 

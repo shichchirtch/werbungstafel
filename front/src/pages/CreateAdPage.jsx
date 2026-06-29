@@ -62,11 +62,9 @@ function CreateAdPage() {
 
         try {
 
-            const response = await fetch(
-                '/api/ads',
+            const response = await fetch('/api/ads',
                 {
                     method: 'POST',
-
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -122,29 +120,17 @@ function CreateAdPage() {
                 const uploadData =
                     await uploadResponse.json()
 
-                console.log(
-                    'UPLOAD = ',
-                    uploadData
-                )
+                console.log('UPLOAD = ', uploadData)
 
                 if (!uploadData.ok) {
-
-                    alert(
-                        uploadData.error ||
-                        'Fehler beim Hochladen'
-                    )
-
+                    alert(uploadData.error || 'Fehler beim Hochladen')
                     return
                 }
-
             }
-
             setSuccessModal(true)
 
         } catch (error) {
-
             console.error(error)
-
             alert('Serverfehler')
         }
     }

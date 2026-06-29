@@ -365,3 +365,20 @@ async def upload_photos(ad_id: int = Form(...),photos: list[UploadFile] = File(.
         "ok": True,
         "photos": urls,
     }
+
+################################## DELETE WERBUNG ###################################
+
+@f_api.delete("/api/ad/{ad_id}")
+async def delete_ad(ad_id: int):
+    print(f"DELETE AD {ad_id}")
+    success = await delete_ad_db(ad_id)
+
+    if not success:
+        return {
+            "ok": False,
+            "error": "Anzeige nicht gefunden"
+        }
+
+    return {
+        "ok": True
+    }

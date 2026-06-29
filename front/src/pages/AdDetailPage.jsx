@@ -108,7 +108,6 @@ function AdDetailsPage() {
             '/api/favorites',
             {
                 method,
-
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -119,100 +118,77 @@ function AdDetailsPage() {
                 }),
             }
         )
-
         const data = await response.json()
-
         if (!data.ok) {
             showToast(data.error || "Fehler")
             return
         }
-
         setIsFavorite(!isFavorite)
     }
 
-
     const handlePrevPhoto = () => {
-
         if (currentPhoto > 0) {
-
             setCurrentPhoto(currentPhoto - 1)
-
         }
-
     }
 
     const handleNextPhoto = () => {
-
-        if (
-            currentPhoto <
-            werbung.photos.length - 1
-        ) {
-
+        if (currentPhoto < werbung.photos.length - 1) {
             setCurrentPhoto(currentPhoto + 1)
-
         }
-
     }
 
-
     const handleTouchStart = (e) => {
-
         setTouchEnd(null)
-
         setTouchStart(
-            e.targetTouches[0].clientX
-        )
-
+            e.targetTouches[0].clientX)
     }
 
     const handleTouchMove = (e) => {
-
         setTouchEnd(
             e.targetTouches[0].clientX
         )
-
     }
 
     const handleTouchEnd = () => {
-
         if (
             touchStart === null ||
             touchEnd === null
         ) {
             return
         }
-
-        const distance =
-            touchStart - touchEnd
-
+        const distance = touchStart - touchEnd
         const minSwipe = 50
-
-        if (
-            distance > minSwipe &&
-            currentPhoto <
-            werbung.photos.length - 1
-        ) {
-
+        if (distance > minSwipe && currentPhoto < werbung.photos.length - 1) {
             handleNextPhoto()
-
         }
-
-        if (
-            distance < -minSwipe &&
-            currentPhoto > 0
-        ) {
-
+        if (distance < -minSwipe && currentPhoto > 0) {
             handlePrevPhoto()
-
         }
-
     }
 
+    const handleDeleteAd = async () => {
+
+        const response = await fetch(
+            `/api/ad/${werbung.id}`,
+            {
+                method: 'DELETE',
+            }
+        )
+
+        const data = await response.json()
+
+        if (!data.ok) {
+
+            showToast(data.error || 'Fehler')
+
+            return
+        }
+
+        navigate('/my-ads')
+    }
     if (!werbung) {
-
         return (
-
-
             <div className="px-4 py-6 text-center text-white">
                 Anzeige wird geladen...
             </div>
@@ -291,7 +267,7 @@ function AdDetailsPage() {
             rounded-full
             bg-black/40
             backdrop-blur-sm
-            text-white
+            text-gray
             text-xl
         "
                                 >
@@ -592,32 +568,11 @@ transition
                             </button>
 
                             <button
-                                onClick={async () => {
-
-                                    const response = await fetch(
-                                        `/api/ad/${werbung.id}`,
-                                        {
-                                            method: 'DELETE',
-                                        }
-                                    )
-
-                                    const data = await response.json()
-
-                                    if (!data.ok) {
-
-                                        showToast(
-                                            data.error || 'Fehler'
-                                        )
-
-                                        return
-                                    }
-
-                                    navigate('/my-ads')
-                                }}
+                                onClick={handleDeleteAd}
                                 className="
-                        flex-1 py-3 rounded-2xl
-                        bg-red-500 text-white font-bold
-                    "
+        flex-1 py-3 rounded-2xl
+        bg-red-500 text-white font-bold
+    "
                             >
                                 Löschen
                             </button>
