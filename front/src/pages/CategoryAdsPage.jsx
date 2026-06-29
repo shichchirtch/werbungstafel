@@ -28,20 +28,24 @@ function CategoryAdsPage() {
 
     const title = categoryNames[slug] || 'Kategorie'
 
+    const [loading, setLoading] = useState(true)
+
     const [allWerbungen, setAllWerbungen] = useState([])
 
     useEffect(() => {
 
         async function loadAds() {
-
+            setLoading(true)
             try {
                 const response = await fetch(`/api/ads/${slug}`)
                 const data = await response.json()
                 console.log('ADS = ', data)
                 setAllWerbungen(data)
+                setLoading(false)
 
             } catch (error) {
                 console.error(error)
+                setLoading(false)
             }
         }
         loadAds()
@@ -66,7 +70,13 @@ function CategoryAdsPage() {
                 Neueste Anzeigen zuerst
             </p>
 
-            {werbungen.length === 0 ? (
+            {loading ? (
+
+    <div className="text-center text-gray-400 py-12">
+        Anzeige wird geladen...
+    </div>
+
+): werbungen.length === 0 ? (
 
                 <div
                     className="max-w-xl mx-auto rounded-3xl border border-white/10 bg-white/5 backdrop-blur-md p-8 text-center shadow-2xl">
