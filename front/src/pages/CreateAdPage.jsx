@@ -18,7 +18,6 @@ function CreateAdPage() {
 
     const [successModal, setSuccessModal] = useState(false)
 
-    const dispatch = useDispatch()
     const user = useSelector((state) => state.user)
 
     const categoryNames = {

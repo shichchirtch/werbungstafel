@@ -18,14 +18,15 @@ from fastapi.staticfiles import StaticFiles
 import os
 import shutil
 
-
 ADMIN_ID = 6685637602
+
 
 class ExpenseIn(BaseModel):
     user_id: int
     category: str
     title: Optional[str] = None
     price: float
+
 
 class IncomeIn(BaseModel):
     user_id: int
@@ -41,9 +42,11 @@ class AdCreate(BaseModel):
     price: str = ""
     plz: str
 
+
 class Favorite(BaseModel):
     telegram_id: int
     ad_id: int
+
 
 class AdUpdate(BaseModel):
     title: str
@@ -66,7 +69,6 @@ f_api = FastAPI(
 
 logger = logging.getLogger("fastapi")
 
-
 f_api.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 
@@ -82,7 +84,6 @@ async def browser_login():
         for _ in range(6)
     )
 
-
     print("TOKEN =", token)
     await create_login_token(token)
 
@@ -95,11 +96,9 @@ async def browser_login():
 
 @f_api.get("/api/login-status/{token}")
 async def login_status(token: str):
-
     login_request = await get_confirmed_login(token)
 
     if not login_request:
-
         return {
             "confirmed": False
         }
@@ -122,9 +121,9 @@ async def login_status(token: str):
         "first_name": user.first_name,
     }
 
+
 @f_api.post("/api/auth/telegram")
 async def auth_telegram(data: dict):
-
     tg_id = data["telegram_id"]
     first_name = data["first_name"]
     username = data.get("username")
@@ -141,11 +140,11 @@ async def auth_telegram(data: dict):
         "first_name": user.first_name,
     }
 
+
 ####################       WERBUNG    ################################
 
 @f_api.post("/api/ads")
 async def create_ad(data: AdCreate):
-
     user = await get_user_by_tg_id(
         data.telegram_id
     )
@@ -173,10 +172,10 @@ async def create_ad(data: AdCreate):
 
 @f_api.get("/api/ads/{category}")
 async def get_ads(category: str):
-
     ads = await get_ads_by_category(category)
 
     return ads
+
 
 @f_api.get("/api/ad/{ad_id}")
 async def get_ad(ad_id: int):
@@ -197,7 +196,13 @@ async def get_ad(ad_id: int):
         "description": ad.description,
         "price": ad.price,
         "plz": ad.plz,
-        "photos":  [photo.photo_url for photo in photos],
+        "photos": [
+            {
+                "id": photo.id,
+                "url": photo.photo_url,
+            }
+            for photo in photos
+        ],
         "createdAt": (
             ad.created_at.isoformat()
             if ad.created_at
@@ -205,13 +210,12 @@ async def get_ad(ad_id: int):
         )
     }
 
+
 @f_api.delete("/api/ad/{ad_id}")
 async def delete_ad(ad_id: int):
-
     success = await delete_ad_db(ad_id)
 
     if not success:
-
         return {
             "ok": False,
             "error": "Anzeige nicht gefunden"
@@ -224,7 +228,6 @@ async def delete_ad(ad_id: int):
 
 @f_api.get("/api/my-ads/{telegram_id}")
 async def get_my_ads(telegram_id: int):
-
     user = await get_user_by_tg_id(telegram_id)
 
     if not user:
@@ -243,11 +246,11 @@ async def get_my_ads(telegram_id: int):
         for ad in ads
     ]
 
+
 ########################## MerkList ####################################
 
 @f_api.post("/api/favorites")
 async def add_favorite(data: Favorite):
-
     user = await get_user_by_tg_id(
         data.telegram_id
     )
@@ -268,15 +271,11 @@ async def add_favorite(data: Favorite):
             "ok": False,
             "error": "Anzeige bereits gespeichert"
         }
-
-    return {
-        "ok": True
-    }
+    return {"ok": True}
 
 
 @f_api.get("/api/favorites/{telegram_id}")
 async def get_favorites(telegram_id: int):
-
     user = await get_user_by_tg_id(telegram_id)
 
     if not user:
@@ -298,7 +297,6 @@ async def get_favorites(telegram_id: int):
 
 @f_api.delete("/api/favorites")
 async def delete_favorite(data: Favorite):
-
     user = await get_user_by_tg_id(
         data.telegram_id
     )
@@ -317,31 +315,25 @@ async def delete_favorite(data: Favorite):
     if not success:
         return {
             "ok": False,
-            "error": "Favorite not found"
-        }
+            "error": "Favorite not found"}
+    return {"ok": True}
 
-    return {
-        "ok": True
-    }
 
 @f_api.get("/api/favorites/{telegram_id}/{ad_id}")
-async def is_favorite(telegram_id: int,ad_id: int):
+async def is_favorite(telegram_id: int, ad_id: int):
     user = await get_user_by_tg_id(telegram_id)
     if not user:
-        return {
-            "isFavorite": False
-        }
+        return {"isFavorite": False}
 
-    check = await check_favorite(user_id=user.id,ad_id=ad_id,)
+    check = await check_favorite(user_id=user.id, ad_id=ad_id, )
 
-    return {
-        "isFavorite": check
-    }
+    return {"isFavorite": check}
+
 
 ######################### Загрузка фото ##############################
 
 @f_api.post("/api/upload-photo")
-async def upload_photos(ad_id: int = Form(...),photos: list[UploadFile] = File(...)):
+async def upload_photos(ad_id: int = Form(...), photos: list[UploadFile] = File(...)):
     folder = f"uploads/{ad_id}"
 
     os.makedirs(folder, exist_ok=True)
@@ -353,8 +345,8 @@ async def upload_photos(ad_id: int = Form(...),photos: list[UploadFile] = File(.
             f"{folder}/{photo.filename}"
         )
 
-        with open(file_path,"wb") as buffer:
-            shutil.copyfileobj(photo.file,buffer)
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(photo.file, buffer)
 
         photo_url = f"/uploads/{ad_id}/{photo.filename}"
 
@@ -369,6 +361,7 @@ async def upload_photos(ad_id: int = Form(...),photos: list[UploadFile] = File(.
         "ok": True,
         "photos": urls,
     }
+
 
 ################################## DELETE WERBUNG ###################################
 
@@ -387,12 +380,12 @@ async def delete_ad(ad_id: int):
         "ok": True
     }
 
+
 @f_api.put("/api/ad/{ad_id}")
 async def update_ad(
-    ad_id: int,
-    data: AdUpdate,
+        ad_id: int,
+        data: AdUpdate,
 ):
-
     success = await update_ad_db(
         ad_id=ad_id,
         title=data.title,
@@ -400,14 +393,8 @@ async def update_ad(
         price=data.price,
         plz=data.plz,
     )
-
     if not success:
-
         return {
             "ok": False,
-            "error": "Anzeige nicht gefunden"
-        }
-
-    return {
-        "ok": True
-    }
+            "error": "Anzeige nicht gefunden"}
+    return {"ok": True}

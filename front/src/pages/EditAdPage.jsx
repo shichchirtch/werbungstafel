@@ -35,7 +35,10 @@ function EditAdPage() {
 
         setPhotos(
             werbung.photos?.map((photo) => ({
-                preview: photo
+
+                id: photo.id,
+                preview: photo.url,
+
             })) || []
         )
 
@@ -120,6 +123,10 @@ function EditAdPage() {
     }
 
     const removePhoto = (index) => {
+
+        const photo = photos[index]
+
+        console.log("DELETE PHOTO =", photo)
 
         setPhotos((prev) =>
             prev.filter((_, i) => i !== index)
