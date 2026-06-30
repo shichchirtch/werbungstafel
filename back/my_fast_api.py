@@ -10,7 +10,7 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        delete_login_request, create_ad_db, get_ads_by_category,
                        get_ad_by_id, delete_ad_db, get_ads_by_owner,
                        get_user_favorites, create_favorite, delete_favorite_db, check_favorite,
-                       get_ad_photos, create_ad_photo, update_ad_db)
+                       get_ad_photos, create_ad_photo, update_ad_db, delete_photo_db)
 import secrets
 import string
 from lexicon import *
@@ -380,7 +380,7 @@ async def delete_ad(ad_id: int):
         "ok": True
     }
 
-
+################################ Редактирование объявления ###########################
 @f_api.put("/api/ad/{ad_id}")
 async def update_ad(
         ad_id: int,
@@ -398,3 +398,25 @@ async def update_ad(
             "ok": False,
             "error": "Anzeige nicht gefunden"}
     return {"ok": True}
+
+
+@f_api.delete("/api/photo/{photo_id}")
+async def delete_photo(photo_id: int):
+
+    photo_url = await delete_photo_db(photo_id)
+
+    if not photo_url:
+
+        return {
+            "ok": False,
+            "error": "Foto nicht gefunden"
+        }
+
+    file_path = photo_url.lstrip("/")
+
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+    return {
+        "ok": True
+    }

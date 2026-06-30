@@ -370,3 +370,23 @@ async def update_ad_db(ad_id: int, title: str, description: str, price: str, plz
         await session.refresh(ad)
 
         return True
+
+
+async def delete_photo_db(photo_id: int):
+    async with session_marker() as session:
+
+        photo = await session.get(
+            AdPhoto,
+            photo_id,
+        )
+
+        if not photo:
+            return None
+
+        photo_url = photo.photo_url
+
+        await session.delete(photo)
+
+        await session.commit()
+
+        return photo_url # возращает строку с адресом для удаления по os.remove

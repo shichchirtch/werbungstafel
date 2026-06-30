@@ -78,221 +78,296 @@ function EditAdPage() {
             )
 
             if (!response.ok) {
-
                 alert("Serverfehler")
-
                 return
-
             }
 
             const data = await response.json()
 
-            if (!response.ok) {
-                alert(data.error || "Serverfehler")
+            if (!data.ok) {
+                alert(data.error || "Fehler")
                 return
             }
-            setSuccessModal(true)
-            setWerbung({
-                ...werbung,
 
-                title,
-                description,
-                price,
-                plz,
+            const newPhotos = photos.filter(
+                (photo) => photo.file
+            )
 
-            })
+            if (newPhotos.length > 0) {
 
-        } catch (error) {
-            console.error(error)
-            alert("Serverfehler")
+                const formData = new FormData()
+
+                formData.append(
+                    'ad_id',
+                    werbung.id
+                )
+
+                newPhotos.forEach((photo) => {
+
+                    formData.append(
+                        'photos',
+                        photo.file
+                    )
+
+                })
+
+                const uploadResponse = await fetch(
+                    '/api/upload-photo',
+                    {
+                        method: 'POST',
+                        body: formData,
+                    }
+                )
+
+                if (!uploadResponse.ok) {
+                    alert("Serverfehler")
+                    return
+                }
+
+                const uploadData =
+                    await uploadResponse.json()
+
+                if (!uploadData.ok) {
+
+                    alert(
+                        uploadData.error ||
+                        'Fehler beim Hochladen'
+                    )
+                    return
+                }
+
+            }
+
+        setWerbung({
+            ...werbung,
+            title,
+            description,
+            price,
+            plz,
+        })
+        setSuccessModal(true)
+    }
+catch
+    (error)
+    {
+        console.error(error)
+        alert("Serverfehler")
+    }
+}
+
+const handlePhotoChange = (e) => {
+
+    const files = Array.from(e.target.files)
+
+    const newPhotos = files.map((file) => ({
+        file,
+        preview: URL.createObjectURL(file),
+    }))
+
+    setPhotos((prev) =>
+        [...prev, ...newPhotos].slice(0, 5)
+    )
+}
+
+const removePhoto = async (index) => {
+
+    const photo = photos[index]
+
+    console.log("DELETE PHOTO =", photo)
+
+    try {
+
+        if (!photo.file) {
+
+            const response = await fetch(
+                `/api/photo/${photo.id}`,
+                {
+                    method: 'DELETE',
+                }
+            )
+
+            const data = await response.json()
+
+            if (!data.ok) {
+                alert(data.error || 'Fehler')
+                return
+            }
+
         }
-    }
-
-    const handlePhotoChange = (e) => {
-
-        const files = Array.from(e.target.files)
-
-        const newPhotos = files.map((file) => ({
-            file,
-            preview: URL.createObjectURL(file),
-        }))
-
-        setPhotos((prev) =>
-            [...prev, ...newPhotos].slice(0, 5)
-        )
-    }
-
-    const removePhoto = (index) => {
-
-        const photo = photos[index]
-
-        console.log("DELETE PHOTO =", photo)
 
         setPhotos((prev) =>
             prev.filter((_, i) => i !== index)
         )
+
+    } catch (error) {
+
+        console.error(error)
+        alert("Serverfehler")
+
     }
 
-    return (
-        <div className="px-4 py-6">
+}
 
-            <h1
-                className="text-3xl font-black text-center mb-6 text-black"
-                style={{
-                    WebkitTextStroke: '0.5px white',
-                    textShadow: '0 0 8px rgba(255,255,255,0.6)',
-                }}
-            >
-                Anzeige bearbeiten
-            </h1>
+return (
+    <div className="px-4 py-6">
 
-            <form
-                onSubmit={handleSubmit}
-                className="
+        <h1
+            className="text-3xl font-black text-center mb-6 text-black"
+            style={{
+                WebkitTextStroke: '0.5px white',
+                textShadow: '0 0 8px rgba(255,255,255,0.6)',
+            }}
+        >
+            Anzeige bearbeiten
+        </h1>
+
+        <form
+            onSubmit={handleSubmit}
+            className="
                     max-w-xl mx-auto
                     bg-white/5 border border-white/10
                     rounded-3xl p-6
                     backdrop-blur-xl shadow-2xl
                     flex flex-col gap-4
                 "
-            >
+        >
 
-                <input
-                    type="text"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    className="
+            <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="
                         bg-black/40 text-gray-300
                         p-4 rounded-2xl
                         border border-white/10
                         outline-none
                     "
-                />
+            />
 
-                <input
-                    type="text"
-                    value={plz}
-                    onChange={(e) => setPlz(e.target.value)}
-                    className="
+            <input
+                type="text"
+                value={plz}
+                onChange={(e) => setPlz(e.target.value)}
+                className="
                         bg-black/40 text-gray-300
                         p-4 rounded-2xl
                         border border-white/10
                         outline-none
                     "
-                />
+            />
 
-                <textarea
-                    rows="5"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    className="
+            <textarea
+                rows="5"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="
                         bg-black/40 text-gray-300
                         p-4 rounded-2xl
                         border border-white/10
                         outline-none resize-none
                     "
-                />
+            />
 
-                <input
-                    type="text"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                    className="
+            <input
+                type="text"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                className="
                         bg-black/40 text-gray-300
                         p-4 rounded-2xl
                         border border-white/10
                         outline-none
                     "
-                />
+            />
 
-                {/* upload */}
+            {/* upload */}
 
-                <label
-                    className="
+            <label
+                className="
                         bg-black/40 text-gray-400
                         p-4 rounded-2xl
                         border border-white/10
                         cursor-pointer text-center
                     "
-                >
-                    Fotos hinzufügen
+            >
+                Fotos hinzufügen
 
-                    <input
-                        type="file"
-                        multiple
-                        accept="image/*"
-                        onChange={handlePhotoChange}
-                        className="hidden"
-                    />
-                </label>
+                <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handlePhotoChange}
+                    className="hidden"
+                />
+            </label>
 
-                {photos.length > 0 && (
-                    <div className="grid grid-cols-3 gap-3">
+            {photos.length > 0 && (
+                <div className="grid grid-cols-3 gap-3">
 
-                        {photos.map((photo, index) => (
+                    {photos.map((photo, index) => (
 
-                            <div
-                                key={index}
-                                className="
+                        <div
+                            key={index}
+                            className="
                                     relative rounded-2xl
                                     overflow-hidden
                                     border border-white/10
                                 "
-                            >
+                        >
 
-                                <img
-                                    src={photo.preview}
-                                    alt="preview"
-                                    className="
+                            <img
+                                src={photo.preview}
+                                alt="preview"
+                                className="
                                         w-full h-24 object-cover
                                     "
-                                />
+                            />
 
-                                <button
-                                    type="button"
-                                    onClick={() => removePhoto(index)}
-                                    className="
+                            <button
+                                type="button"
+                                onClick={() => removePhoto(index)}
+                                className="
                                         absolute top-1 right-1
                                         bg-black/70 text-white
                                         w-6 h-6 rounded-full text-sm
                                     "
-                                >
-                                    ×
-                                </button>
+                            >
+                                ×
+                            </button>
 
-                            </div>
+                        </div>
 
-                        ))}
+                    ))}
 
-                    </div>
-                )}
+                </div>
+            )}
 
-                <button
-                    type="submit"
-                    className="
+            <button
+                type="submit"
+                className="
                         mt-2 py-4 rounded-2xl
                         font-bold text-black text-lg
                         bg-gradient-to-br
                         from-cyan-300 via-cyan-400 to-blue-500
                         shadow-lg shadow-cyan-400/30
                     "
-                >
-                    Änderungen speichern
-                </button>
+            >
+                Änderungen speichern
+            </button>
 
-            </form>
+        </form>
 
-            {/* SUCCESS MODAL */}
+        {/* SUCCESS MODAL */}
 
-            {successModal && (
+        {successModal && (
 
-                <div className="
+            <div className="
                     fixed inset-0 bg-black/70
                     flex items-center justify-center
                     px-4 z-50
                 ">
 
-                    <div className="
+                <div className="
                         w-full max-w-sm
                         rounded-3xl
                         bg-zinc-900
@@ -300,39 +375,39 @@ function EditAdPage() {
                         p-6 text-center
                     ">
 
-                        <div className="text-5xl mb-3">
-                            ✅
-                        </div>
+                    <div className="text-5xl mb-3">
+                        ✅
+                    </div>
 
-                        <h2 className="
+                    <h2 className="
                             text-2xl font-bold
                             text-white mb-3
                         ">
-                            Änderungen gespeichert
-                        </h2>
+                        Änderungen gespeichert
+                    </h2>
 
-                        <button
-                            onClick={() =>
-                                navigate(`/ad/${werbung.id}`)
-                            }
-                            className="
+                    <button
+                        onClick={() =>
+                            navigate(`/ad/${werbung.id}`)
+                        }
+                        className="
                                 w-full py-4 rounded-2xl
                                 font-bold text-black
                                 bg-gradient-to-br
                                 from-cyan-300 to-blue-500
                             "
-                        >
-                            Weiter
-                        </button>
-
-                    </div>
+                    >
+                        Weiter
+                    </button>
 
                 </div>
 
-            )}
+            </div>
 
-        </div>
-    )
+        )}
+
+    </div>
+)
 }
 
 export default EditAdPage
