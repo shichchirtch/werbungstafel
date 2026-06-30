@@ -244,7 +244,7 @@ function AdDetailsPage() {
                             onTouchEnd={handleTouchEnd}
                         >
                             <img
-                                src={werbung.photos[currentPhoto]}
+                                src={werbung.photos[currentPhoto].url}
                                 alt="ad"
                                 onClick={() => setShowFullscreen(true)}
                                 className="

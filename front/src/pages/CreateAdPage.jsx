@@ -1,7 +1,7 @@
 import {useParams, useNavigate} from 'react-router-dom'
 import {useState} from 'react'
 import {useEffect} from "react";
-import {useDispatch, useSelector} from 'react-redux'
+import {useSelector} from 'react-redux'
 import {addWerbung} from '../features/werbung/werbungSlice'
 
 

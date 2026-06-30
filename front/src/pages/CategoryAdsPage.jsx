@@ -121,7 +121,7 @@ function CategoryAdsPage() {
 
                             {item.photos?.length > 0 && (
                                 <img
-                                    src={item.photos[0]}
+                                    src={item.photos[0].url}
                                     alt="preview"
                                     className="w-full h-48 object-cover rounded-2xl mb-4"
                                 />
