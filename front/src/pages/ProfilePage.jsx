@@ -30,6 +30,19 @@ function ProfilePage() {
         loadProfile()
 
     }, [user.id])
+    if (!profile) {
+
+    return (
+
+        <div className="px-4 py-6 text-center text-white">
+
+            Profil wird geladen...
+
+        </div>
+
+    )
+
+}
 
 
     return (
