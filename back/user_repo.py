@@ -1,4 +1,4 @@
-from sqlalchemy import select, delete
+from sqlalchemy import select, delete, func
 from postgres_table import User, LoginRequest, Ad, Favorite, AdPhoto
 from postgres_table import session_marker
 from datetime import datetime, timedelta, UTC
@@ -390,3 +390,47 @@ async def delete_photo_db(photo_id: int):
         await session.commit()
 
         return photo_url # возращает строку с адресом для удаления по os.remove
+
+############################Profil###################
+
+
+async def get_profile_db(telegram_id: int):
+    async with session_marker() as session:
+        result = await session.execute(
+            select(User).where(User.telegram_id == telegram_id))
+
+        user = result.scalar_one_or_none()
+        if not user:
+            return None
+
+        ads_count = await session.scalar(
+            select(func.count())
+
+            .select_from(Ad)
+
+            .where(
+                Ad.owner_id == user.id
+            )
+
+        )
+
+        favorites_count = await session.scalar(
+
+            select(func.count())
+
+            .select_from(Favorite)
+
+            .where(
+                Favorite.user_id == user.id
+            )
+
+        )
+
+        return {
+            "name": user.first_name,
+            "bio": user.description,
+            "location": user.city,
+            "avatar": user.avatar,
+            "ads_count": ads_count,
+            "favorites_count": favorites_count,
+        }

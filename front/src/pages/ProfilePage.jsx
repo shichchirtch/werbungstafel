@@ -1,18 +1,36 @@
-import { useSelector, useDispatch } from 'react-redux'
-import { logout } from '../features/user/userSlice'
-import { useNavigate } from 'react-router-dom'
+import {useSelector, useDispatch} from 'react-redux'
+import {logout} from '../features/user/userSlice'
+import {useNavigate} from 'react-router-dom'
+import {useState, useEffect} from 'react'
 
 function ProfilePage() {
 
     const user = useSelector((state) => state.user)
-    const werbungen = useSelector((state) => state.werbung.werbungen)
+    const [profile, setProfile] = useState(null)
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    const myAds = werbungen.filter(
-        (item) => item.ownerId === user.id
-    )
+    useEffect(() => {
+
+        async function loadProfile() {
+
+            const response = await fetch(
+                `/api/profile/${user.id}`
+            )
+
+            const data = await response.json()
+
+            console.log("PROFILE =", data)
+
+            setProfile(data)
+
+        }
+
+        loadProfile()
+
+    }, [user.id])
+
 
     return (
         <div className="px-4 py-6">
@@ -73,7 +91,7 @@ function ProfilePage() {
 
                     <div>
                         <p className="text-xl font-bold text-white">
-                            {myAds.length}
+                            {profile.ads_count}
                         </p>
                         <p className="text-gray-400 text-sm">
                             Anzeigen
@@ -82,7 +100,7 @@ function ProfilePage() {
 
                     <div>
                         <p className="text-xl font-bold text-white">
-                            0
+                            {profile.favorites_count}
                         </p>
                         <p className="text-gray-400 text-sm">
                             Favoriten
@@ -92,8 +110,8 @@ function ProfilePage() {
                 </div>
 
                 {/* ACTIONS */}
-                <button  onClick={() => navigate('/edit-profile')}
-                    className="
+                <button onClick={() => navigate('/edit-profile')}
+                        className="
                         py-3 rounded-2xl font-bold text-black
                         bg-gradient-to-br from-cyan-300 to-blue-500
                     "

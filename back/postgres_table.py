@@ -62,7 +62,6 @@ class AdPhoto(Base):
 
 
 class Favorite(Base):
-
     __tablename__ = "favorites"
 
     id: Mapped[int] = mapped_column(Integer,primary_key=True)
