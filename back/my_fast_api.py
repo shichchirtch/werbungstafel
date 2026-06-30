@@ -10,7 +10,7 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        delete_login_request, create_ad_db, get_ads_by_category,
                        get_ad_by_id, delete_ad_db, get_ads_by_owner,
                        get_user_favorites, create_favorite, delete_favorite_db, check_favorite,
-                       get_ad_photos, create_ad_photo)
+                       get_ad_photos, create_ad_photo, update_ad_db)
 import secrets
 import string
 from lexicon import *
@@ -45,7 +45,11 @@ class Favorite(BaseModel):
     telegram_id: int
     ad_id: int
 
-
+class AdUpdate(BaseModel):
+    title: str
+    description: str
+    price: str
+    plz: str
 
 
 f_api = FastAPI(
@@ -374,6 +378,31 @@ async def delete_ad(ad_id: int):
     success = await delete_ad_db(ad_id)
 
     if not success:
+        return {
+            "ok": False,
+            "error": "Anzeige nicht gefunden"
+        }
+
+    return {
+        "ok": True
+    }
+
+@f_api.put("/api/ad/{ad_id}")
+async def update_ad(
+    ad_id: int,
+    data: AdUpdate,
+):
+
+    success = await update_ad_db(
+        ad_id=ad_id,
+        title=data.title,
+        description=data.description,
+        price=data.price,
+        plz=data.plz,
+    )
+
+    if not success:
+
         return {
             "ok": False,
             "error": "Anzeige nicht gefunden"

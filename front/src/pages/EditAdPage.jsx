@@ -1,70 +1,108 @@
-import { useNavigate, useParams } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { useEffect, useState } from 'react'
+import {useNavigate, useParams} from 'react-router-dom'
+import {useEffect, useState} from 'react'
 
-import { updateWerbung } from '../features/werbung/werbungSlice'
 
 function EditAdPage() {
-
-    const { id } = useParams()
-
+    const {id} = useParams()
     const navigate = useNavigate()
-    const dispatch = useDispatch()
-
-    const allWerbungen = useSelector(
-        (state) => state.werbung.werbungen
-    )
-
-    const existing = allWerbungen.find(
-        (item) => String(item.id) === id
-    )
-
-
     const [title, setTitle] = useState('')
     const [plz, setPlz] = useState('')
     const [description, setDescription] = useState('')
     const [price, setPrice] = useState('')
     const [photos, setPhotos] = useState([])
+    const [werbung, setWerbung] = useState(null)
 
     const [successModal, setSuccessModal] = useState(false)
 
-    // заполняем форму существующими данными
     useEffect(() => {
-
-        if (!existing) return
-
-        setTitle(existing.title)
-        setPlz(existing.plz)
-        setDescription(existing.description)
-        setPrice(existing.price || '')
-        setPhotos(
-            existing.photos.map((photo) => ({
-                preview: photo
-            }))
-        )
-
-    }, [existing])
-
-    if (!existing) return null
-
-    const handleSubmit = (e) => {
-
-        e.preventDefault()
-
-        const updatedWerbung = {
-            ...existing,
-
-            title,
-            plz,
-            description,
-            price,
-
-            photos: photos.map((p) => p.preview),
+        async function loadAd() {
+            const response = await fetch(`/api/ad/${id}`)
+            const data = await response.json()
+            console.log("EDIT AD =", data)
+            setWerbung(data)
         }
 
-        dispatch(updateWerbung(updatedWerbung))
+        loadAd()
+    }, [id])
 
-        setSuccessModal(true)
+    useEffect(() => {
+
+        if (!werbung) return
+        setTitle(werbung.title)
+        setPlz(werbung.plz)
+        setDescription(werbung.description)
+        setPrice(werbung.price || '')
+
+        setPhotos(
+            werbung.photos?.map((photo) => ({
+                preview: photo
+            })) || []
+        )
+
+    }, [werbung])
+
+    if (!werbung) {
+
+        return (
+
+            <div className="px-4 py-6 text-center text-white">
+                Anzeige wird geladen...
+            </div>
+
+        )
+
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+
+        try {
+            const response = await fetch(
+                `/api/ad/${werbung.id}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+
+                    body: JSON.stringify({
+                        title,
+                        plz,
+                        description,
+                        price,
+                    }),
+                }
+            )
+
+            if (!response.ok) {
+
+                alert("Serverfehler")
+
+                return
+
+            }
+
+            const data = await response.json()
+
+            if (!response.ok) {
+                alert(data.error || "Serverfehler")
+                return
+            }
+            setSuccessModal(true)
+            setWerbung({
+                ...werbung,
+
+                title,
+                description,
+                price,
+                plz,
+
+            })
+
+        } catch (error) {
+            console.error(error)
+            alert("Serverfehler")
+        }
     }
 
     const handlePhotoChange = (e) => {
@@ -268,7 +306,7 @@ function EditAdPage() {
 
                         <button
                             onClick={() =>
-                                navigate(`/ad/${existing.id}`)
+                                navigate(`/ad/${werbung.id}`)
                             }
                             className="
                                 w-full py-4 rounded-2xl

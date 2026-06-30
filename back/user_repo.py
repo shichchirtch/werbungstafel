@@ -5,10 +5,9 @@ from datetime import datetime, timedelta, UTC
 import shutil
 import os
 
+
 async def get_user_by_tg_id(tg_id: int):
-
     async with session_marker() as session:
-
         result = await session.execute(
             select(User).where(
                 User.telegram_id == tg_id
@@ -17,15 +16,16 @@ async def get_user_by_tg_id(tg_id: int):
 
         return result.scalar_one_or_none()
 
-async def create_user(tg_id: int,first_name: str, username: str | None = None):
+
+async def create_user(tg_id: int, first_name: str, username: str | None = None):
     async with session_marker() as session:
-        user = User(telegram_id=tg_id,first_name=first_name,username=username)
+        user = User(telegram_id=tg_id, first_name=first_name, username=username)
         session.add(user)
         await session.commit()
         return user
 
 
-async def create_user_if_not_exists(tg_id: int, first_name: str,username: str | None = None,):
+async def create_user_if_not_exists(tg_id: int, first_name: str, username: str | None = None, ):
     user = await get_user_by_tg_id(tg_id)
     if user:
         return user
@@ -36,6 +36,7 @@ async def create_user_if_not_exists(tg_id: int, first_name: str,username: str | 
         username=username,
     )
 
+
 async def get_user(user_id: int):
     async with session_marker() as session:
         result = await session.execute(
@@ -43,7 +44,6 @@ async def get_user(user_id: int):
                 User.telegram_id == user_id)
         )
         return result.scalar_one_or_none()
-
 
 
 async def create_login_token(token: str):
@@ -54,7 +54,7 @@ async def create_login_token(token: str):
         await session.commit()
 
 
-async def confirm_login( token: str, telegram_id: int):
+async def confirm_login(token: str, telegram_id: int):
     async with session_marker() as session:
 
         # Ищем в таблице login_requests
@@ -90,9 +90,7 @@ async def confirm_login( token: str, telegram_id: int):
         return True
 
 
-
 async def get_confirmed_login(token: str):
-
     async with session_marker() as session:
 
         stmt = select(LoginRequest).where(
@@ -104,23 +102,20 @@ async def get_confirmed_login(token: str):
         login_request = result.scalar_one_or_none()
 
         if not login_request:
-
             print("LOGIN REQUEST NOT FOUND")
 
             return None
 
         if not login_request.confirmed:
-
             print("LOGIN NOT CONFIRMED")
 
             return None
 
         return login_request
 
+
 async def delete_login_request(token: str):
-
     async with session_marker() as session:
-
         stmt = delete(LoginRequest).where(
             LoginRequest.token == token
         )
@@ -131,7 +126,8 @@ async def delete_login_request(token: str):
 
         print("LOGIN REQUEST DELETED =", token)
 
-async def create_ad_db(owner_id: int, category: str, title: str, description: str, price: str, plz: str,):
+
+async def create_ad_db(owner_id: int, category: str, title: str, description: str, price: str, plz: str, ):
     async with session_marker() as session:
         ad = Ad(
             owner_id=owner_id,
@@ -148,9 +144,7 @@ async def create_ad_db(owner_id: int, category: str, title: str, description: st
 
 
 async def get_ads_by_category(category: str):
-
     async with session_marker() as session:
-
         stmt = (
             select(Ad)
             .where(
@@ -180,6 +174,7 @@ async def get_ads_by_category(category: str):
             for ad in ads
         ]
 
+
 async def get_ad_by_id(ad_id: int):
     async with session_marker() as session:
         result = await session.execute(
@@ -188,17 +183,21 @@ async def get_ad_by_id(ad_id: int):
         )
         return result.scalar_one_or_none()
 
-async def delete_ad_favorites(session,ad_id: int,):
+
+async def delete_ad_favorites(session, ad_id: int, ):
     await session.execute(
         delete(Favorite).where(Favorite.ad_id == ad_id))
 
-async def delete_ad_photos(session, ad_id: int,):
+
+async def delete_ad_photos(session, ad_id: int, ):
     await session.execute(delete(AdPhoto).where(AdPhoto.ad_id == ad_id))
+
 
 async def delete_upload_folder(ad_id: int):
     folder = f"uploads/{ad_id}"
     if os.path.exists(folder):
         shutil.rmtree(folder)
+
 
 async def delete_ad_db(ad_id: int):
     async with session_marker() as session:
@@ -224,9 +223,7 @@ async def delete_ad_db(ad_id: int):
 
 
 async def get_ads_by_owner(owner_id: int):
-
     async with session_marker() as session:
-
         result = await session.execute(
             select(Ad)
             .where(Ad.owner_id == owner_id)
@@ -235,10 +232,9 @@ async def get_ads_by_owner(owner_id: int):
 
         return result.scalars().all()
 
+
 async def get_user_favorites(user_id: int):
-
     async with session_marker() as session:
-
         result = await session.execute(
 
             select(Ad)
@@ -257,7 +253,8 @@ async def get_user_favorites(user_id: int):
 
         return result.scalars().all()
 
-async def create_favorite(user_id: int, ad_id: int,):
+
+async def create_favorite(user_id: int, ad_id: int, ):
     async with session_marker() as session:
         result = await session.execute(
             select(Favorite).where(
@@ -282,13 +279,12 @@ async def create_favorite(user_id: int, ad_id: int,):
 
         return True
 
+
 async def delete_favorite_db(
-    user_id: int,
-    ad_id: int,
+        user_id: int,
+        ad_id: int,
 ):
-
     async with session_marker() as session:
-
         result = await session.execute(
 
             select(Favorite).where(
@@ -311,12 +307,10 @@ async def delete_favorite_db(
 
 
 async def check_favorite(
-    user_id: int,
-    ad_id: int,
+        user_id: int,
+        ad_id: int,
 ):
-
     async with session_marker() as session:
-
         result = await session.execute(
 
             select(Favorite).where(
@@ -336,7 +330,6 @@ async def create_ad_photo(
         photo_url: str,
 ):
     async with session_marker() as session:
-
         photo = AdPhoto(
             ad_id=ad_id,
             photo_url=photo_url,
@@ -346,10 +339,9 @@ async def create_ad_photo(
 
         await session.commit()
 
+
 async def get_ad_photos(ad_id: int):
-
     async with session_marker() as session:
-
         result = await session.execute(
 
             select(AdPhoto).where(
@@ -359,3 +351,22 @@ async def get_ad_photos(ad_id: int):
         )
 
         return result.scalars().all()
+
+
+async def update_ad_db(ad_id: int, title: str, description: str, price: str, plz: str):
+    async with session_marker() as session:
+        ad = await session.get(Ad,ad_id,)
+
+        if not ad:
+            return False
+
+        ad.title = title
+        ad.description = description
+        ad.price = price
+        ad.plz = plz
+
+        await session.commit()
+
+        await session.refresh(ad)
+
+        return True
