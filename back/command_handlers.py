@@ -10,7 +10,7 @@ from aiogram_dialog import  DialogManager, StartMode
 
 from lexicon import *
 from user_repo import *
-
+from datetime import datetime
 
 ch_router = Router()
 
@@ -18,15 +18,18 @@ ch_router = Router()
 @ch_router.message(CommandStart(deep_link=True))
 async def command_start_process(message: Message, command: CommandObject):
     user_id = message.from_user.id
-    user_name = message.from_user.first_name
+    first_name = message.from_user.first_name
     user_lan = message.from_user.language_code
-
+    first_start = datetime.now(UTC)
+    user_name = message.from_user.username
     token = command.args
-    print(user_name, user_id,'\n\ntoken = ', token)
+    print(first_name, user_id,'\n\ntoken = ', token)
 
     await create_user_if_not_exists(
         tg_id=user_id,
-        first_name=user_name
+        first_name=first_name,
+        lan=user_lan,
+        username=user_name,
     )
 
     login_button = InlineKeyboardButton(

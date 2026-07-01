@@ -25,6 +25,9 @@ class User(Base):
     city: Mapped[str] = mapped_column(String(200),default="")
     role: Mapped[str] = mapped_column(String(20),default="user")
     paid: Mapped[bool] = mapped_column(default=False)
+    lan: Mapped[str] = mapped_column(String(20), default="de")
+    first_start: Mapped[datetime] = mapped_column(DateTime(timezone=True), default= lambda : datetime.now(UTC))
+
 
 
 class Ad(Base):
@@ -82,6 +85,6 @@ class Message(Base):
 
 async def init_models():
     async with engine.begin() as conn:
-        # await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
 

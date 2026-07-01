@@ -17,15 +17,17 @@ async def get_user_by_tg_id(tg_id: int):
         return result.scalar_one_or_none()
 
 
-async def create_user(tg_id: int, first_name: str, username: str | None = None):
+async def create_user(tg_id: int, first_name: str,
+                      username, lan: str) -> User:
     async with session_marker() as session:
-        user = User(telegram_id=tg_id, first_name=first_name, username=username)
+        user = User(telegram_id=tg_id, first_name=first_name, lan=lan, username=username, )
         session.add(user)
         await session.commit()
         return user
 
 
-async def create_user_if_not_exists(tg_id: int, first_name: str, username: str | None = None, ):
+async def create_user_if_not_exists(tg_id: int, first_name: str, lan: str,
+                                    username, ) -> User:
     user = await get_user_by_tg_id(tg_id)
     if user:
         return user
@@ -33,8 +35,8 @@ async def create_user_if_not_exists(tg_id: int, first_name: str, username: str |
     return await create_user(
         tg_id=tg_id,
         first_name=first_name,
-        username=username,
-    )
+        lan=lan,
+        username=username)
 
 
 async def get_user(user_id: int):
@@ -355,7 +357,7 @@ async def get_ad_photos(ad_id: int):
 
 async def update_ad_db(ad_id: int, title: str, description: str, price: str, plz: str):
     async with session_marker() as session:
-        ad = await session.get(Ad,ad_id,)
+        ad = await session.get(Ad, ad_id, )
 
         if not ad:
             return False
@@ -374,7 +376,6 @@ async def update_ad_db(ad_id: int, title: str, description: str, price: str, plz
 
 async def delete_photo_db(photo_id: int):
     async with session_marker() as session:
-
         photo = await session.get(
             AdPhoto,
             photo_id,
@@ -389,7 +390,8 @@ async def delete_photo_db(photo_id: int):
 
         await session.commit()
 
-        return photo_url # возращает строку с адресом для удаления по os.remove
+        return photo_url  # возращает строку с адресом для удаления по os.remove
+
 
 ############################Profil###################
 
@@ -411,7 +413,6 @@ async def get_profile_db(telegram_id: int):
             .where(
                 Ad.owner_id == user.id
             )
-
         )
 
         favorites_count = await session.scalar(
@@ -433,4 +434,5 @@ async def get_profile_db(telegram_id: int):
             "avatar": user.avatar,
             "ads_count": ads_count,
             "favorites_count": favorites_count,
+            "first_start": user.first_start.strftime("%d.%m.%Y"),
         }

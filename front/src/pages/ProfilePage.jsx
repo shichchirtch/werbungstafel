@@ -19,7 +19,15 @@ function ProfilePage() {
                 `/api/profile/${user.id}`
             )
 
+            if (!response.ok) {
+                return
+            }
+
             const data = await response.json()
+
+            if (!data.ok) {
+                return
+            }
 
             console.log("PROFILE =", data)
 
@@ -32,17 +40,17 @@ function ProfilePage() {
     }, [user.id])
     if (!profile) {
 
-    return (
+        return (
 
-        <div className="px-4 py-6 text-center text-white">
+            <div className="px-4 py-6 text-center text-white">
 
-            Profil wird geladen...
+                Profil wird geladen...
 
-        </div>
+            </div>
 
-    )
+        )
 
-}
+    }
 
 
     return (
@@ -65,32 +73,35 @@ function ProfilePage() {
     bg-black/40 hover:scale-105 transition
 ">
 
-                        {user.avatar ? (
+                        {profile.avatar ? (
                             <img
-                                src={user.avatar}
+                                src={profile.avatar}
                                 className="w-full h-full object-cover"
                             />
                         ) : (
                             <span className="text-white text-2xl">
-            {user.name?.[0]}
-        </span>
+        {profile.name?.[0]}
+    </span>
                         )}
 
                     </div>
 
                     {/* NAME */}
                     <h1 className="text-2xl font-bold text-white mb-2">
-                        {user.name}
+                        {profile.name}
                     </h1>
 
                     {/* DESCRIPTION */}
                     <p className="text-gray-400 mb-3">
-                        {user.bio || 'Noch keine Beschreibung'}
+                        {profile.bio || 'Noch keine Beschreibung'}
                     </p>
 
                     {/* LOCATION */}
                     <p className="text-cyan-300 text-sm">
-                        📍 Deutschland
+                        📍 {profile.location || 'Deutschland'}
+                    </p>
+                    <p className="text-gray-500 text-sm mt-2">
+                        🗓 Auf Werbungstafel seit {profile.first_start}
                     </p>
 
                 </div>
