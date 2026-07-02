@@ -55,7 +55,7 @@ function Layout() {
                         name: user.first_name,
                         dbId: user.user_id,
                         isAuth: true,
-
+                        isTelegram: true,
                     })
                 )
 

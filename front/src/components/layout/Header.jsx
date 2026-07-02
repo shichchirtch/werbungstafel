@@ -22,6 +22,7 @@ function Header() {
 
     const [showMenu, setShowMenu] = useState(false)
 
+    const isTelegram = user.isTelegram
     const isHome = location.pathname === '/'
 
     const menuRef = useRef()
@@ -82,26 +83,26 @@ function Header() {
 
         }, 2000)
 
-         const timeout = setTimeout(() => {
+        const timeout = setTimeout(() => {
 
-        console.log("LOGIN TIMEOUT")
+            console.log("LOGIN TIMEOUT")
 
-        clearInterval(interval)
+            clearInterval(interval)
 
-        setLoginToken(null)
+            setLoginToken(null)
 
-        setCodeToken(null)
+            setCodeToken(null)
 
-        setShowCodeModal(false)
+            setShowCodeModal(false)
 
-    }, 2 * 60 * 1000) // 2 минуты
+        }, 2 * 60 * 1000) // 2 минуты
 
-    return () => {
+        return () => {
 
-        clearInterval(interval)
+            clearInterval(interval)
 
-        clearTimeout(timeout)
-    }
+            clearTimeout(timeout)
+        }
 
 
     }, [loginToken, dispatch])
@@ -254,20 +255,25 @@ function Header() {
                                     >
                                         💬 Nachrichten
                                     </button>
-                                    <button
-                                        onClick={async () => {
+                                    {!isTelegram && (
 
-                                            dispatch(logout())
-                                            setShowMenu(false)
-                                        }}
-                                        className="
-                            w-full text-left px-4 py-3
-                            text-red-400
-                            hover:bg-red-500/10
-                        "
-                                    >
-                                        🚪 Logout
-                                    </button>
+                                        <button
+                                            onClick={() => {
+
+                                                dispatch(logout())
+                                                setShowMenu(false)
+
+                                            }}
+                                            className="
+            w-full text-left px-4 py-3
+            text-red-400
+            hover:bg-red-500/10
+        "
+                                        >
+                                            🚪 Logout
+                                        </button>
+
+                                    )}
 
                                 </div>
 
@@ -280,7 +286,7 @@ function Header() {
                 </div>
             </div>
 
-            {showLoginModal && (
+            {!isTelegram && showLoginModal && (
                 <div className="
         fixed inset-0
         bg-black/70
@@ -342,9 +348,11 @@ function Header() {
                                     📱 Smartphone
                                 </button>
                                 <button
-                                    onClick={() => {setShowLoginModal(false)
+                                    onClick={() => {
+                                        setShowLoginModal(false)
                                         // остановить polling
-                                        setLoginToken(null)}
+                                        setLoginToken(null)
+                                    }
                                     }
                                     className="
                         flex-1 py-3 rounded-2xl

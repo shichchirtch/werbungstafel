@@ -10,7 +10,8 @@ const initialState = savedUser || {
     avatar: null,
     bio: '',
     location: '',
-    role: 'user'
+    role: 'user',
+    isTelegram: false,
 }
 const userSlice = createSlice({
     name: 'user',
@@ -21,7 +22,7 @@ const userSlice = createSlice({
             state.name = action.payload.name
             state.dbId = action.payload.dbId      // users.id
             state.isAuth = true
-
+            state.isTelegram = action.payload.isTelegram
             localStorage.setItem('user', JSON.stringify(state))
         },
 
@@ -34,7 +35,8 @@ const userSlice = createSlice({
             state.isAuth = false
             state.role = 'user'
             state.dbId = null
-             state.location = ''
+            state.location = ''
+            state.isTelegram = false
 
             localStorage.removeItem('user')
         },
