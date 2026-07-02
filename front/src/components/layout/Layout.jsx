@@ -9,7 +9,7 @@ import {setUser} from '../../features/user/userSlice'
 function Layout() {
     console.log("LAYOUT VERSION 777")
     const dispatch = useDispatch()
-
+    console.log('wind Tele', window.Telegram)
     const wa = window.Telegram?.WebApp
     const tgUser = wa?.initDataUnsafe?.user
 
