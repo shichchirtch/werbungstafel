@@ -38,6 +38,7 @@ function ProfilePage() {
         loadProfile()
 
     }, [user.id])
+
     if (!profile) {
 
         return (

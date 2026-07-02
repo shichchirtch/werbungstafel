@@ -25,6 +25,13 @@ async def command_start_process(message: Message, command: CommandObject):
     token = command.args
     print(first_name, user_id,'\n\ntoken = ', token)
 
+    await create_user_if_not_exists(
+        tg_id=user_id,
+        first_name=first_name,
+        lan=user_lan,
+        username=user_name,
+    )
+
     photos = await message.bot.get_user_profile_photos(
         user_id,
         limit=1,
@@ -43,12 +50,6 @@ async def command_start_process(message: Message, command: CommandObject):
             avatar=f"/uploads/avatar/{user_id}.jpg",
         )
 
-    await create_user_if_not_exists(
-        tg_id=user_id,
-        first_name=first_name,
-        lan=user_lan,
-        username=user_name,
-    )
 
     login_button = InlineKeyboardButton(
         text="🔑 Login",
