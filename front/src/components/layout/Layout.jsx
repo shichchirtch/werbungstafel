@@ -43,6 +43,7 @@ function Layout() {
                             telegram_id: tgUser.id,
                             first_name: tgUser.first_name,
                             username: tgUser.username,
+                            lan: tgUser.language_code,
                         }),
                     }
                 )
