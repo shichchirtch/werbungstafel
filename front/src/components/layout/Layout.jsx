@@ -31,7 +31,7 @@ function Layout() {
 
                 wa.setHeaderColor('#18181b')
                 wa.setBackgroundColor('#18181b')
-
+                console.log('tgUser = ', tgUser)
                 const response = await fetch(
                     '/api/auth/telegram',
                     {
