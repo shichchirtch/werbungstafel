@@ -7,7 +7,7 @@ from aiogram.filters import CommandStart, Command, CommandObject, StateFilter
 from aiogram.fsm.context import FSMContext
 from bot_instance import FSM_ST
 from aiogram_dialog import  DialogManager, StartMode
-
+import os
 from lexicon import *
 from user_repo import *
 from datetime import datetime
@@ -17,13 +17,31 @@ ch_router = Router()
 
 @ch_router.message(CommandStart(deep_link=True))
 async def command_start_process(message: Message, command: CommandObject):
+    os.makedirs("uploads/avatar", exist_ok=True)
     user_id = message.from_user.id
     first_name = message.from_user.first_name
     user_lan = message.from_user.language_code
-    first_start = datetime.now(UTC)
     user_name = message.from_user.username
     token = command.args
     print(first_name, user_id,'\n\ntoken = ', token)
+
+    photos = await message.bot.get_user_profile_photos(
+        user_id,
+        limit=1,
+    )
+
+    if photos.total_count > 0:
+        file_id = photos.photos[0][-1].file_id
+
+        await message.bot.download(
+            file=file_id,
+            destination=f"uploads/avatar/{user_id}.jpg",
+        )
+
+        await update_avatar_db(
+            telegram_id=user_id,
+            avatar=f"/uploads/avatar/{user_id}.jpg",
+        )
 
     await create_user_if_not_exists(
         tg_id=user_id,
