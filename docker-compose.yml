@@ -36,6 +36,8 @@ services:
     command: python main.py
     restart: always
     env_file: main.env
+    volumes:
+      - ./back/uploads:/app/uploads
     depends_on:
       - redis3105
       - postgres_main3105

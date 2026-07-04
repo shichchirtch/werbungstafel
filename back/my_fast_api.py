@@ -432,22 +432,9 @@ async def delete_photo(photo_id: int):
 ################################Profile###########################
 
 @f_api.get("/api/profile/{telegram_id}")
-async def get_profile(
-    telegram_id: int,
-):
-
-    profile = await get_profile_db(
-        telegram_id
-    )
-
+async def get_profile(telegram_id: int,):
+    profile = await get_profile_db(telegram_id)
     if not profile:
-
-        return {
-            "ok": False,
-            "error": "User not found",
-        }
-
-    return {
-        "ok": True,
-        **profile,
-    }
+        return {"ok": False,
+            "error": "User not found"}
+    return {"ok": True,**profile}

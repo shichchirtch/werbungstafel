@@ -36,19 +36,22 @@ async def command_start_process(message: Message, command: CommandObject):
         user_id,
         limit=1,
     )
+    print("TOTAL PHOTOS =", photos.total_count)
 
     if photos.total_count > 0:
         file_id = photos.photos[0][-1].file_id
+        print("FILE ID =", file_id)
 
         await message.bot.download(
             file=file_id,
             destination=f"uploads/avatar/{user_id}.jpg",
         )
-
+        print("DOWNLOADED")
         await update_avatar_db(
             telegram_id=user_id,
             avatar=f"/uploads/avatar/{user_id}.jpg",
         )
+        print("AVATAR SAVED")
 
 
     login_button = InlineKeyboardButton(
