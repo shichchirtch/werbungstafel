@@ -267,8 +267,9 @@ function AdDetailsPage() {
             rounded-full
             bg-black/40
             backdrop-blur-sm
-            text-gray
+            text-gray-500
             text-xl
+            z-50
         "
                                 >
                                     ✕
