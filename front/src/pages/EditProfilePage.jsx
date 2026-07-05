@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import {useState, useEffect} from 'react'
+import {useSelector} from 'react-redux'
+import {useNavigate} from 'react-router-dom'
 
 function EditProfilePage() {
 
@@ -13,68 +13,72 @@ function EditProfilePage() {
 
     useEffect(() => {
 
-    async function loadProfile() {
+        async function loadProfile() {
 
-        const response = await fetch(
-            `/api/profile/${user.id}`
-        )
+            const response = await fetch(
+                `/api/profile/${user.id}`
+            )
 
-        const data = await response.json()
+            const data = await response.json()
 
-        if (!data.ok) {
-            return
+            if (!data.ok) {
+                return
+            }
+
+            setProfile(data)
+            setBio(data.bio)
+            setLocation(data.location)
+
         }
 
-        setProfile(data)
-        setBio(data.bio)
-        setLocation(data.location)
-
-    }
-    loadProfile()
-}, [user.id])
+        loadProfile()
+    }, [user.id])
 
     if (!profile) {
-    return (
-        <div className="text-white text-center py-6">
-            Profil wird geladen...
-        </div>
-    )
-}
+        return (
+            <div className="text-white text-center py-6">
+                Profil wird geladen...
+            </div>
+        )
+    }
 
     const handleSubmit = async (e) => {
 
-    e.preventDefault()
+        e.preventDefault()
+        console.log("SUBMIT")
 
-    try {
+        try {
 
-        const response = await fetch(
-            `/api/profile/${user.id}`,
-            {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+            const response = await fetch(
+                `/api/profile/${user.id}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
 
-                body: JSON.stringify({bio, location}),
+                    body: JSON.stringify({bio, location}),
+                }
+
+            )
+            console.log("RESPONSE =", response)
+            if (!response.ok) {
+                alert("Serverfehler")
+                return
             }
-        )
-        if (!response.ok) {
-            alert("Serverfehler")
-            return
-        }
-        const data = await response.json()
-        if (!data.ok) {
-            alert(data.error)
-            return
-        }
-        navigate('/profile')
-    }
-    catch (err) {
-        console.error(err)
+            const data = await response.json()
+            if (!data.ok) {
+                alert(data.error)
+                return
+            }
+            console.log("DATA =", data)
+            navigate('/profile')
+        } catch (err) {
+            console.error(err)
 
-        alert("Serverfehler")
+            alert("Serverfehler")
+        }
     }
-}
 
     return (
         <div className="px-4 py-6">
