@@ -440,10 +440,7 @@ async def get_profile(telegram_id: int,):
 
 
 @f_api.put("/api/profile/{telegram_id}")
-async def update_profile(
-    telegram_id: int,
-    data: ProfileUpdate,
-):
+async def update_profile(telegram_id: int,data: ProfileUpdate):
 
     success = await update_profile_db(
         telegram_id=telegram_id,
