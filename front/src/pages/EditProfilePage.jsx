@@ -1,41 +1,80 @@
-import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { updateProfile } from '../features/user/userSlice'
+import { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 function EditProfilePage() {
 
     const user = useSelector((state) => state.user)
-    const dispatch = useDispatch()
     const navigate = useNavigate()
-
+    const [profile, setProfile] = useState(null)
     const [name, setName] = useState(user.name || '')
     const [bio, setBio] = useState(user.bio || '')
     const [location, setLocation] = useState(user.location || '')
-    const [avatar, setAvatar] = useState(user.avatar || null)
 
-    const handleAvatarChange = (e) => {
-        const file = e.target.files[0]
+    useEffect(() => {
 
-        if (!file) return
+    async function loadProfile() {
 
-        const preview = URL.createObjectURL(file)
+        const response = await fetch(
+            `/api/profile/${user.id}`
+        )
 
-        setAvatar(preview)
+        const data = await response.json()
+
+        if (!data.ok) {
+            return
+        }
+
+        setProfile(data)
+        setBio(data.bio)
+        setLocation(data.location)
+
     }
+    loadProfile()
+}, [user.id])
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
+    if (!profile) {
+    return (
+        <div className="text-white text-center py-6">
+            Profil wird geladen...
+        </div>
+    )
+}
 
-        dispatch(updateProfile({
-            name,
-            bio,
-            location,
-            avatar
-        }))
+    const handleSubmit = async (e) => {
 
+    e.preventDefault()
+
+    try {
+
+        const response = await fetch(
+            `/api/profile/${user.id}`,
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+
+                body: JSON.stringify({bio, location}),
+            }
+        )
+        if (!response.ok) {
+            alert("Serverfehler")
+            return
+        }
+        const data = await response.json()
+        if (!data.ok) {
+            alert(data.error)
+            return
+        }
         navigate('/profile')
     }
+    catch (err) {
+        console.error(err)
+
+        alert("Serverfehler")
+    }
+}
 
     return (
         <div className="px-4 py-6">
@@ -53,9 +92,9 @@ function EditProfilePage() {
                         w-24 h-24 rounded-full overflow-hidden
                         bg-gray-700 flex items-center justify-center
                     ">
-                        {avatar ? (
+                        {profile.avatar ? (
                             <img
-                                src={avatar}
+                                src={profile.avatar}
                                 className="w-full h-full object-cover"
                             />
                         ) : (
@@ -65,17 +104,6 @@ function EditProfilePage() {
                         )}
                     </div>
 
-                    <label className="
-                        text-cyan-300 cursor-pointer text-sm
-                    ">
-                        Foto ändern
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleAvatarChange}
-                            className="hidden"
-                        />
-                    </label>
 
                 </div>
 
@@ -115,11 +143,8 @@ function EditProfilePage() {
                     >
                         Speichern
                     </button>
-
                 </form>
-
             </div>
-
         </div>
     )
 }

@@ -462,3 +462,16 @@ async def get_profile_db(telegram_id: int):
             "favorites_count": favorites_count,
             "first_start": user.first_start.strftime("%d.%m.%Y"),
         }
+
+async def update_profile_db(telegram_id: int,bio: str, location: str,
+) -> bool:
+    async with session_marker() as session:
+        result = await session.execute(
+            select(User).where(User.telegram_id == telegram_id))
+        user = result.scalar_one_or_none()
+        if not user:
+            return False
+        user.description = bio
+        user.city = location
+        await session.commit()
+        return True

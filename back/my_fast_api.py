@@ -11,7 +11,7 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_ad_by_id, delete_ad_db, get_ads_by_owner,
                        get_user_favorites, create_favorite, delete_favorite_db, check_favorite,
                        get_ad_photos, create_ad_photo, update_ad_db, delete_photo_db,
-                       get_profile_db)
+                       get_profile_db, update_profile_db)
 import secrets
 import string
 from lexicon import *
@@ -57,9 +57,9 @@ class AdUpdate(BaseModel):
 
 class ProfileUpdate(BaseModel):
     telegram_id: int
-    name: str
     bio: str
     location: str
+
 
 f_api = FastAPI(
     middleware=[
@@ -437,3 +437,27 @@ async def get_profile(telegram_id: int,):
         return {"ok": False,
             "error": "User not found"}
     return {"ok": True,**profile}
+
+
+@f_api.put("/api/profile/{telegram_id}")
+async def update_profile(
+    telegram_id: int,
+    data: ProfileUpdate,
+):
+
+    success = await update_profile_db(
+        telegram_id=telegram_id,
+        bio=data.bio,
+        location=data.location,
+    )
+
+    if not success:
+
+        return {
+            "ok": False,
+            "error": "User not found",
+        }
+
+    return {
+        "ok": True,
+    }
