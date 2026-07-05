@@ -67,27 +67,46 @@ function ProfilePage() {
                 ">
 
                     {/* AVATAR */}
-                    <div className="
-    w-24 h-24 rounded-full overflow-hidden
+   <div className="
+    w-24 h-24
+    rounded-full
+    overflow-hidden
     border-4 border-white/10
     flex items-center justify-center
-    bg-black/40 hover:scale-105 transition
+    bg-black/40
+    hover:scale-105
+    transition
 ">
 
-                        {profile.avatar ? (
-                            <img
-                                src={profile.avatar}
-                                className="w-full h-full object-cover border-2 border-pink-400/60
-        shadow-[0_0_20px_rgba(236,72,153,0.7)]"
-                            />
-                        ) : (
-                            <span className="text-white text-2xl">
-        {profile.name?.[0]}
-    </span>
-                        )}
+    {profile.avatar ? (
 
-                    </div>
+        <div className="
+            w-full h-full
+            rounded-full
+            shadow-[0_0_20px_rgba(34,211,238,0.5),0_0_35px_rgba(236,72,153,0.5)]
+        ">
 
+            <img
+                src={profile.avatar}
+                alt={profile.name}
+                className="
+                    w-full h-full
+                    object-cover
+                    rounded-full
+                "
+            />
+
+        </div>
+
+    ) : (
+
+        <span className="text-white text-2xl">
+            {profile.name?.[0]}
+        </span>
+
+    )}
+
+</div>
                     {/* NAME */}
                     <h1 className="text-2xl font-bold text-white mb-2">
                         {profile.name}
