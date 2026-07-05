@@ -120,6 +120,7 @@ function EditProfilePage() {
 
                     <input
                         value={name}
+                        readOnly
                         onChange={(e) => setName(e.target.value)}
                         className="bg-black/40 text-gray-400 p-3 rounded-xl"
                         placeholder="Name"
