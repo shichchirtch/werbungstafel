@@ -25,7 +25,6 @@ function EditProfilePage() {
             if (!data.ok) {
                 return
             }
-
             setProfile(data)
             setBio(data.bio)
             setLocation(data.location)
@@ -46,7 +45,6 @@ function EditProfilePage() {
     const handleSubmit = async (e) => {
 
         e.preventDefault()
-        console.log("SUBMIT")
 
         try {
 
@@ -62,9 +60,7 @@ function EditProfilePage() {
                 }
 
             )
-            console.log("RESPONSE =", response)
             if (!response.ok) {
-                alert("Serverfehler1")
                 return
             }
             const data = await response.json()
@@ -72,12 +68,10 @@ function EditProfilePage() {
                 alert(data.error)
                 return
             }
-            console.log("DATA =", data)
             navigate('/profile')
         } catch (err) {
             console.error(err)
 
-            alert("Serverfehler2")
         }
     }
 
