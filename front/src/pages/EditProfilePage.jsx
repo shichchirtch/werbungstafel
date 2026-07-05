@@ -5,7 +5,7 @@ import {useNavigate} from 'react-router-dom'
 function EditProfilePage() {
 
     const user = useSelector((state) => state.user)
-    const telegram_id = user.telegram_id
+    const telegram_id = user.id
     const navigate = useNavigate()
     const [profile, setProfile] = useState(null)
     const [name, setName] = useState(user.name || '')
