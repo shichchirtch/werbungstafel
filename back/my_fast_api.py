@@ -443,7 +443,7 @@ async def get_profile(telegram_id: int,):
 async def update_profile(telegram_id: int,data: ProfileUpdate):
 
     success = await update_profile_db(
-        telegram_id=telegram_id,
+        telegram_id=int(telegram_id),
         bio=data.bio,
         location=data.location,
     )

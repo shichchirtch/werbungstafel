@@ -5,6 +5,7 @@ import {useNavigate} from 'react-router-dom'
 function EditProfilePage() {
 
     const user = useSelector((state) => state.user)
+    const telegram_id = user.telegram_id
     const navigate = useNavigate()
     const [profile, setProfile] = useState(null)
     const [name, setName] = useState(user.name || '')
@@ -57,13 +58,13 @@ function EditProfilePage() {
                         'Content-Type': 'application/json',
                     },
 
-                    body: JSON.stringify({bio, location}),
+                    body: JSON.stringify({telegram_id,  bio, location}),
                 }
 
             )
             console.log("RESPONSE =", response)
             if (!response.ok) {
-                alert("Serverfehler")
+                alert("Serverfehler1")
                 return
             }
             const data = await response.json()
@@ -76,7 +77,7 @@ function EditProfilePage() {
         } catch (err) {
             console.error(err)
 
-            alert("Serverfehler")
+            alert("Serverfehler2")
         }
     }
 
