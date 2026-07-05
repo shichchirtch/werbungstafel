@@ -67,46 +67,49 @@ function ProfilePage() {
                 ">
 
                     {/* AVATAR */}
-   <div className="
-    w-24 h-24
-    rounded-full
-    overflow-hidden
-    border-4 border-white/10
-    flex items-center justify-center
-    bg-black/40
-    hover:scale-105
-    transition
-">
+                    <div
+                        className="
+        w-24 h-24
+        rounded-full
+        shadow-[0_0_20px_rgba(34,211,238,0.5),0_0_35px_rgba(236,72,153,0.5)]
+        hover:scale-105
+        transition
+    "
+                    >
 
-    {profile.avatar ? (
-
-        <div className="
+                        <div
+                            className="
             w-full h-full
             rounded-full
-            shadow-[0_0_20px_rgba(34,211,238,0.5),0_0_35px_rgba(236,72,153,0.5)]
-        ">
+            overflow-hidden
+            border-4 border-white/10
+            bg-black/40
+            flex items-center justify-center
+        "
+                        >
 
-            <img
-                src={profile.avatar}
-                alt={profile.name}
-                className="
+                            {profile.avatar ? (
+
+                                <img
+                                    src={profile.avatar}
+                                    alt={profile.name}
+                                    className="
                     w-full h-full
                     object-cover
-                    rounded-full
                 "
-            />
+                                />
 
-        </div>
+                            ) : (
 
-    ) : (
+                                <span className="text-white text-2xl">
+                {profile.name?.[0]}
+            </span>
 
-        <span className="text-white text-2xl">
-            {profile.name?.[0]}
-        </span>
+                            )}
 
-    )}
+                        </div>
 
-</div>
+                    </div>
                     {/* NAME */}
                     <h1 className="text-2xl font-bold text-white mb-2">
                         {profile.name}
