@@ -10,7 +10,7 @@ from aiogram_dialog import  DialogManager, StartMode
 import os
 from lexicon import *
 from user_repo import *
-from datetime import datetime
+from static_functions import load_user_avatar
 
 ch_router = Router()
 
@@ -32,26 +32,8 @@ async def command_start_process(message: Message, command: CommandObject):
         username=user_name,
     )
 
-    photos = await message.bot.get_user_profile_photos(
-        user_id,
-        limit=1,
-    )
-    print("TOTAL PHOTOS =", photos.total_count)
 
-    if photos.total_count > 0:
-        file_id = photos.photos[0][-1].file_id
-        print("FILE ID =", file_id)
-
-        await message.bot.download(
-            file=file_id,
-            destination=f"uploads/avatar/{user_id}.jpg",
-        )
-        print("DOWNLOADED")
-        await update_avatar_db(
-            telegram_id=user_id,
-            avatar=f"/uploads/avatar/{user_id}.jpg",
-        )
-        print("AVATAR SAVED")
+    await load_user_avatar(message)
 
 
     login_button = InlineKeyboardButton(
@@ -63,15 +45,13 @@ async def command_start_process(message: Message, command: CommandObject):
         inline_keyboard=[[login_button]])
 
     await message.answer(text=f'👋\n\n<b>Hello, {message.from_user.first_name}!</b>\n'
-                              'Das ist WerbungsTafel, um zu login kliclen Sie bitta auf den Taste',
+                              'Das ist WerbungsTafel, um zu login kliclen Sie bitte auf den Taste',
                          reply_markup=start_keyboard)
 
 
 @ch_router.message(CommandStart(), F.text == "/start")
-async def start_common(
-    message: Message,
-):
-
+async def start_common(message: Message):
+    await load_user_avatar(message)
     await message.answer(
         "👋 Willkommen bei WerbungsTafel!\n\n"
         "Um sich auf der Website\n\n<a>https://werbungstafel.org/</a> \n\n anzumelden, "
@@ -83,8 +63,8 @@ async def start_common(
 @ch_router.message(Command('login'))
 async def command_login(message: Message, state: FSMContext):
     print("ENTER /LOGIN")
+    await load_user_avatar(message)
     await state.set_state(FSM_ST.accept_login)
-
     await message.answer('Отправьте мне код с экрана')
 
 

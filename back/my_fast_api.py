@@ -141,7 +141,7 @@ async def auth_telegram(data: dict):
         username=username,
         lan=lan
     )
-
+    # await load_user_avatar(message)
     return {
         "user_id": user.id,
         "telegram_id": user.telegram_id,
@@ -271,8 +271,7 @@ async def add_favorite(data: Favorite):
 
     success = await create_favorite(
         user_id=user.id,
-        ad_id=data.ad_id,
-    )
+        ad_id=data.ad_id)
 
     if not success:
         return {

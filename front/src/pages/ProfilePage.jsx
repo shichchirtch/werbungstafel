@@ -77,7 +77,8 @@ function ProfilePage() {
                         {profile.avatar ? (
                             <img
                                 src={profile.avatar}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-cover border-2 border-pink-400/60
+        shadow-[0_0_20px_rgba(236,72,153,0.7)]"
                             />
                         ) : (
                             <span className="text-white text-2xl">

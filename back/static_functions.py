@@ -3,10 +3,11 @@ import translators
 from bot_instance import ROOT_WIND
 from aiogram_dialog.widgets.kbd import Button
 from user_repo import *
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, Message
 from aiogram_dialog import DialogManager
 from aiogram_dialog import ShowMode
 # from requests.exceptions import HTTPError
+from pathlib import Path
 
 
 
@@ -112,4 +113,28 @@ async def get_translate(slovo:str, lan:str, temp_dict:dict)->str:
     return res
 
 
+async def load_user_avatar(message: Message):
+    user_id = message.from_user.id
 
+    photos = await message.bot.get_user_profile_photos(
+        user_id,
+        limit=1,
+    )
+
+    avatar_dir = Path("uploads/avatar")
+    avatar_dir.mkdir(parents=True, exist_ok=True)
+
+    if photos.total_count == 0:
+        return
+
+    file_id = photos.photos[0][-1].file_id
+
+    await message.bot.download(
+        file=file_id,
+        destination=avatar_dir / f"{user_id}.jpg",
+    )
+
+    await update_avatar_db(
+        telegram_id=user_id,
+        avatar=f"/uploads/avatar/{user_id}.jpg",
+    )
