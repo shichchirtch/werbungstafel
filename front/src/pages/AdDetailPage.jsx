@@ -45,18 +45,19 @@ function AdDetailsPage() {
                 console.log("IS FAVORITE =", dataMerkList)
 
                 setIsFavorite(dataMerkList.isFavorite)
+                if (user.dbId !== data.ownerId) {
+                    const responseChat = await fetch(
+                        `/api/messages/${data.id}/${user.dbId}/${data.ownerId}`
+                    )
 
-                const responseChat = await fetch(
-                    `/api/messages/${data.id}/${user.dbId}/${data.ownerId}`
-                )
+                    const dataChat = await responseChat.json()
 
-                const dataChat = await responseChat.json()
+                    setMessages(dataChat.nachrichten)
 
-                setMessages(dataChat.nachrichten)
-
-                setShowChat(true)
+                    setShowChat(true)
+                    console.log('show CHAT = ', showChat)
+                }
             }
-
         }
 
         loadAd()
@@ -506,7 +507,7 @@ transition
                                         ? '❤️ Gespeichert'
                                         : '🤍 Merken'}
                                 </button>
-                            !isOwner && !showChat && (
+                                !isOwner && !showChat && (
                                 <button
                                     onClick={() => setShowChat(prev => !prev)}
                                     className="
@@ -550,27 +551,42 @@ transition
                                     >
 
                                         <div
-                                            className={`
-                    max-w-[80%]
-                    px-3
-                    py-2
-                    rounded-2xl
-                    text-sm
-
-                    ${
+                                            key={msg.id}
+                                            className={`flex ${
                                                 msg.sender_id === user.dbId
-                                                    ? 'bg-cyan-400 text-black'
-                                                    : 'bg-white/10 text-white'
-                                            }
-                `}
+                                                    ? 'justify-end'
+                                                    : 'justify-start'
+                                            }`}
                                         >
-                                            {msg.text}
-                                        </div>
-                                        <div className="text-[11px] opacity-60 mt-1 text-right">
-                                            {new Date(msg.created_at).toLocaleTimeString([], {
-                                                hour: '2-digit',
-                                                minute: '2-digit',
-                                            })}
+
+                                            <div
+                                                className={`
+            max-w-[80%]
+            px-3
+            py-2
+            rounded-2xl
+            text-sm
+            ${
+                                                    msg.sender_id === user.dbId
+                                                        ? 'bg-cyan-400 text-black'
+                                                        : 'bg-white/10 text-white'
+                                                }
+        `}
+                                            >
+
+                                                <div>
+                                                    {msg.text}
+                                                </div>
+
+                                                <div className="text-[11px] opacity-60 mt-1 text-right">
+                                                    {new Date(msg.created_at).toLocaleTimeString([], {
+                                                        hour: '2-digit',
+                                                        minute: '2-digit',
+                                                    })}
+                                                </div>
+
+                                            </div>
+
                                         </div>
 
                                     </div>
