@@ -72,9 +72,6 @@ async def command_login(message: Message, state: FSMContext):
 async def accept_login(message: Message, state: FSMContext):
     print("ACCEPT LOGIN")
     print("TEXT =", message.text)
-
-
-
     user_id = int(message.from_user.id)
     token = message.text
     us_lan = message.from_user.language_code

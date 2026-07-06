@@ -124,9 +124,22 @@ async def load_user_avatar(message: Message):
     avatar_dir = Path("uploads/avatar")
     avatar_dir.mkdir(parents=True, exist_ok=True)
 
+    # Пользователь удалил аватарку в Telegram
     if photos.total_count == 0:
+
+        path = avatar_dir / f"{user_id}.jpg"
+
+        if path.exists():
+            path.unlink()
+
+        await update_avatar_db(
+            telegram_id=user_id,
+            avatar="",
+        )
+
         return
 
+    # Пользователь имеет аватарку
     file_id = photos.photos[0][-1].file_id
 
     await message.bot.download(

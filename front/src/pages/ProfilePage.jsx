@@ -111,7 +111,7 @@ function ProfilePage() {
 
                     </div>
                     {/* NAME */}
-                    <h1 className="text-2xl font-bold text-white mb-2">
+                    <h1 className="text-2xl font-bold text-slate-200 mb-2">
                         {profile.name}
                     </h1>
 
@@ -138,7 +138,7 @@ function ProfilePage() {
                 ">
 
                     <div>
-                        <p className="text-xl font-bold text-white">
+                        <p className="text-xl font-bold text-gray-300">
                             {profile.ads_count}
                         </p>
                         <p className="text-gray-400 text-sm">
@@ -147,7 +147,7 @@ function ProfilePage() {
                     </div>
 
                     <div>
-                        <p className="text-xl font-bold text-white">
+                        <p className="text-xl font-bold text-gray-300">
                             {profile.favorites_count}
                         </p>
                         <p className="text-gray-400 text-sm">
@@ -170,7 +170,7 @@ function ProfilePage() {
                 <button
                     onClick={() => dispatch(logout())}
                     className="
-                        py-3 rounded-2xl font-bold text-white
+                        py-3 rounded-2xl font-bold text-slate-400
                         bg-gradient-to-br from-gray-600 to-gray-800
                     "
                 >

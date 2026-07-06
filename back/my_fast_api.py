@@ -11,7 +11,8 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_ad_by_id, delete_ad_db, get_ads_by_owner,
                        get_user_favorites, create_favorite, delete_favorite_db, check_favorite,
                        get_ad_photos, create_ad_photo, update_ad_db, delete_photo_db,
-                       get_profile_db, update_profile_db)
+                       get_profile_db, update_profile_db,
+                       create_nachricht_db, get_nachrichten_db)
 import secrets
 import string
 from lexicon import *
@@ -60,6 +61,11 @@ class ProfileUpdate(BaseModel):
     bio: str
     location: str
 
+class CreateNachricht(BaseModel):
+    ad_id: int
+    sender_id: int
+    receiver_id: int
+    text: str
 
 f_api = FastAPI(
     middleware=[
@@ -457,4 +463,47 @@ async def update_profile(telegram_id: int,data: ProfileUpdate):
 
     return {
         "ok": True,
+    }
+
+############################### Nachricht #########################################
+
+@f_api.post("/api/messages")
+async def create_nachricht(data: CreateNachricht):
+
+    nachricht = await create_nachricht_db(
+        ad_id=data.ad_id,
+        sender_id=data.sender_id,
+        receiver_id=data.receiver_id,
+        text=data.text,
+    )
+
+    return {
+        "ok": True,
+        "nachricht": {
+            "id": nachricht.id,
+            "ad_id": nachricht.ad_id,
+            "sender_id": nachricht.sender_id,
+            "receiver_id": nachricht.receiver_id,
+            "text": nachricht.text,
+            "created_at": nachricht.created_at.isoformat(),
+            "is_read": nachricht.is_read,
+        }
+    }
+
+@f_api.get("/api/messages/{ad_id}/{sender_id}/{receiver_id}")
+async def get_nachrichten(
+    ad_id: int,
+    sender_id: int,
+    receiver_id: int,
+):
+
+    nachrichten = await get_nachrichten_db(
+        ad_id=ad_id,
+        sender_id=sender_id,
+        receiver_id=receiver_id,
+    )
+
+    return {
+        "ok": True,
+        "nachrichten": nachrichten,
     }

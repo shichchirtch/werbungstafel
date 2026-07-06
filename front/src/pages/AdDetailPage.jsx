@@ -1,38 +1,32 @@
 import {useNavigate, useParams} from 'react-router-dom'
 import {useState, useEffect, useRef} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {addMessage} from '../features/messages/messagesSlice.js'
-import {removeWerbung} from '../features/werbung/werbungSlice'
 import {categoryNames} from '../constants/nameKategories.js'
 
 
 function AdDetailsPage() {
     const {id} = useParams()
     const [showChat, setShowChat] = useState(false)
-    const [message, setMessage] = useState('')
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [toast, setToast] = useState(null)
     const [currentPhoto, setCurrentPhoto] = useState(0)
     const [touchStart, setTouchStart] = useState(null)
     const [touchEnd, setTouchEnd] = useState(null)
     const [showFullscreen, setShowFullscreen] = useState(false)
-
     const toastRef = useRef(null)
     const user = useSelector((state) => state.user)
     const navigate = useNavigate()
-
-    const dispatch = useDispatch()
-
     const [werbung, setWerbung] = useState(null)
     const [isFavorite, setIsFavorite] = useState(false)
+    const [messages, setMessages] = useState([])
+    const [message, setMessage] = useState("")
 
     useEffect(() => {
 
         async function loadAd() {
 
             const response = await fetch(
-                `/api/ad/${id}`
-            )
+                `/api/ad/${id}`)
 
             const data = await response.json()
 
@@ -51,41 +45,77 @@ function AdDetailsPage() {
                 console.log("IS FAVORITE =", dataMerkList)
 
                 setIsFavorite(dataMerkList.isFavorite)
+
+                const responseChat = await fetch(
+                    `/api/messages/${data.id}/${user.dbId}/${data.ownerId}`
+                )
+
+                const dataChat = await responseChat.json()
+
+                setMessages(dataChat.nachrichten)
             }
 
         }
 
         loadAd()
-
     }, [id, user.id, user.isAuth])
 
-
-    const allMessages = useSelector((state) => state.messages.messages)
-
-    const messages = werbung
-        ? allMessages.filter((m) => m.adId === werbung.id)
-        : []
 
     const isOwner = user.isAuth &&
         werbung &&
         user.dbId === werbung.ownerId
 
 
-    const handleSend = () => {
-        if (!message.trim()) return
+    const handleSend = async () => {
 
-        const newMessage = {
-            id: Date.now(),
-            adId: werbung.id,
-            fromUser: user.id,
-            fromName: user.name,
-            text: message,
-            createdAt: new Date().toISOString(),
+        if (!message.trim()) {
+            return
         }
 
+        try {
 
-        dispatch(addMessage(newMessage))
-        setMessage('')
+            const response = await fetch(
+                '/api/messages',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+
+                    body: JSON.stringify({
+                        ad_id: werbung.id,
+                        sender_id: user.dbId,
+                        receiver_id: werbung.ownerId,
+                        text: message,
+                    }),
+                }
+            )
+
+            if (!response.ok) {
+                alert("Serverfehler")
+                return
+            }
+
+            const data = await response.json()
+
+            if (!data.ok) {
+                alert(data.error || "Fehler")
+                return
+            }
+
+            setMessages((prev) => [
+                ...prev,
+                data.nachricht,
+            ])
+
+            setMessage("")
+
+        } catch (err) {
+
+            console.error(err)
+
+            alert("Serverfehler")
+        }
     }
     // TODO:
 // заменить на POST /api/messages
@@ -499,16 +529,52 @@ transition
                         <div className="max-h-60 overflow-y-auto flex flex-col gap-2 mb-3">
 
                             {messages.length === 0 ? (
-                                <p className="text-gray-400 text-sm">Noch keine Nachrichten</p>
+
+                                <p className="text-gray-400 text-sm">
+                                    Noch keine Nachrichten
+                                </p>
+
                             ) : (
+
                                 messages.map((msg) => (
+
                                     <div
                                         key={msg.id}
-                                        className="bg-cyan-500/20 text-gray-300 p-2 rounded-xl text-sm self-start"
+                                        className={`flex ${
+                                            msg.sender_id === user.dbId
+                                                ? 'justify-end'
+                                                : 'justify-start'
+                                        }`}
                                     >
-                                        {msg.text}
+
+                                        <div
+                                            className={`
+                    max-w-[80%]
+                    px-3
+                    py-2
+                    rounded-2xl
+                    text-sm
+
+                    ${
+                                                msg.sender_id === user.dbId
+                                                    ? 'bg-cyan-400 text-black'
+                                                    : 'bg-white/10 text-white'
+                                            }
+                `}
+                                        >
+                                            {msg.text}
+                                        </div>
+                                        <div className="text-[11px] opacity-60 mt-1 text-right">
+                                            {new Date(msg.created_at).toLocaleTimeString([], {
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                            })}
+                                        </div>
+
                                     </div>
+
                                 ))
+
                             )}
 
                         </div>

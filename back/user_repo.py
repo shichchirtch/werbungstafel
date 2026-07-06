@@ -1,5 +1,5 @@
-from sqlalchemy import select, delete, func
-from postgres_table import User, LoginRequest, Ad, Favorite, AdPhoto
+from sqlalchemy import select, delete, func, and_, or_
+from postgres_table import User, LoginRequest, Ad, Favorite, AdPhoto, Nachricht
 from postgres_table import session_marker
 from datetime import datetime, timedelta, UTC
 import shutil
@@ -475,3 +475,73 @@ async def update_profile_db(telegram_id: int,bio: str, location: str,
         user.city = location
         await session.commit()
         return True
+
+########################## Сообщения ###############################
+
+async def create_nachricht_db(ad_id: int, sender_id: int, receiver_id: int, text: str):
+    async with session_marker() as session:
+        nachrict = Nachricht(
+            ad_id=ad_id,
+            sender_id=sender_id,
+            receiver_id=receiver_id,
+            text=text,
+        )
+
+        session.add(nachrict)
+
+        await session.commit()
+
+        await session.refresh(nachrict)
+
+        return nachrict
+
+async def get_nachrichten_db(
+    ad_id: int,
+    sender_id: int,
+    receiver_id: int,
+):
+
+    async with session_marker() as session:
+
+        result = await session.execute(
+
+            select(Nachricht).where(
+
+                Nachricht.ad_id == ad_id,
+
+                or_(
+
+                    and_(
+                        Nachricht.sender_id == sender_id,
+                        Nachricht.receiver_id == receiver_id,
+                    ),
+
+                    and_(
+                        Nachricht.sender_id == receiver_id,
+                        Nachricht.receiver_id == sender_id,
+                    ),
+
+                )
+
+            ).order_by(
+                Nachricht.created_at
+            )
+
+        )
+
+        nachrichten = result.scalars().all()
+
+        return [
+
+            {
+                "id": n.id,
+                "sender_id": n.sender_id,
+                "receiver_id": n.receiver_id,
+                "text": n.text,
+                "created_at": n.created_at.isoformat(),
+                "is_read": n.is_read,
+            }
+
+            for n in nachrichten
+
+        ]

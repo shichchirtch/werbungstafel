@@ -72,7 +72,7 @@ class Favorite(Base):
     ad_id: Mapped[int] = mapped_column(ForeignKey("ads.id"))
 
 
-class Message(Base):
+class Nachricht(Base):
     __tablename__ = "messages"
 
     id: Mapped[int] = mapped_column(Integer,primary_key=True )
@@ -81,10 +81,12 @@ class Message(Base):
     receiver_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     text: Mapped[str] = mapped_column(String(3900))
     is_read: Mapped[bool] = mapped_column(default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default= lambda : datetime.now(UTC))
+
 
 
 async def init_models():
     async with engine.begin() as conn:
-        # await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
 
