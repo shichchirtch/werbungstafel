@@ -1,6 +1,6 @@
 import {useNavigate, useParams} from 'react-router-dom'
 import {useState, useEffect, useRef} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
+import {useSelector} from 'react-redux'
 import {categoryNames} from '../constants/nameKategories.js'
 
 
@@ -53,6 +53,8 @@ function AdDetailsPage() {
                 const dataChat = await responseChat.json()
 
                 setMessages(dataChat.nachrichten)
+
+                setShowChat(true)
             }
 
         }
@@ -504,7 +506,7 @@ transition
                                         ? '❤️ Gespeichert'
                                         : '🤍 Merken'}
                                 </button>
-
+                            !isOwner && !showChat && (
                                 <button
                                     onClick={() => setShowChat(prev => !prev)}
                                     className="
@@ -515,7 +517,7 @@ transition
                 "
                                 >
                                     💬 Kontaktieren
-                                </button>
+                                </button>)
 
                             </>
 
