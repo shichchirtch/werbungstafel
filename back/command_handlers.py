@@ -80,6 +80,7 @@ async def accept_login(message: Message, state: FSMContext):
         tg_id=message.from_user.id,
         first_name=message.from_user.first_name,
         username=message.from_user.username,
+        lan=us_lan
     )
 
 
