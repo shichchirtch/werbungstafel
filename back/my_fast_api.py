@@ -19,6 +19,7 @@ from lexicon import *
 from fastapi.staticfiles import StaticFiles
 import os
 import shutil
+from static_functions import notify_receiver
 
 ADMIN_ID = 6685637602
 
@@ -469,6 +470,7 @@ async def update_profile(telegram_id: int,data: ProfileUpdate):
 
 @f_api.post("/api/messages")
 async def create_nachricht(data: CreateNachricht):
+    bescheid = '📩 Sie haben eine neue Nachricht.\n\nÖffnen Sie Werbungstafel.'
 
     nachricht = await create_nachricht_db(
         ad_id=data.ad_id,
@@ -476,6 +478,8 @@ async def create_nachricht(data: CreateNachricht):
         receiver_id=data.receiver_id,
         text=data.text,
     )
+
+    await notify_receiver(data.receiver_id)
 
     return {
         "ok": True,

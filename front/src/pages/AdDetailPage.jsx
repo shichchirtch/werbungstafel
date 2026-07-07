@@ -601,6 +601,7 @@ transition
                             <input
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
+                                maxLength={400}
                                 placeholder="Nachricht..."
                                 className="flex-1 bg-black/40 text-white p-3 rounded-xl border border-white/10 outline-none"
                             />

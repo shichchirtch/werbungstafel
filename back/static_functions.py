@@ -1,6 +1,6 @@
 import translators
 
-from bot_instance import ROOT_WIND
+from bot_instance import ROOT_WIND, bot
 from aiogram_dialog.widgets.kbd import Button
 from user_repo import *
 from aiogram.types import CallbackQuery, Message
@@ -151,3 +151,24 @@ async def load_user_avatar(message: Message):
         telegram_id=user_id,
         avatar=f"/uploads/avatar/{user_id}.jpg",
     )
+
+async def notify_receiver(receiver_id: int,):
+        user = await get_user_by_tg_id(receiver_id)
+
+        if not user:
+            return
+
+        try:
+
+            await bot.send_message(
+                chat_id=user.telegram_id,
+                text=(
+                    "📩 <b>Sie haben eine neue Nachricht.</b>\n\n"
+                    "Öffnen Sie bitte Werbungstafel."
+                ),
+                parse_mode="HTML",
+            )
+
+        except Exception as e:
+
+            print(e)
