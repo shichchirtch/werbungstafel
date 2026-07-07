@@ -478,7 +478,7 @@ async def create_nachricht(data: CreateNachricht):
         receiver_id=data.receiver_id,
         text=data.text,
     )
-
+    print('received ID = ', data.receiver_id)
     await notify_receiver(data.receiver_id)
 
     return {
