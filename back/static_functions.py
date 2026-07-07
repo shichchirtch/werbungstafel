@@ -153,7 +153,8 @@ async def load_user_avatar(message: Message):
     )
 
 async def notify_receiver(receiver_id: int,):
-        user = await get_user_by_tg_id(receiver_id)
+        user = await get_user_by_id(receiver_id)
+        print('user  = ', user)
 
         if not user:
             return

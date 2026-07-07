@@ -16,6 +16,14 @@ async def get_user_by_tg_id(tg_id: int):
 
         return result.scalar_one_or_none()
 
+async def get_user_by_id(user_id: int):
+    async with session_marker() as session:
+
+        result = await session.execute(
+            select(User).where(User.id == user_id)
+        )
+
+        return result.scalar_one_or_none()
 
 async def create_user(tg_id: int, first_name: str,
                       username, lan: str) -> User:
