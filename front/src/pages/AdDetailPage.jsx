@@ -53,9 +53,9 @@ function AdDetailsPage() {
                     const dataChat = await responseChat.json()
 
                     setMessages(dataChat.nachrichten)
-
-                    setShowChat(true)
-                    console.log('show CHAT = ', showChat)
+                    if (dataChat.nachrichten.length > 0) {
+                        setShowChat(true)
+                        }
                 }
             }
         }
@@ -507,18 +507,21 @@ transition
                                         ? '❤️ Gespeichert'
                                         : '🤍 Merken'}
                                 </button>
-                                !isOwner && !showChat && (
-                                <button
-                                    onClick={() => setShowChat(prev => !prev)}
-                                    className="
-                    flex-1 py-4 rounded-2xl font-bold text-black text-lg
-                    bg-gradient-to-br from-pink-500 via-fuchsia-500 to-violet-600
-                    shadow-lg shadow-pink-500/40
-                    active:scale-95 transition
-                "
-                                >
-                                    💬 Kontaktieren
-                                </button>)
+                                {!isOwner && !showChat && (
+
+                                    <button
+                                        onClick={() => setShowChat(prev => !prev)}
+                                        className="
+                flex-1 py-4 rounded-2xl font-bold text-black text-lg
+                bg-gradient-to-br from-pink-500 via-fuchsia-500 to-violet-600
+                shadow-lg shadow-pink-500/40
+                active:scale-95 transition
+            "
+                                    >
+                                        💬 Kontaktieren
+                                    </button>
+
+                                )}
 
                             </>
 
@@ -538,21 +541,11 @@ transition
                                 </p>
 
                             ) : (
-
-                                messages.map((msg) => (
-
-                                    <div
-                                        key={msg.id}
-                                        className={`flex ${
-                                            msg.sender_id === user.dbId
-                                                ? 'justify-end'
-                                                : 'justify-start'
-                                        }`}
-                                    >
+                                    messages.map((msg) => (
 
                                         <div
                                             key={msg.id}
-                                            className={`flex ${
+                                            className={`flex mb-2 ${
                                                 msg.sender_id === user.dbId
                                                     ? 'justify-end'
                                                     : 'justify-start'
@@ -561,24 +554,34 @@ transition
 
                                             <div
                                                 className={`
-            max-w-[80%]
-            px-3
-            py-2
-            rounded-2xl
-            text-sm
-            ${
+                inline-flex
+                flex-col
+                max-w-[75%]
+                px-3
+                py-2
+                rounded-2xl
+                shadow
+
+                ${
                                                     msg.sender_id === user.dbId
-                                                        ? 'bg-cyan-400 text-black'
-                                                        : 'bg-white/10 text-white'
+                                                        ? 'bg-cyan-400 text-black rounded-br-md'
+                                                        : 'bg-white/10 text-white rounded-bl-md'
                                                 }
-        `}
+            `}
                                             >
 
-                                                <div>
+                                                <div className="break-words">
                                                     {msg.text}
                                                 </div>
 
-                                                <div className="text-[11px] opacity-60 mt-1 text-right">
+                                                <div
+                                                    className="
+                    self-end
+                    mt-1
+                    text-[11px]
+                    opacity-60
+                "
+                                                >
                                                     {new Date(msg.created_at).toLocaleTimeString([], {
                                                         hour: '2-digit',
                                                         minute: '2-digit',
@@ -588,10 +591,7 @@ transition
                                             </div>
 
                                         </div>
-
-                                    </div>
-
-                                ))
+                                    ))
 
                             )}
 
