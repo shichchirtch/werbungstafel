@@ -576,9 +576,6 @@ async def get_chats_db(user_id: int):
         # Собираем id всех собеседников
         other_ids = set()
 
-        if not other_ids:
-            return []
-
         for msg in nachrichten:
 
             other_id = (
@@ -588,6 +585,9 @@ async def get_chats_db(user_id: int):
             )
 
             other_ids.add(other_id)
+
+        if not other_ids:
+            return []
 
         # Одним запросом загружаем всех пользователей
         result = await session.execute(
