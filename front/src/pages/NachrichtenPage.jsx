@@ -2,6 +2,7 @@ import {useEffect, useState} from "react"
 import {useSelector} from "react-redux"
 import Chat from "../components/Chat"
 
+
 function NachrichtenPage() {
 
     const user = useSelector(state => state.user)
@@ -37,10 +38,11 @@ function NachrichtenPage() {
 
     }, [user.dbId])
 
-
-    // ==========================
-    // СПИСОК ЧАТОВ
-    // ==========================
+    //
+    // ============================
+    // СПИСОК ДИАЛОГОВ
+    // ============================
+    //
 
     if (!selectedChat) {
 
@@ -54,74 +56,117 @@ function NachrichtenPage() {
 
                 <div className="flex flex-col gap-3">
 
-                    {chats.map(chat => (
+                    {chats.length === 0 ? (
 
-                        <div
-                            key={`${chat.ad_id}-${chat.user_id}`}
-                            onClick={() => setSelectedChat(chat)}
-                            className="
-                                p-4
-                                rounded-2xl
-                                bg-white/5
-                                border border-white/10
-                                cursor-pointer
-                                hover:bg-white/10
-                                transition
-                            "
-                        >
+                        <div className="text-center text-gray-400 mt-20">
+                            Noch keine Nachrichten
+                        </div>
 
-                            <div className="flex items-center gap-3">
+                    ) : (
 
-                                {chat.avatar ? (
+                        chats.map(chat => (
 
-                                    <img
-                                        src={chat.avatar}
-                                        alt={chat.name}
-                                        className="
-                                            w-12
-                                            h-12
-                                            rounded-full
-                                            object-cover
-                                        "
-                                    />
+                            <div
+                                key={`${chat.ad_id}-${chat.user_id}`}
+                                onClick={() => setSelectedChat(chat)}
+                                className="
+                                    p-4
+                                    rounded-2xl
+                                    bg-white/5
+                                    border
+                                    border-white/10
+                                    cursor-pointer
+                                    hover:bg-white/10
+                                    transition
+                                "
+                            >
 
-                                ) : (
+                                <div className="flex items-center gap-3">
 
-                                    <div
-                                        className="
-                                            w-12
-                                            h-12
-                                            rounded-full
-                                            bg-zinc-700
-                                            flex
-                                            items-center
-                                            justify-center
-                                            text-white
-                                            font-bold
-                                        "
-                                    >
-                                        {chat.name[0]}
-                                    </div>
+                                    {chat.avatar ? (
 
-                                )}
+                                        <img
+                                            src={chat.avatar}
+                                            alt={chat.name}
+                                            className="
+                                                w-12
+                                                h-12
+                                                rounded-full
+                                                object-cover
+                                            "
+                                        />
 
-                                <div className="flex-1">
+                                    ) : (
 
-                                    <div className="text-white font-semibold">
-                                        {chat.name}
-                                    </div>
+                                        <div
+                                            className="
+                                                w-12
+                                                h-12
+                                                rounded-full
+                                                bg-zinc-700
+                                                flex
+                                                items-center
+                                                justify-center
+                                                text-white
+                                                font-bold
+                                            "
+                                        >
+                                            {chat.name[0]}
+                                        </div>
 
-                                    <div className="text-gray-400 text-sm truncate">
-                                        {chat.last_message}
+                                    )}
+
+                                    <div className="flex-1">
+
+                                        <div className="flex justify-between items-center">
+
+                                            <div className="text-white font-semibold">
+                                                {chat.name}
+                                            </div>
+
+                                            <div className="text-xs text-gray-500">
+
+                                                {(() => {
+
+                                                    const date = new Date(chat.created_at)
+                                                    const today = new Date()
+
+                                                    const isToday =
+                                                        date.getDate() === today.getDate() &&
+                                                        date.getMonth() === today.getMonth() &&
+                                                        date.getFullYear() === today.getFullYear()
+
+                                                    return isToday
+
+                                                        ? date.toLocaleTimeString([], {
+                                                            hour: "2-digit",
+                                                            minute: "2-digit",
+                                                        })
+
+                                                        : date.toLocaleDateString("de-DE", {
+                                                            day: "2-digit",
+                                                            month: "2-digit",
+                                                        })
+
+                                                })()}
+
+                                            </div>
+
+                                        </div>
+
+                                        <div className="text-gray-400 text-sm truncate mt-1">
+                                            {chat.last_message}
+                                        </div>
+
                                     </div>
 
                                 </div>
 
                             </div>
 
-                        </div>
+                        ))
 
-                    ))}
+                    )}
 
                 </div>
 
@@ -131,10 +176,11 @@ function NachrichtenPage() {
 
     }
 
-
-    // ==========================
+    //
+    // ============================
     // ОТКРЫТЫЙ ЧАТ
-    // ==========================
+    // ============================
+    //
 
     return (
 
@@ -151,7 +197,17 @@ function NachrichtenPage() {
                 ← Alle Chats
             </button>
 
-            <div className="flex items-center gap-3 mb-5">
+            <div
+                className="
+                    flex
+                    items-center
+                    gap-3
+                    mb-5
+                    pb-4
+                    border-b
+                    border-white/10
+                "
+            >
 
                 {selectedChat.avatar ? (
 
@@ -190,6 +246,10 @@ function NachrichtenPage() {
 
                     <div className="text-white font-bold">
                         {selectedChat.name}
+                    </div>
+
+                    <div className="text-gray-500 text-sm">
+                        Werbungstafel Chat
                     </div>
 
                 </div>

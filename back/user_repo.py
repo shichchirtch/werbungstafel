@@ -605,6 +605,26 @@ async def get_chats_db(user_id: int):
 
         for msg in nachrichten:
 
+            # unread = await session.scalar(
+            #
+            #     select(func.count())
+            #
+            #     .select_from(Nachricht)
+            #
+            #     .where(
+            #
+            #         Nachricht.ad_id == msg.ad_id,
+            #
+            #         Nachricht.sender_id == other_id,
+            #
+            #         Nachricht.receiver_id == user_id,
+            #
+            #         Nachricht.is_read == False,
+            #
+            #     )
+            #
+            # )
+
             other_id = (
                 msg.receiver_id
                 if msg.sender_id == user_id
@@ -637,7 +657,8 @@ async def get_chats_db(user_id: int):
 
                 "created_at": msg.created_at.isoformat(),
 
-                "is_read": msg.is_read,
+                "is_read": msg.is_read
+
 
             }
 
