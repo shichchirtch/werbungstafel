@@ -10,12 +10,66 @@ function NachrichtenPage() {
     const [chats, setChats] = useState([])
     const [selectedChat, setSelectedChat] = useState(null)
 
+
+    async function loadChats() {
+
+        if (!user.dbId) {
+            return
+        }
+
+        const response = await fetch(
+            `/api/chats/${user.dbId}`
+        )
+
+        if (!response.ok) {
+            return
+        }
+
+        const data = await response.json()
+
+        if (!data.ok) {
+            return
+        }
+
+        setChats(data.chats)
+
+    }
+
+
     useEffect(() => {
 
-        async function loadChats() {
+        loadChats()
+
+    }, [loadChats])
+
+
+    useEffect(() => {
+
+        async function markAsRead() {
+
+            if (!selectedChat) {
+                return
+            }
 
             const response = await fetch(
-                `/api/chats/${user.dbId}`
+                "/api/messages/read",
+                {
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+
+                    body: JSON.stringify({
+
+                        ad_id: selectedChat.ad_id,
+
+                        sender_id: selectedChat.user_id,
+
+                        receiver_id: user.dbId,
+
+                    }),
+                }
             )
 
             if (!response.ok) {
@@ -28,15 +82,54 @@ function NachrichtenPage() {
                 return
             }
 
-            setChats(data.chats)
+            // перечитываем список чатов
+            await loadChats()
 
         }
 
-        if (user.dbId) {
-            loadChats()
+        markAsRead()
+
+    }, [selectedChat])
+
+    useEffect(() => {
+
+        async function readMessages() {
+
+            if (!selectedChat) {
+                return
+            }
+
+            const response = await fetch(
+                "/api/messages/read",
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+
+                    body: JSON.stringify({
+
+                        ad_id: selectedChat.ad_id,
+
+                        sender_id: selectedChat.user_id,
+
+                        receiver_id: user.dbId,
+
+                    }),
+                }
+            )
+
+            const data = await response.json()
+
+            console.log("READ =", data)
+
+            await loadChats()
+
         }
 
-    }, [user.dbId])
+        readMessages()
+
+    }, [selectedChat])
 
     //
     // ============================
@@ -156,14 +249,14 @@ function NachrichtenPage() {
 
                                         <div className="flex justify-between items-center mt-1">
 
-    <div className="text-gray-400 text-sm truncate">
-        {chat.last_message}
-    </div>
+                                            <div className="text-gray-400 text-sm truncate">
+                                                {chat.last_message}
+                                            </div>
 
-    {chat.unread > 0 && (
+                                            {chat.unread > 0 && (
 
-        <div
-            className="
+                                                <div
+                                                    className="
     ml-3
     min-w-6
     h-6
@@ -180,13 +273,13 @@ function NachrichtenPage() {
     justify-center
     shrink-0
 "
-        >
-            {chat.unread}
-        </div>
+                                                >
+                                                    {chat.unread}
+                                                </div>
 
-    )}
+                                            )}
 
-</div>
+                                        </div>
 
                                     </div>
 

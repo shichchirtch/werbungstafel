@@ -12,7 +12,7 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_user_favorites, create_favorite, delete_favorite_db, check_favorite,
                        get_ad_photos, create_ad_photo, update_ad_db, delete_photo_db,
                        get_profile_db, update_profile_db,
-                       create_nachricht_db, get_nachrichten_db, get_chats_db)
+                       create_nachricht_db, get_nachrichten_db, get_chats_db, mark_messages_read_db)
 import secrets
 import string
 from lexicon import *
@@ -20,6 +20,8 @@ from fastapi.staticfiles import StaticFiles
 import os
 import shutil
 from static_functions import notify_receiver
+
+
 
 ADMIN_ID = 6685637602
 
@@ -67,6 +69,11 @@ class CreateNachricht(BaseModel):
     sender_id: int
     receiver_id: int
     text: str
+
+class ReadMessages(BaseModel):
+    ad_id: int
+    sender_id: int
+    receiver_id: int
 
 f_api = FastAPI(
     middleware=[
@@ -520,4 +527,18 @@ async def get_chats(user_id: int):
     return {
         "ok": True,
         "chats": chats,
+    }
+
+@f_api.put("/api/messages/read")
+async def mark_messages_read(data: ReadMessages):
+
+    count = await mark_messages_read_db(
+        ad_id=data.ad_id,
+        sender_id=data.sender_id,
+        receiver_id=data.receiver_id,
+    )
+
+    return {
+        "ok": True,
+        "updated": count,
     }

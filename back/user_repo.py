@@ -1,4 +1,4 @@
-from sqlalchemy import select, delete, func, and_, or_
+from sqlalchemy import select, delete, func, and_, or_, update
 from postgres_table import User, LoginRequest, Ad, Favorite, AdPhoto, Nachricht
 from postgres_table import session_marker
 from datetime import datetime, timedelta, UTC
@@ -658,3 +658,27 @@ async def get_chats_db(user_id: int):
             }
 
         return list(chats.values())
+
+
+async def mark_messages_read_db(ad_id: int, sender_id: int, receiver_id: int):
+    async with session_marker() as session:
+        stmt = (
+            update(Nachricht)
+            .where(
+                Nachricht.ad_id == ad_id,
+                Nachricht.sender_id == sender_id,
+                Nachricht.receiver_id == receiver_id,
+                Nachricht.is_read == False,
+            )
+
+            .values(
+                is_read=True
+            )
+
+        )
+
+        result = await session.execute(stmt)
+
+        await session.commit()
+
+        return result.rowcount
