@@ -573,6 +573,9 @@ async def get_chats_db(user_id: int):
         # Собираем id всех собеседников
         other_ids = set()
 
+        # Количество непрочитанных сообщений
+        unread = {}
+
         for msg in nachrichten:
 
             other_id = (
@@ -582,7 +585,18 @@ async def get_chats_db(user_id: int):
             )
 
             other_ids.add(other_id)
-        print('other_ids = ', other_ids)
+
+            key = (
+                msg.ad_id,
+                other_id,
+            )
+
+            if (
+                msg.receiver_id == user_id
+                and not msg.is_read
+            ):
+                unread[key] = unread.get(key, 0) + 1
+
         if not other_ids:
             return []
 
@@ -600,30 +614,9 @@ async def get_chats_db(user_id: int):
             for user in result.scalars()
         }
 
-
         chats = {}
 
         for msg in nachrichten:
-
-            # unread = await session.scalar(
-            #
-            #     select(func.count())
-            #
-            #     .select_from(Nachricht)
-            #
-            #     .where(
-            #
-            #         Nachricht.ad_id == msg.ad_id,
-            #
-            #         Nachricht.sender_id == other_id,
-            #
-            #         Nachricht.receiver_id == user_id,
-            #
-            #         Nachricht.is_read == False,
-            #
-            #     )
-            #
-            # )
 
             other_id = (
                 msg.receiver_id
@@ -636,6 +629,7 @@ async def get_chats_db(user_id: int):
                 other_id,
             )
 
+            # Уже добавили этот диалог
             if key in chats:
                 continue
 
@@ -657,8 +651,9 @@ async def get_chats_db(user_id: int):
 
                 "created_at": msg.created_at.isoformat(),
 
-                "is_read": msg.is_read
+                "is_read": msg.is_read,
 
+                "unread": unread.get(key, 0),
 
             }
 
