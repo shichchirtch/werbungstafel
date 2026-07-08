@@ -1,10 +1,6 @@
 import {useEffect, useState} from 'react'
 
-function Chat({
-    adId,
-    senderId,
-    receiverId,
-}) {
+function Chat({adId, senderId, receiverId,}) {
 
     const [messages, setMessages] = useState([])
     const [message, setMessage] = useState("")

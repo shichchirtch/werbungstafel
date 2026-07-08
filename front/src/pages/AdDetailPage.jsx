@@ -2,8 +2,7 @@ import {useNavigate, useParams} from 'react-router-dom'
 import {useState, useEffect, useRef} from 'react'
 import {useSelector} from 'react-redux'
 import {categoryNames} from '../constants/nameKategories.js'
-import  Chat  from '../components/Chat'
-
+import Chat from "../components/Chat.jsx";
 
 function AdDetailsPage() {
     const {id} = useParams()
@@ -70,57 +69,57 @@ function AdDetailsPage() {
         user.dbId === werbung.ownerId
 
 
-    const handleSend = async () => {
-
-        if (!message.trim()) {
-            return
-        }
-
-        try {
-
-            const response = await fetch(
-                '/api/messages',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-
-                    body: JSON.stringify({
-                        ad_id: werbung.id,
-                        sender_id: user.dbId,
-                        receiver_id: werbung.ownerId,
-                        text: message,
-                    }),
-                }
-            )
-
-            if (!response.ok) {
-                alert("Serverfehler")
-                return
-            }
-
-            const data = await response.json()
-
-            if (!data.ok) {
-                alert(data.error || "Fehler")
-                return
-            }
-
-            setMessages((prev) => [
-                ...prev,
-                data.nachricht,
-            ])
-
-            setMessage("")
-
-        } catch (err) {
-
-            console.error(err)
-
-            alert("Serverfehler")
-        }
-    }
+    // const handleSend = async () => {
+    //
+    //     if (!message.trim()) {
+    //         return
+    //     }
+    //
+    //     try {
+    //
+    //         const response = await fetch(
+    //             '/api/messages',
+    //             {
+    //                 method: 'POST',
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                 },
+    //
+    //                 body: JSON.stringify({
+    //                     ad_id: werbung.id,
+    //                     sender_id: user.dbId,
+    //                     receiver_id: werbung.ownerId,
+    //                     text: message,
+    //                 }),
+    //             }
+    //         )
+    //
+    //         if (!response.ok) {
+    //             alert("Serverfehler")
+    //             return
+    //         }
+    //
+    //         const data = await response.json()
+    //
+    //         if (!data.ok) {
+    //             alert(data.error || "Fehler")
+    //             return
+    //         }
+    //
+    //         setMessages((prev) => [
+    //             ...prev,
+    //             data.nachricht,
+    //         ])
+    //
+    //         setMessage("")
+    //
+    //     } catch (err) {
+    //
+    //         console.error(err)
+    //
+    //         alert("Serverfehler")
+    //     }
+    // }
     // TODO:
 // заменить на POST /api/messages
 

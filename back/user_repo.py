@@ -534,11 +534,8 @@ async def get_nachrichten_db(
             ).order_by(
                 Nachricht.created_at
             )
-
         )
-
         nachrichten = result.scalars().all()
-
         return [
 
             {
@@ -549,7 +546,72 @@ async def get_nachrichten_db(
                 "created_at": n.created_at.isoformat(),
                 "is_read": n.is_read,
             }
-
             for n in nachrichten
-
         ]
+
+
+async def get_chats_db(user_id: int):
+    async with session_marker() as session:
+
+        stmt = (
+            select(Nachricht)
+            .where(
+                or_(
+                    Nachricht.sender_id == user_id,
+                    Nachricht.receiver_id == user_id,
+                )
+            )
+            .order_by(
+                Nachricht.created_at.desc()
+            )
+        )
+
+        result = await session.execute(stmt)
+
+        nachrichten = result.scalars().all()
+
+        chats = {}
+
+        for msg in nachrichten:
+
+            # определяем второго участника диалога
+            other_id = (
+                msg.receiver_id
+                if msg.sender_id == user_id
+                else msg.sender_id
+            )
+
+            # один чат = одно объявление + один собеседник
+            key = (msg.ad_id, other_id)
+
+            # если такой чат уже добавили,
+            # пропускаем более старые сообщения
+            if key in chats:
+                continue
+
+            other_user = await session.get(
+                User,
+                other_id,
+            )
+
+            chats[key] = {
+
+                "ad_id": msg.ad_id,
+
+                "user_id": other_user.id,
+
+                "name": other_user.first_name,
+
+                "avatar": other_user.avatar,
+
+                "last_message": msg.text,
+
+                "created_at": msg.created_at.isoformat(),
+
+                "is_read": msg.is_read,
+
+                "telegram_id": other_user.telegram_id
+
+            }
+
+        return list(chats.values())

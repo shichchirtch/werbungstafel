@@ -12,7 +12,7 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_user_favorites, create_favorite, delete_favorite_db, check_favorite,
                        get_ad_photos, create_ad_photo, update_ad_db, delete_photo_db,
                        get_profile_db, update_profile_db,
-                       create_nachricht_db, get_nachrichten_db)
+                       create_nachricht_db, get_nachrichten_db, get_chats_db)
 import secrets
 import string
 from lexicon import *
@@ -510,4 +510,14 @@ async def get_nachrichten(
     return {
         "ok": True,
         "nachrichten": nachrichten,
+    }
+
+@f_api.get("/api/chats/{user_id}")
+async def get_chats(user_id: int):
+
+    chats = await get_chats_db(user_id)
+
+    return {
+        "ok": True,
+        "chats": chats,
     }

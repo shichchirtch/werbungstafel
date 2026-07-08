@@ -244,7 +244,7 @@ function Header() {
 
                                     <button
                                         onClick={() => {
-                                            navigate('/messages')
+                                            navigate('/nachrichten')
                                             setShowMenu(false)
                                         }}
                                         className="

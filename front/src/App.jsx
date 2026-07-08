@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import {createBrowserRouter, RouterProvider} from 'react-router-dom'
 import Layout from './components/layout/Layout.jsx'
 import HomePage from './pages/HomePage'
 import CategoriesPage from "./pages/CategoriesPage.jsx";
@@ -7,62 +7,67 @@ import CreateAdPage from "./pages/CreateAdPage.jsx";
 import AdDetailsPage from "./pages/AdDetailPage.jsx";
 import MyAdsPage from './pages/MyAdsPage';
 import EditAdPage from "./pages/EditAdPage.jsx";
-import ProfilePage  from "./pages/ProfilePage.jsx";
-import EditProfilePage  from "./pages/EditProfilePage.jsx";
+import ProfilePage from "./pages/ProfilePage.jsx";
+import EditProfilePage from "./pages/EditProfilePage.jsx";
 import MyFavoritesPage from "./pages/MyFavoritePage.jsx";
+import NachrichtenPage from "./pages/NachrichtenPage.jsx";
 
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <Layout />,
+        element: <Layout/>,
         children: [
             {
                 index: true,
-                element: <HomePage />,
+                element: <HomePage/>,
             },
             {
                 path: 'categories',
-                element: <CategoriesPage />,
+                element: <CategoriesPage/>,
             },
             {
                 path: 'category/:slug',
-                element: <CategoryAdsPage />,
+                element: <CategoryAdsPage/>,
             },
             {
                 path: 'create/:slug',
-                element: <CreateAdPage />,
+                element: <CreateAdPage/>,
             },
             {
                 path: 'ad/:id',
-                element: <AdDetailsPage />,
+                element: <AdDetailsPage/>,
             },
             {
                 path: 'my-ads',
-                element: <MyAdsPage />,
+                element: <MyAdsPage/>,
             },
             {
                 path: 'edit/:id',
-                element: <EditAdPage />,
+                element: <EditAdPage/>,
             },
             {
                 path: 'profile',
-                element: <ProfilePage />,
+                element: <ProfilePage/>,
             },
             {
                 path: 'edit-profile',
-                element: <EditProfilePage />,
+                element: <EditProfilePage/>,
             },
             {
                 path: 'favorites',
-                element: <MyFavoritesPage />,
-            }
+                element: <MyFavoritesPage/>,
+            },
+            {
+                path: 'nachrichten',
+                element: <NachrichtenPage/>,
+            },
 
         ],
     },
 ])
 
 function App() {
-    return <RouterProvider router={router} />
+    return <RouterProvider router={router}/>
 }
 
 export default App

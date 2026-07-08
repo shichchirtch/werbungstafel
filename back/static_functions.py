@@ -152,15 +152,12 @@ async def load_user_avatar(message: Message):
         avatar=f"/uploads/avatar/{user_id}.jpg",
     )
 
-async def notify_receiver(receiver_id: int,):
+async def notify_receiver(receiver_id: int):
         user = await get_user_by_id(receiver_id)
         print('user  = ', user)
-
         if not user:
             return
-
         try:
-
             await bot.send_message(
                 chat_id=user.telegram_id,
                 text=(
