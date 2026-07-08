@@ -550,7 +550,10 @@ async def get_nachrichten_db(
         ]
 
 
+from sqlalchemy import select, or_
+
 async def get_chats_db(user_id: int):
+
     async with session_marker() as session:
 
         stmt = (
@@ -570,35 +573,64 @@ async def get_chats_db(user_id: int):
 
         nachrichten = result.scalars().all()
 
-        chats = {}
+        # Собираем id всех собеседников
+        other_ids = set()
+
+        if not other_ids:
+            return []
 
         for msg in nachrichten:
 
-            # определяем второго участника диалога
             other_id = (
                 msg.receiver_id
                 if msg.sender_id == user_id
                 else msg.sender_id
             )
 
-            # один чат = одно объявление + один собеседник
-            key = (msg.ad_id, other_id)
+            other_ids.add(other_id)
 
-            # если такой чат уже добавили,
-            # пропускаем более старые сообщения
+        # Одним запросом загружаем всех пользователей
+        result = await session.execute(
+
+            select(User).where(
+                User.id.in_(other_ids)
+            )
+
+        )
+
+        users = {
+            user.id: user
+            for user in result.scalars()
+        }
+
+
+        chats = {}
+
+        for msg in nachrichten:
+
+            other_id = (
+                msg.receiver_id
+                if msg.sender_id == user_id
+                else msg.sender_id
+            )
+
+            key = (
+                msg.ad_id,
+                other_id,
+            )
+
             if key in chats:
                 continue
 
-            other_user = await session.get(
-                User,
-                other_id,
-            )
+            other_user = users[other_id]
 
             chats[key] = {
 
                 "ad_id": msg.ad_id,
 
                 "user_id": other_user.id,
+
+                "telegram_id": other_user.telegram_id,
 
                 "name": other_user.first_name,
 
@@ -609,8 +641,6 @@ async def get_chats_db(user_id: int):
                 "created_at": msg.created_at.isoformat(),
 
                 "is_read": msg.is_read,
-
-                "telegram_id": other_user.telegram_id
 
             }
 
