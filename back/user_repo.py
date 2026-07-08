@@ -549,9 +549,6 @@ async def get_nachrichten_db(
             for n in nachrichten
         ]
 
-
-from sqlalchemy import select, or_
-
 async def get_chats_db(user_id: int):
 
     async with session_marker() as session:
@@ -585,7 +582,7 @@ async def get_chats_db(user_id: int):
             )
 
             other_ids.add(other_id)
-
+        print('other_ids = ', other_ids)
         if not other_ids:
             return []
 

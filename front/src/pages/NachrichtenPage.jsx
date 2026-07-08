@@ -29,10 +29,6 @@ function NachrichtenPage() {
 
             setChats(data.chats)
 
-            if (data.chats.length > 0) {
-                setSelectedChat(data.chats[0])
-            }
-
         }
 
         if (user.dbId) {
@@ -41,96 +37,170 @@ function NachrichtenPage() {
 
     }, [user.dbId])
 
-    return (
 
-        <div className="px-4 py-6">
+    // ==========================
+    // СПИСОК ЧАТОВ
+    // ==========================
 
-            <h1 className="text-2xl text-white font-bold mb-6">
-                Nachrichten
-            </h1>
+    if (!selectedChat) {
 
-            <div className="flex flex-col gap-3">
+        return (
 
-                {chats.map(chat => (
+            <div className="px-4 py-6">
 
-                    <div
-                        key={`${chat.ad_id}-${chat.user_id}`}
-                        onClick={() => setSelectedChat(chat)}
-                        className="
-                            p-4
-                            rounded-2xl
-                            bg-white/5
-                            border border-white/10
-                            cursor-pointer
-                            hover:bg-white/10
-                            transition
-                        "
-                    >
+                <h1 className="text-2xl text-slate-200 font-bold mb-6">
+                    Nachrichten
+                </h1>
 
-                        <div className="flex items-center gap-3">
+                <div className="flex flex-col gap-3">
 
-                            {chat.avatar ? (
+                    {chats.map(chat => (
 
-                                <img
-                                    src={chat.avatar}
-                                    alt={chat.name}
-                                    className="
-                                        w-12
-                                        h-12
-                                        rounded-full
-                                        object-cover
-                                    "
-                                />
+                        <div
+                            key={`${chat.ad_id}-${chat.user_id}`}
+                            onClick={() => setSelectedChat(chat)}
+                            className="
+                                p-4
+                                rounded-2xl
+                                bg-white/5
+                                border border-white/10
+                                cursor-pointer
+                                hover:bg-white/10
+                                transition
+                            "
+                        >
 
-                            ) : (
+                            <div className="flex items-center gap-3">
 
-                                <div
-                                    className="
-                                        w-12
-                                        h-12
-                                        rounded-full
-                                        bg-zinc-700
-                                        flex
-                                        items-center
-                                        justify-center
-                                        text-white
-                                        font-bold
-                                    "
-                                >
-                                    {chat.name[0]}
-                                </div>
+                                {chat.avatar ? (
 
-                            )}
+                                    <img
+                                        src={chat.avatar}
+                                        alt={chat.name}
+                                        className="
+                                            w-12
+                                            h-12
+                                            rounded-full
+                                            object-cover
+                                        "
+                                    />
 
-                            <div className="flex-1">
+                                ) : (
 
-                                <div className="text-white font-semibold">
-                                    {chat.name}
-                                </div>
+                                    <div
+                                        className="
+                                            w-12
+                                            h-12
+                                            rounded-full
+                                            bg-zinc-700
+                                            flex
+                                            items-center
+                                            justify-center
+                                            text-white
+                                            font-bold
+                                        "
+                                    >
+                                        {chat.name[0]}
+                                    </div>
 
-                                <div className="text-gray-400 text-sm truncate">
-                                    {chat.last_message}
+                                )}
+
+                                <div className="flex-1">
+
+                                    <div className="text-white font-semibold">
+                                        {chat.name}
+                                    </div>
+
+                                    <div className="text-gray-400 text-sm truncate">
+                                        {chat.last_message}
+                                    </div>
+
                                 </div>
 
                             </div>
 
                         </div>
 
-                    </div>
+                    ))}
 
-                ))}
+                </div>
 
             </div>
 
-            {selectedChat && (
+        )
 
-                <Chat
-                    adId={selectedChat.ad_id}
-                    senderId={user.dbId}
-                    receiverId={selectedChat.user_id}
-                />
+    }
 
-            )}
+
+    // ==========================
+    // ОТКРЫТЫЙ ЧАТ
+    // ==========================
+
+    return (
+
+        <div className="px-4 py-6">
+
+            <button
+                onClick={() => setSelectedChat(null)}
+                className="
+                    mb-5
+                    text-cyan-300
+                    font-semibold
+                "
+            >
+                ← Alle Chats
+            </button>
+
+            <div className="flex items-center gap-3 mb-5">
+
+                {selectedChat.avatar ? (
+
+                    <img
+                        src={selectedChat.avatar}
+                        alt={selectedChat.name}
+                        className="
+                            w-12
+                            h-12
+                            rounded-full
+                            object-cover
+                        "
+                    />
+
+                ) : (
+
+                    <div
+                        className="
+                            w-12
+                            h-12
+                            rounded-full
+                            bg-zinc-700
+                            flex
+                            items-center
+                            justify-center
+                            text-white
+                            font-bold
+                        "
+                    >
+                        {selectedChat.name[0]}
+                    </div>
+
+                )}
+
+                <div>
+
+                    <div className="text-white font-bold">
+                        {selectedChat.name}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <Chat
+                adId={selectedChat.ad_id}
+                senderId={user.dbId}
+                receiverId={selectedChat.user_id}
+            />
 
         </div>
 
