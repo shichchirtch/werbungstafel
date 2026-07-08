@@ -2,6 +2,7 @@ import {useNavigate, useParams} from 'react-router-dom'
 import {useState, useEffect, useRef} from 'react'
 import {useSelector} from 'react-redux'
 import {categoryNames} from '../constants/nameKategories.js'
+import  Chat  from '../components/Chat'
 
 
 function AdDetailsPage() {
@@ -55,7 +56,7 @@ function AdDetailsPage() {
                     setMessages(dataChat.nachrichten)
                     if (dataChat.nachrichten.length > 0) {
                         setShowChat(true)
-                        }
+                    }
                 }
             }
         }
@@ -530,93 +531,11 @@ transition
                 </div>
 
                 {showChat && (
-                    <div className="mt-4 bg-white/5 border border-white/10 rounded-3xl p-4 backdrop-blur-md">
-
-                        <div className="max-h-60 overflow-y-auto flex flex-col gap-2 mb-3">
-
-                            {messages.length === 0 ? (
-
-                                <p className="text-gray-400 text-sm">
-                                    Noch keine Nachrichten
-                                </p>
-
-                            ) : (
-                                    messages.map((msg) => (
-
-                                        <div
-                                            key={msg.id}
-                                            className={`flex mb-2 ${
-                                                msg.sender_id === user.dbId
-                                                    ? 'justify-end'
-                                                    : 'justify-start'
-                                            }`}
-                                        >
-
-                                            <div
-                                                className={`
-                inline-flex
-                flex-col
-                max-w-[75%]
-                px-3
-                py-2
-                rounded-2xl
-                shadow
-
-                ${
-                                                    msg.sender_id === user.dbId
-                                                        ? 'bg-cyan-400 text-black rounded-br-md'
-                                                        : 'bg-white/10 text-white rounded-bl-md'
-                                                }
-            `}
-                                            >
-
-                                                <div className="break-words">
-                                                    {msg.text}
-                                                </div>
-
-                                                <div
-                                                    className="
-                    self-end
-                    mt-1
-                    text-[11px]
-                    opacity-60
-                "
-                                                >
-                                                    {new Date(msg.created_at).toLocaleTimeString([], {
-                                                        hour: '2-digit',
-                                                        minute: '2-digit',
-                                                    })}
-                                                </div>
-
-                                            </div>
-
-                                        </div>
-                                    ))
-
-                            )}
-
-                        </div>
-
-                        <div className="flex gap-2">
-                            <input
-                                value={message}
-                                onChange={(e) => setMessage(e.target.value)}
-                                maxLength={400}
-                                placeholder="Nachricht..."
-                                className="flex-1 bg-black/40 text-white p-3 rounded-xl border border-white/10 outline-none"
-                            />
-
-                            <button
-                                onClick={handleSend}
-                                className="px-4 rounded-xl bg-cyan-400 text-black font-bold"
-                            >
-                                →
-                            </button>
-
-
-                        </div>
-
-                    </div>
+                    <Chat
+                        adId={werbung.id}
+                        senderId={user.dbId}
+                        receiverId={werbung.ownerId}
+                    />
                 )}
 
             </div>
