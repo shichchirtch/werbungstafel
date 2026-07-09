@@ -207,6 +207,7 @@ async def get_ad(ad_id: int):
         "description": ad.description,
         "price": ad.price,
         "plz": ad.plz,
+        "anbieter": ad.anbieter,
         "photos": [
             {
                 "id": photo.id,
@@ -253,6 +254,7 @@ async def get_my_ads(telegram_id: int):
             "category": ad.category,
             "title": ad.title,
             "plz": ad.plz,
+            'anbieter': ad.anbieter
         }
         for ad in ads
     ]

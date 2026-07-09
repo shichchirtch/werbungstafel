@@ -68,61 +68,6 @@ function AdDetailsPage() {
         werbung &&
         user.dbId === werbung.ownerId
 
-
-    // const handleSend = async () => {
-    //
-    //     if (!message.trim()) {
-    //         return
-    //     }
-    //
-    //     try {
-    //
-    //         const response = await fetch(
-    //             '/api/messages',
-    //             {
-    //                 method: 'POST',
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                 },
-    //
-    //                 body: JSON.stringify({
-    //                     ad_id: werbung.id,
-    //                     sender_id: user.dbId,
-    //                     receiver_id: werbung.ownerId,
-    //                     text: message,
-    //                 }),
-    //             }
-    //         )
-    //
-    //         if (!response.ok) {
-    //             alert("Serverfehler")
-    //             return
-    //         }
-    //
-    //         const data = await response.json()
-    //
-    //         if (!data.ok) {
-    //             alert(data.error || "Fehler")
-    //             return
-    //         }
-    //
-    //         setMessages((prev) => [
-    //             ...prev,
-    //             data.nachricht,
-    //         ])
-    //
-    //         setMessage("")
-    //
-    //     } catch (err) {
-    //
-    //         console.error(err)
-    //
-    //         alert("Serverfehler")
-    //     }
-    // }
-    // TODO:
-// заменить на POST /api/messages
-
     const showToast = (text) => {
         setToast(text)
         clearTimeout(toastRef.current)
@@ -424,6 +369,38 @@ transition
                     <h1 className="text-2xl font-bold text-gray-300 mb-2">
                         {werbung.title}
                     </h1>
+
+                    {werbung.anbieter ? (
+
+                        <span className="
+        inline-block
+        px-3 py-1
+        rounded-full
+        bg-cyan-500/20
+        text-cyan-300
+        text-xs
+        font-bold
+        tracking-wider
+    ">
+        BIETE
+    </span>
+
+                    ) : (
+
+                        <span className="
+        inline-block
+        px-3 py-1
+        rounded-full
+        bg-pink-500/20
+        text-pink-300
+        text-xs
+        font-bold
+        tracking-wider
+    ">
+        SUCHE
+    </span>
+
+                    )}
 
                     <p className="text-gray-400 mb-2">
                         PLZ: {werbung.plz}
