@@ -16,14 +16,15 @@ async def get_user_by_tg_id(tg_id: int):
 
         return result.scalar_one_or_none()
 
+
 async def get_user_by_id(user_id: int):
     async with session_marker() as session:
-
         result = await session.execute(
             select(User).where(User.id == user_id)
         )
 
         return result.scalar_one_or_none()
+
 
 async def create_user(tg_id: int, first_name: str,
                       username, lan: str) -> User:
@@ -46,13 +47,12 @@ async def create_user_if_not_exists(tg_id: int, first_name: str, lan: str,
         lan=lan,
         username=username)
 
+
 async def update_avatar_db(
-    telegram_id: int,
-    avatar: str,
+        telegram_id: int,
+        avatar: str,
 ) -> bool:
-
     async with session_marker() as session:
-
         result = await session.execute(
 
             select(User).where(
@@ -163,7 +163,8 @@ async def delete_login_request(token: str):
         print("LOGIN REQUEST DELETED =", token)
 
 
-async def create_ad_db(owner_id: int, category: str, title: str, description: str, price: str, plz: str, ):
+async def create_ad_db(owner_id: int, category: str, title: str,
+                       description: str, price: str, plz: str, anbieter: bool ):
     async with session_marker() as session:
         ad = Ad(
             owner_id=owner_id,
@@ -171,7 +172,8 @@ async def create_ad_db(owner_id: int, category: str, title: str, description: st
             title=title,
             description=description,
             price=price,
-            plz=plz
+            plz=plz,
+            anbieter=anbieter,
         )
         session.add(ad)
         await session.commit()
@@ -389,7 +391,7 @@ async def get_ad_photos(ad_id: int):
         return result.scalars().all()
 
 
-async def update_ad_db(ad_id: int, title: str, description: str, price: str, plz: str):
+async def update_ad_db(ad_id: int, title: str, description: str, price: str, plz: str, anbieter: bool):
     async with session_marker() as session:
         ad = await session.get(Ad, ad_id, )
 
@@ -400,6 +402,7 @@ async def update_ad_db(ad_id: int, title: str, description: str, price: str, plz
         ad.description = description
         ad.price = price
         ad.plz = plz
+        ad.anbieter = anbieter
 
         await session.commit()
 
@@ -471,8 +474,9 @@ async def get_profile_db(telegram_id: int):
             "first_start": user.first_start.strftime("%d.%m.%Y"),
         }
 
-async def update_profile_db(telegram_id: int,bio: str, location: str,
-) -> bool:
+
+async def update_profile_db(telegram_id: int, bio: str, location: str,
+                            ) -> bool:
     async with session_marker() as session:
         result = await session.execute(
             select(User).where(User.telegram_id == telegram_id))
@@ -483,6 +487,7 @@ async def update_profile_db(telegram_id: int,bio: str, location: str,
         user.city = location
         await session.commit()
         return True
+
 
 ########################## Сообщения ###############################
 
@@ -503,14 +508,13 @@ async def create_nachricht_db(ad_id: int, sender_id: int, receiver_id: int, text
 
         return nachrict
 
+
 async def get_nachrichten_db(
-    ad_id: int,
-    sender_id: int,
-    receiver_id: int,
+        ad_id: int,
+        sender_id: int,
+        receiver_id: int,
 ):
-
     async with session_marker() as session:
-
         result = await session.execute(
 
             select(Nachricht).where(
@@ -549,8 +553,8 @@ async def get_nachrichten_db(
             for n in nachrichten
         ]
 
-async def get_chats_db(user_id: int):
 
+async def get_chats_db(user_id: int):
     async with session_marker() as session:
 
         stmt = (
@@ -592,8 +596,8 @@ async def get_chats_db(user_id: int):
             )
 
             if (
-                msg.receiver_id == user_id
-                and not msg.is_read
+                    msg.receiver_id == user_id
+                    and not msg.is_read
             ):
                 unread[key] = unread.get(key, 0) + 1
 

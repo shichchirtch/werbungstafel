@@ -2,7 +2,6 @@ import {useParams, useNavigate} from 'react-router-dom'
 import {useState} from 'react'
 import {useEffect} from "react";
 import {useSelector} from 'react-redux'
-import {addWerbung} from '../features/werbung/werbungSlice'
 
 
 function CreateAdPage() {
@@ -13,6 +12,7 @@ function CreateAdPage() {
     const [plz, setPlz] = useState('')
     const [description, setDescription] = useState('')
     const [price, setPrice] = useState('')
+    const [anbieter, setAnbieter] = useState(true)
 
     const [photos, setPhotos] = useState([])
 
@@ -42,25 +42,17 @@ function CreateAdPage() {
     const categoryTitle = categoryNames[slug] || 'Kategorie'
 
     const handleSubmit = async (e) => {
-
         e.preventDefault()
-
         if (!title || !plz || !description) {
-
             alert('Bitte Pflichtfelder ausfüllen')
-
             return
         }
-
         if (!user.isAuth) {
-
             alert('Bitte zuerst einloggen')
-
             return
         }
 
         try {
-
             const response = await fetch('/api/ads',
                 {
                     method: 'POST',
@@ -75,6 +67,7 @@ function CreateAdPage() {
                         plz,
                         description,
                         price,
+                        anbieter,
                     }),
                 }
             )
@@ -188,6 +181,38 @@ function CreateAdPage() {
                     onChange={(e) => setTitle(e.target.value)}
                     className="bg-black/40 text-gray-400 p-4 rounded-2xl outline-none border border-white/10"
                 />
+
+                <div className="flex gap-6 mb-2">
+
+                    <label className="flex items-center gap-2 text-gray-300 cursor-pointer">
+
+                        <input
+                            type="radio"
+                            name="anbieter"
+                            checked={anbieter}
+                            onChange={() => setAnbieter(true)}
+                            className="w-4 h-4 accent-cyan-400"
+                        />
+
+                        <span>Ich biete</span>
+
+                    </label>
+
+                    <label className="flex items-center gap-2 text-gray-300 cursor-pointer">
+
+                        <input
+                            type="radio"
+                            name="anbieter"
+                            checked={!anbieter}
+                            onChange={() => setAnbieter(false)}
+                            className="w-4 h-4 accent-pink-500"
+                        />
+
+                        <span>Ich suche</span>
+
+                    </label>
+
+                </div>
 
                 <input
                     type="text"

@@ -26,19 +26,6 @@ from static_functions import notify_receiver
 ADMIN_ID = 6685637602
 
 
-class ExpenseIn(BaseModel):
-    user_id: int
-    category: str
-    title: Optional[str] = None
-    price: float
-
-
-class IncomeIn(BaseModel):
-    user_id: int
-    title: Optional[str] = None
-    amount: float
-
-
 class AdCreate(BaseModel):
     telegram_id: int
     category: str
@@ -46,6 +33,7 @@ class AdCreate(BaseModel):
     description: str
     price: str = ""
     plz: str
+    anbieter: bool = True
 
 
 class Favorite(BaseModel):
@@ -184,6 +172,7 @@ async def create_ad(data: AdCreate):
         description=data.description,
         price=data.price,
         plz=data.plz,
+        anbieter=data.anbieter
     )
 
     return {
@@ -413,6 +402,7 @@ async def update_ad(
         description=data.description,
         price=data.price,
         plz=data.plz,
+        anbieter=data.anbieter,
     )
     if not success:
         return {
