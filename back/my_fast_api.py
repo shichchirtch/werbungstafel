@@ -46,6 +46,7 @@ class AdUpdate(BaseModel):
     description: str
     price: str
     plz: str
+    anbieter: bool
 
 class ProfileUpdate(BaseModel):
     telegram_id: int
@@ -394,10 +395,7 @@ async def delete_ad(ad_id: int):
 
 ################################ Редактирование объявления ###########################
 @f_api.put("/api/ad/{ad_id}")
-async def update_ad(
-        ad_id: int,
-        data: AdUpdate,
-):
+async def update_ad(ad_id: int, data: AdUpdate,):
     success = await update_ad_db(
         ad_id=ad_id,
         title=data.title,
