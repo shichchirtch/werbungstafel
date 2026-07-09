@@ -2,6 +2,7 @@ import {useNavigate, useLocation} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 import {setUser, logout} from '../../features/user/userSlice'
 import {useState, useRef, useEffect} from 'react'
+import {clearSelectedChat} from "../../features/messages/messagesSlice.js";
 
 
 function Header() {
@@ -244,8 +245,13 @@ function Header() {
 
                                     <button
                                         onClick={() => {
+
+                                            dispatch(clearSelectedChat())
+
                                             navigate('/nachrichten')
+
                                             setShowMenu(false)
+
                                         }}
                                         className="
                                 w-full text-left px-4 py-3

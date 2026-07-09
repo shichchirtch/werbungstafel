@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react"
-import {useSelector} from "react-redux"
+import {useSelector, useDispatch} from "react-redux"
 import Chat from "../components/Chat"
+import {selectChat} from "../features/messages/messagesSlice.js";
 
 
 function NachrichtenPage() {
@@ -8,8 +9,11 @@ function NachrichtenPage() {
     const user = useSelector(state => state.user)
 
     const [chats, setChats] = useState([])
-    const [selectedChat, setSelectedChat] = useState(null)
+    const selectedChat = useSelector(
+    state => state.messages.selectedChat
+)
 
+    const dispatch = useDispatch()
 
     async function loadChats() {
 
@@ -91,45 +95,6 @@ function NachrichtenPage() {
 
     }, [selectedChat])
 
-    useEffect(() => {
-
-        async function readMessages() {
-
-            if (!selectedChat) {
-                return
-            }
-
-            const response = await fetch(
-                "/api/messages/read",
-                {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-
-                    body: JSON.stringify({
-
-                        ad_id: selectedChat.ad_id,
-
-                        sender_id: selectedChat.user_id,
-
-                        receiver_id: user.dbId,
-
-                    }),
-                }
-            )
-
-            const data = await response.json()
-
-            console.log("READ =", data)
-
-            await loadChats()
-
-        }
-
-        readMessages()
-
-    }, [selectedChat])
 
     //
     // ============================
@@ -161,7 +126,7 @@ function NachrichtenPage() {
 
                             <div
                                 key={`${chat.ad_id}-${chat.user_id}`}
-                                onClick={() => setSelectedChat(chat)}
+                                onClick={() => dispatch(selectChat(chat))}
                                 className="
                                     p-4
                                     rounded-2xl
@@ -310,7 +275,7 @@ function NachrichtenPage() {
         <div className="px-4 py-6">
 
             <button
-                onClick={() => setSelectedChat(null)}
+                onClick={() => dispatch(clearSelectedChat())}
                 className="
                     mb-5
                     text-cyan-300

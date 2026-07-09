@@ -1,29 +1,42 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+
 const initialState = {
-    messages: JSON.parse(localStorage.getItem('messages')) || [],
+
+    selectedChat: null,
+
 }
 
 const messagesSlice = createSlice({
+
     name: 'messages',
+
     initialState,
+
     reducers: {
 
-        addMessage(state, action) {
-            state.messages.push(action.payload)
+        selectChat(state, action) {
 
-            localStorage.setItem(
-                'messages',
-                JSON.stringify(state.messages)
-            )
+            state.selectedChat = action.payload
+
         },
 
-        setMessages(state, action) {
-            state.messages = action.payload
+        clearSelectedChat(state) {
+
+            state.selectedChat = null
+
         },
 
     },
+
 })
 
-export const { addMessage, setMessages } = messagesSlice.actions
+export const {
+
+    selectChat,
+
+    clearSelectedChat,
+
+} = messagesSlice.actions
+
 export default messagesSlice.reducer
