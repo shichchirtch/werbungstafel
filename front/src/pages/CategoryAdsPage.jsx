@@ -2,7 +2,6 @@ import {useEffect, useState} from 'react'
 import {useNavigate, useParams} from 'react-router-dom'
 
 
-
 function CategoryAdsPage() {
     const {slug} = useParams()
     const navigate = useNavigate()
@@ -31,6 +30,8 @@ function CategoryAdsPage() {
     const [loading, setLoading] = useState(true)
 
     const [allWerbungen, setAllWerbungen] = useState([])
+    const [filter, setFilter] = useState("all")
+
 
     useEffect(() => {
 
@@ -48,10 +49,23 @@ function CategoryAdsPage() {
                 setLoading(false)
             }
         }
+
         loadAds()
     }, [slug])
 
-    const werbungen = allWerbungen
+    const werbungen = allWerbungen.filter(item => {
+
+        if (filter === "all") {
+            return true
+        }
+
+        if (filter === "anbieter") {
+            return item.anbieter
+        }
+
+        return !item.anbieter
+
+    })
 
     return (
         <div className="px-4 py-6">
@@ -70,13 +84,62 @@ function CategoryAdsPage() {
                 Neueste Anzeigen zuerst
             </p>
 
+            <div className="flex justify-center gap-3 mb-6">
+
+                <button
+                    onClick={() => setFilter("all")}
+                    className={`
+            px-4 py-2 rounded-xl text-sm font-semibold transition
+
+            ${
+                        filter === "all"
+                            ? "bg-cyan-400 text-black"
+                            : "bg-white/5 text-gray-300"
+                    }
+        `}
+                >
+                    Alle
+                </button>
+
+                <button
+                    onClick={() => setFilter("anbieter")}
+                    className={`
+            px-4 py-2 rounded-xl text-sm font-semibold transition
+
+            ${
+                        filter === "anbieter"
+                            ? "bg-cyan-400 text-black"
+                            : "bg-white/5 text-gray-300"
+                    }
+        `}
+                >
+                    Ich biete
+                </button>
+
+                <button
+                    onClick={() => setFilter("suche")}
+                    className={`
+            px-4 py-2 rounded-xl text-sm font-semibold transition
+
+            ${
+                        filter === "suche"
+                            ? "bg-cyan-400 text-black"
+                            : "bg-white/5 text-gray-300"
+                    }
+        `}
+                >
+                    Ich suche
+                </button>
+
+            </div>
+
             {loading ? (
 
-    <div className="text-center text-gray-400 py-12">
-        Anzeige wird geladen...
-    </div>
+                <div className="text-center text-gray-400 py-12">
+                    Anzeige wird geladen...
+                </div>
 
-): werbungen.length === 0 ? (
+            ) : werbungen.length === 0 ? (
 
                 <div
                     className="max-w-xl mx-auto rounded-3xl border border-white/10 bg-white/5 backdrop-blur-md p-8 text-center shadow-2xl">

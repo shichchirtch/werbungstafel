@@ -370,37 +370,45 @@ transition
                         {werbung.title}
                     </h1>
 
-                    {werbung.anbieter ? (
+            <div className="mb-4">
 
-                        <span className="
-        inline-block
-        px-3 py-1
-        rounded-full
-        bg-cyan-500/20
-        text-cyan-300
-        text-xs
-        font-bold
-        tracking-wider
-    ">
-        BIETE
-    </span>
+    {werbung.anbieter ? (
 
-                    ) : (
+        <span className="
+            inline-block
+            px-3 py-1
+            rounded-full
+            bg-cyan-500/20
+            text-cyan-300
+            text-xs
+            font-bold
+            tracking-wider
+        ">
+            BIETE
+        </span>
 
-                        <span className="
-        inline-block
-        px-3 py-1
-        rounded-full
-        bg-pink-500/20
-        text-pink-300
-        text-xs
-        font-bold
-        tracking-wider
-    ">
-        SUCHE
-    </span>
+    ) : (
 
-                    )}
+        <span className="
+            inline-block
+            px-3 py-1
+            rounded-full
+            bg-pink-500/20
+            text-pink-300
+            text-xs
+            font-bold
+            tracking-wider
+        ">
+            SUCHE
+        </span>
+
+    )}
+
+</div>
+
+<p className="text-gray-400 mb-2">
+    PLZ: {werbung.plz}
+</p>
 
                     <p className="text-gray-400 mb-2">
                         PLZ: {werbung.plz}
