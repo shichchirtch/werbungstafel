@@ -208,6 +208,7 @@ async def get_ads_by_category(category: str):
                 "price": ad.price,
                 "photos": [],
                 "createdAt": ad.created_at.isoformat(),
+                "anbieter": ad.anbieter
             }
             for ad in ads
         ]
