@@ -406,9 +406,6 @@ transition
 
 </div>
 
-<p className="text-gray-400 mb-2">
-    PLZ: {werbung.plz}
-</p>
 
                     <p className="text-gray-400 mb-2">
                         PLZ: {werbung.plz}
