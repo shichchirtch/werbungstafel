@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react"
 import {useSelector, useDispatch} from "react-redux"
 import Chat from "../components/Chat"
-import {selectChat} from "../features/messages/messagesSlice.js";
+import {selectChat, clearSelectedChat} from "../features/messages/messagesSlice.js";
 
 
 function NachrichtenPage() {
