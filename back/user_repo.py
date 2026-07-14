@@ -767,3 +767,66 @@ async def mark_messages_read_db(ad_id: int, sender_id: int, receiver_id: int):
         await session.commit()
 
         return result.rowcount
+
+
+async def get_ads_by_radius_db(
+    category: str,
+    center_lat: float,
+    center_lon: float,
+    radius: int,
+):
+    async with session_marker() as session:
+
+        stmt = (
+            select(Ad)
+            .where(
+                Ad.category == category
+            )
+            .order_by(
+                Ad.id.desc()
+            )
+        )
+
+        result = await session.execute(stmt)
+
+        ads = result.scalars().all()
+
+        filtered_ads = []
+
+        for ad in ads:
+
+            distance = geodesic(
+                (center_lat, center_lon),
+                (ad.latitude, ad.longitude),
+            ).km
+
+            if distance > radius:
+                continue
+
+            filtered_ads.append({
+
+                "id": ad.id,
+
+                "ownerId": ad.owner_id,
+
+                "category": ad.category,
+
+                "title": ad.title,
+
+                "plz": ad.plz,
+
+                "description": ad.description,
+
+                "price": ad.price,
+
+                "photos": [],
+
+                "createdAt": ad.created_at.isoformat(),
+
+                "anbieter": ad.anbieter,
+
+                "distance": round(distance, 1),
+
+            })
+
+        return filtered_ads

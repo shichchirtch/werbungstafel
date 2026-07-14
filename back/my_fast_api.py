@@ -11,7 +11,7 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_ad_by_id, delete_ad_db, get_ads_by_owner,
                        get_user_favorites, create_favorite, delete_favorite_db, check_favorite,
                        get_ad_photos, create_ad_photo, update_ad_db, delete_photo_db,
-                       get_profile_db, update_profile_db,
+                       get_profile_db, update_profile_db, get_ads_by_radius_db,
                        create_nachricht_db, get_nachrichten_db,
                        get_chats_db, mark_messages_read_db, update_profile_and_get_user_db)
 import secrets
@@ -205,10 +205,30 @@ async def create_ad(data: AdCreate):
 
 
 @f_api.get("/api/ads/{category}")
-async def get_ads(category: str):
-    ads = await get_ads_by_category(category)
+async def get_ads(
+    category: str,
+    radius: str = "Deutschland",
+    telegram_id: int | None = None,
+):
+    print('\n\nBACK RADIUS = ', radius)
+    print(telegram_id)
+    if radius == "Deutschland":
+        return await get_ads_by_category(category)
 
-    return ads
+    radius_km = int(
+        radius.replace(" km", "")
+    )
+
+    user = await get_user_by_tg_id(
+        telegram_id
+    )
+
+    return await get_ads_by_radius_db(
+        category=category,
+        center_lat=user.latitude,
+        center_lon=user.longitude,
+        radius=radius_km,
+    )
 
 
 @f_api.get("/api/ad/{ad_id}")

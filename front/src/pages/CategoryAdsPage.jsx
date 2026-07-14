@@ -45,7 +45,7 @@ function CategoryAdsPage() {
         async function loadAds() {
             setLoading(true)
             try {
-                const response = await fetch(`/api/ads/${slug}`)
+                const response = await fetch(`/api/ads/${slug}?radius=${radius}&telegram_id=${user.id}`)
                 const data = await response.json()
                 console.log('ADS = ', data)
                 setAllWerbungen(data)
@@ -58,7 +58,7 @@ function CategoryAdsPage() {
         }
 
         loadAds()
-    }, [slug])
+    }, [slug, radius, user.id])
 
     const werbungen = allWerbungen.filter(item => {
 
@@ -124,7 +124,7 @@ function CategoryAdsPage() {
                             }
                 `}
                         >
-                            Ich biete
+                            Angebot
                         </button>
 
                         <button
@@ -138,7 +138,7 @@ function CategoryAdsPage() {
                             }
                 `}
                         >
-                            Ich suche
+                            Gesucht
                         </button>
 
                     </div>
