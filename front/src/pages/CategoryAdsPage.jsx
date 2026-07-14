@@ -89,125 +89,134 @@ function CategoryAdsPage() {
                 Neueste Anzeigen zuerst
             </p>
 
-            <div className="flex justify-center gap-3 mb-6">
+            {werbungen.length > 0 && (
 
-                <div
-                    className="
-        max-w-xl
-        mx-auto
-        mb-6
-        rounded-2xl
-        border
-        border-white/10
-        bg-white/5
-        backdrop-blur-md
-        p-4
-    "
-                >
+    <>
 
-                    <div className="text-gray-300 font-semibold mb-3">
-                        Radius
-                    </div>
+        {/* ФИЛЬТР */}
 
-                    <div className="grid grid-cols-2 gap-3">
+        <div className="flex justify-center gap-3 mb-5">
 
-                        {[
-                            "Deutschland",
-                            "5 km",
-                            "10 km",
-                            "20 km",
-                            "50 km",
-                        ].map(item => (
-
-                            <label
-                                key={item}
-                                className="
-                    flex
-                    items-center
-                    gap-2
-                    cursor-pointer
-                    text-gray-300
-                "
-                            >
-
-                                <input
-                                    type="radio"
-                                    name="radius"
-                                    checked={radius === item}
-                                    onChange={() => {
-
-                                        if (item === "Deutschland") {
-                                            setRadius(item)
-                                            return
-                                        }
-
-                                        if (!user.latitude || !user.longitude) {
-                                            setShowLocationModal(true)
-                                            return
-                                        }
-
-                                        setRadius(item)
-
-                                    }}
-                                    className="accent-cyan-400"
-                                />
-
-                                {item}
-
-                            </label>
-
-                        ))}
-
-                    </div>
-
-                </div>
-
-                <button
-                    onClick={() => setFilter("all")}
-                    className={`
-            px-4 py-2 rounded-xl text-sm font-semibold transition
-
-            ${
+            <button
+                onClick={() => setFilter("all")}
+                className={`
+                    px-4 py-2 rounded-xl text-sm font-semibold transition
+                    ${
                         filter === "all"
                             ? "bg-cyan-400 text-black"
                             : "bg-white/5 text-gray-300"
                     }
-        `}
-                >
-                    Alle
-                </button>
+                `}
+            >
+                Alle
+            </button>
 
-                <button
-                    onClick={() => setFilter("anbieter")}
-                    className={`
-            px-4 py-2 rounded-xl text-sm font-semibold transition
-
-            ${
+            <button
+                onClick={() => setFilter("anbieter")}
+                className={`
+                    px-4 py-2 rounded-xl text-sm font-semibold transition
+                    ${
                         filter === "anbieter"
                             ? "bg-cyan-400 text-black"
                             : "bg-white/5 text-gray-300"
                     }
-        `}
-                >
-                    Ich biete
-                </button>
+                `}
+            >
+                Ich biete
+            </button>
 
-                <button
-                    onClick={() => setFilter("suche")}
-                    className={`
-            px-4 py-2 rounded-xl text-sm font-semibold transition
-
-            ${
+            <button
+                onClick={() => setFilter("suche")}
+                className={`
+                    px-4 py-2 rounded-xl text-sm font-semibold transition
+                    ${
                         filter === "suche"
                             ? "bg-cyan-400 text-black"
                             : "bg-white/5 text-gray-300"
                     }
-        `}
-                >
-                    Ich suche
-                </button>
+                `}
+            >
+                Ich suche
+            </button>
+
+        </div>
+
+        {/* РАДИУС */}
+
+        <div
+            className="
+                max-w-xl
+                mx-auto
+                mb-6
+                rounded-2xl
+                border
+                border-white/10
+                bg-white/5
+                backdrop-blur-md
+                p-4
+            "
+        >
+
+            <div className="text-gray-300 font-semibold mb-3">
+                Radius
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+
+                {[
+                    "Deutschland",
+                    "5 km",
+                    "10 km",
+                    "20 km",
+                    "50 km",
+                ].map(item => (
+
+                    <label
+                        key={item}
+                        className="
+                            flex
+                            items-center
+                            gap-2
+                            cursor-pointer
+                            text-gray-300
+                        "
+                    >
+
+                        <input
+                            type="radio"
+                            name="radius"
+                            checked={radius === item}
+                            onChange={() => {
+
+                                if (item === "Deutschland") {
+                                    setRadius(item)
+                                    return
+                                }
+
+                                if (!user.latitude || !user.longitude) {
+                                    setShowLocationModal(true)
+                                    return
+                                }
+
+                                setRadius(item)
+
+                            }}
+                            className="accent-cyan-400"
+                        />
+
+                        {item}
+
+                    </label>
+
+                ))}
 
             </div>
+
+        </div>
+
+    </>
+
+)}
 
             {loading ? (
 
