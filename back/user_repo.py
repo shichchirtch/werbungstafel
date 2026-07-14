@@ -164,7 +164,8 @@ async def delete_login_request(token: str):
 
 
 async def create_ad_db(owner_id: int, category: str, title: str,
-                       description: str, price: str, plz: str, anbieter: bool ):
+                       description: str, price: str, plz: str, anbieter: bool, latitude: float,
+    longitude: float,):
     async with session_marker() as session:
         ad = Ad(
             owner_id=owner_id,
@@ -174,6 +175,8 @@ async def create_ad_db(owner_id: int, category: str, title: str,
             price=price,
             plz=plz,
             anbieter=anbieter,
+            latitude=latitude,
+            longitude=longitude,
         )
         session.add(ad)
         await session.commit()

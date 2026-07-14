@@ -1,10 +1,12 @@
 import {useEffect, useState} from 'react'
 import {useNavigate, useParams} from 'react-router-dom'
+import {useSelector} from 'react-redux'
 
 
 function CategoryAdsPage() {
     const {slug} = useParams()
     const navigate = useNavigate()
+    const user = useSelector(state => state.user)
 
     const categoryNames = {
         altenpflege: 'Altenpflege',
@@ -31,6 +33,9 @@ function CategoryAdsPage() {
 
     const [allWerbungen, setAllWerbungen] = useState([])
     const [filter, setFilter] = useState("all")
+
+    const [radius, setRadius] = useState("Deutschland")
+    const [showLocationModal, setShowLocationModal] = useState(false)
 
 
     useEffect(() => {
@@ -85,6 +90,77 @@ function CategoryAdsPage() {
             </p>
 
             <div className="flex justify-center gap-3 mb-6">
+
+                <div
+                    className="
+        max-w-xl
+        mx-auto
+        mb-6
+        rounded-2xl
+        border
+        border-white/10
+        bg-white/5
+        backdrop-blur-md
+        p-4
+    "
+                >
+
+                    <div className="text-gray-300 font-semibold mb-3">
+                        Radius
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+
+                        {[
+                            "Deutschland",
+                            "5 km",
+                            "10 km",
+                            "20 km",
+                            "50 km",
+                        ].map(item => (
+
+                            <label
+                                key={item}
+                                className="
+                    flex
+                    items-center
+                    gap-2
+                    cursor-pointer
+                    text-gray-300
+                "
+                            >
+
+                                <input
+                                    type="radio"
+                                    name="radius"
+                                    checked={radius === item}
+                                    onChange={() => {
+
+                                        if (item === "Deutschland") {
+                                            setRadius(item)
+                                            return
+                                        }
+
+                                        if (!user.latitude || !user.longitude) {
+                                            setShowLocationModal(true)
+                                            return
+                                        }
+
+                                        setRadius(item)
+
+                                    }}
+                                    className="accent-cyan-400"
+                                />
+
+                                {item}
+
+                            </label>
+
+                        ))}
+
+                    </div>
+
+                </div>
 
                 <button
                     onClick={() => setFilter("all")}
@@ -223,6 +299,80 @@ function CategoryAdsPage() {
 
                         </div>
                     ))}
+
+                </div>
+
+            )}
+
+            {showLocationModal && (
+
+                <div
+                    className="
+            fixed inset-0
+            bg-black/70
+            flex
+            items-center
+            justify-center
+            z-50
+        "
+                >
+
+                    <div
+                        className="
+                w-[90%]
+                max-w-md
+                rounded-3xl
+                bg-zinc-900
+                border
+                border-white/10
+                p-6
+            "
+                    >
+
+                        <h2 className="text-xl font-bold text-white mb-3">
+                            📍 Standort erforderlich
+                        </h2>
+
+                        <p className="text-gray-400 mb-6">
+                            Um Anzeigen im Umkreis zu finden,
+                            vervollständigen Sie bitte zuerst Ihr Profil.
+                        </p>
+
+                        <div className="flex gap-3">
+
+                            <button
+                                onClick={() => setShowLocationModal(false)}
+                                className="
+                        flex-1
+                        py-3
+                        rounded-2xl
+                        bg-zinc-700
+                        text-white
+                    "
+                            >
+                                Abbrechen
+                            </button>
+
+                            <button
+                                onClick={() => {
+                                    setShowLocationModal(false)
+                                    navigate("/edit-profile")
+                                }}
+                                className="
+                        flex-1
+                        py-3
+                        rounded-2xl
+                        bg-cyan-400
+                        text-black
+                        font-bold
+                    "
+                            >
+                                Profil öffnen
+                            </button>
+
+                        </div>
+
+                    </div>
 
                 </div>
 

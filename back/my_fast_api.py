@@ -21,6 +21,12 @@ import os
 import shutil
 from static_functions import notify_receiver
 
+from geopy.geocoders import Nominatim
+
+geolocator = Nominatim(
+    user_agent="werbungstafel"
+)
+
 
 
 ADMIN_ID = 6685637602
@@ -166,6 +172,19 @@ async def create_ad(data: AdCreate):
             "error": "User not found"
         }
 
+    location = geolocator.geocode(
+        f"{data.plz}, Germany"
+    )
+
+    if location is None:
+        return {
+            "ok": False,
+            "error": "PLZ nicht gefunden"
+        }
+
+    latitude = round(location.latitude, 6)
+    longitude = round(location.longitude, 6)
+
     ad = await create_ad_db(
         owner_id=user.id,
         category=data.category,
@@ -173,7 +192,9 @@ async def create_ad(data: AdCreate):
         description=data.description,
         price=data.price,
         plz=data.plz,
-        anbieter=data.anbieter
+        anbieter=data.anbieter,
+        latitude=latitude,
+        longitude=longitude,
     )
 
     return {

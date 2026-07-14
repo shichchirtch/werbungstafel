@@ -10,6 +10,8 @@ const initialState = savedUser || {
     avatar: null,
     bio: '',
     location: '',
+    latitude: null,
+    longitude: null,
     role: 'user',
     isTelegram: false,
 }
@@ -37,6 +39,8 @@ const userSlice = createSlice({
             state.dbId = null
             state.location = ''
             state.isTelegram = false
+            state.latitude = null
+            state.longitude = null
 
             localStorage.removeItem('user')
         },
@@ -46,6 +50,8 @@ const userSlice = createSlice({
             state.bio = action.payload.bio
             state.location = action.payload.location
             state.avatar = action.payload.avatar
+            state.latitude = action.payload.latitude
+            state.longitude = action.payload.longitude
 
             localStorage.setItem('user', JSON.stringify(state))
         }
