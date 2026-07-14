@@ -4,6 +4,11 @@ from postgres_table import session_marker
 from datetime import datetime, timedelta, UTC
 import shutil
 import os
+from geopy.geocoders import Nominatim
+
+geolocator = Nominatim(
+    user_agent="werbungstafel"
+)
 
 
 async def get_user_by_tg_id(tg_id: int):
@@ -479,20 +484,92 @@ async def get_profile_db(telegram_id: int):
         }
 
 
-async def update_profile_db(telegram_id: int, bio: str, location: str,
-                            ) -> bool:
+async def update_profile_db(
+    telegram_id: int,
+    bio: str,
+    location: str,
+) -> bool:
+
     async with session_marker() as session:
+
         result = await session.execute(
-            select(User).where(User.telegram_id == telegram_id))
+            select(User).where(
+                User.telegram_id == telegram_id
+            )
+        )
+
         user = result.scalar_one_or_none()
+
         if not user:
             return False
+
+        location_data = geolocator.geocode(
+            f"{location}, Germany"
+        )
+
+        if location_data is None:
+            return False
+
         user.description = bio
         user.city = location
+
+        user.latitude = round(
+            location_data.latitude,
+            6,
+        )
+
+        user.longitude = round(
+            location_data.longitude,
+            6,
+        )
+
         await session.commit()
+
         return True
 
+async def update_profile_and_get_user_db(
+    telegram_id: int,
+    bio: str,
+    location: str,
+):
 
+    async with session_marker() as session:
+
+        result = await session.execute(
+            select(User).where(
+                User.telegram_id == telegram_id
+            )
+        )
+
+        user = result.scalar_one_or_none()
+
+        if not user:
+            return None
+
+        location_data = geolocator.geocode(
+            f"{location}, Germany"
+        )
+
+        if location_data is None:
+            return None
+
+        user.description = bio
+        user.city = location
+
+        user.latitude = round(
+            location_data.latitude,
+            6,
+        )
+
+        user.longitude = round(
+            location_data.longitude,
+            6,
+        )
+
+        await session.commit()
+        await session.refresh(user)
+
+        return user
 ########################## Сообщения ###############################
 
 async def create_nachricht_db(ad_id: int, sender_id: int, receiver_id: int, text: str):

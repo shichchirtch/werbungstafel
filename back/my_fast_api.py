@@ -12,7 +12,8 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_user_favorites, create_favorite, delete_favorite_db, check_favorite,
                        get_ad_photos, create_ad_photo, update_ad_db, delete_photo_db,
                        get_profile_db, update_profile_db,
-                       create_nachricht_db, get_nachrichten_db, get_chats_db, mark_messages_read_db)
+                       create_nachricht_db, get_nachrichten_db,
+                       get_chats_db, mark_messages_read_db, update_profile_and_get_user_db)
 import secrets
 import string
 from lexicon import *
@@ -464,16 +465,23 @@ async def get_profile(telegram_id: int,):
     return {"ok": True,**profile}
 
 
-@f_api.put("/api/profile/{telegram_id}")
-async def update_profile(telegram_id: int,data: ProfileUpdate):
 
-    success = await update_profile_db(
-        telegram_id=int(telegram_id),
+
+
+
+@f_api.put("/api/profile/{telegram_id}")
+async def update_profile(
+    telegram_id: int,
+    data: ProfileUpdate,
+):
+
+    user = await update_profile_and_get_user_db(
+        telegram_id=telegram_id,
         bio=data.bio,
         location=data.location,
     )
 
-    if not success:
+    if not user:
 
         return {
             "ok": False,
@@ -482,7 +490,12 @@ async def update_profile(telegram_id: int,data: ProfileUpdate):
 
     return {
         "ok": True,
+        "bio": user.description,
+        "location": user.city,
+        "latitude": user.latitude,
+        "longitude": user.longitude,
     }
+
 
 ############################### Nachricht #########################################
 

@@ -8,6 +8,8 @@ function CategoryAdsPage() {
     const navigate = useNavigate()
     const user = useSelector(state => state.user)
 
+    console.log("USER COORDS =", user.latitude, user.longitude)
+
     const categoryNames = {
         altenpflege: 'Altenpflege',
         autoservice: 'Autoservice',
@@ -91,60 +93,60 @@ function CategoryAdsPage() {
 
             {werbungen.length > 0 && (
 
-    <>
+                <>
 
-        {/* ФИЛЬТР */}
+                    {/* ФИЛЬТР */}
 
-        <div className="flex justify-center gap-3 mb-5">
+                    <div className="flex justify-center gap-3 mb-5">
 
-            <button
-                onClick={() => setFilter("all")}
-                className={`
+                        <button
+                            onClick={() => setFilter("all")}
+                            className={`
                     px-4 py-2 rounded-xl text-sm font-semibold transition
                     ${
-                        filter === "all"
-                            ? "bg-cyan-400 text-black"
-                            : "bg-white/5 text-gray-300"
-                    }
+                                filter === "all"
+                                    ? "bg-cyan-400 text-black"
+                                    : "bg-white/5 text-gray-300"
+                            }
                 `}
-            >
-                Alle
-            </button>
+                        >
+                            Alle
+                        </button>
 
-            <button
-                onClick={() => setFilter("anbieter")}
-                className={`
+                        <button
+                            onClick={() => setFilter("anbieter")}
+                            className={`
                     px-4 py-2 rounded-xl text-sm font-semibold transition
                     ${
-                        filter === "anbieter"
-                            ? "bg-cyan-400 text-black"
-                            : "bg-white/5 text-gray-300"
-                    }
+                                filter === "anbieter"
+                                    ? "bg-cyan-400 text-black"
+                                    : "bg-white/5 text-gray-300"
+                            }
                 `}
-            >
-                Ich biete
-            </button>
+                        >
+                            Ich biete
+                        </button>
 
-            <button
-                onClick={() => setFilter("suche")}
-                className={`
+                        <button
+                            onClick={() => setFilter("suche")}
+                            className={`
                     px-4 py-2 rounded-xl text-sm font-semibold transition
                     ${
-                        filter === "suche"
-                            ? "bg-cyan-400 text-black"
-                            : "bg-white/5 text-gray-300"
-                    }
+                                filter === "suche"
+                                    ? "bg-cyan-400 text-black"
+                                    : "bg-white/5 text-gray-300"
+                            }
                 `}
-            >
-                Ich suche
-            </button>
+                        >
+                            Ich suche
+                        </button>
 
-        </div>
+                    </div>
 
-        {/* РАДИУС */}
+                    {/* РАДИУС */}
 
-        <div
-            className="
+                    <div
+                        className="
                 max-w-xl
                 mx-auto
                 mb-6
@@ -155,68 +157,74 @@ function CategoryAdsPage() {
                 backdrop-blur-md
                 p-4
             "
-        >
+                    >
 
-            <div className="text-gray-300 font-semibold mb-3">
-                Radius
-            </div>
+                        <div className="text-gray-300 font-semibold mb-3">
+                            Radius
+                        </div>
 
-            <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-2 gap-3">
 
-                {[
-                    "Deutschland",
-                    "5 km",
-                    "10 km",
-                    "20 km",
-                    "50 km",
-                ].map(item => (
+                            {[
+                                "Deutschland",
+                                "5 km",
+                                "10 km",
+                                "20 km",
+                                "50 km",
+                            ].map(item => (
 
-                    <label
-                        key={item}
-                        className="
+                                <label
+                                    key={item}
+                                    className="
                             flex
                             items-center
                             gap-2
                             cursor-pointer
                             text-gray-300
                         "
-                    >
+                                >
 
-                        <input
-                            type="radio"
-                            name="radius"
-                            checked={radius === item}
-                            onChange={() => {
+                                    <input
+                                        type="radio"
+                                        name="radius"
+                                        checked={radius === item}
+                                        onChange={() => {
 
-                                if (item === "Deutschland") {
-                                    setRadius(item)
-                                    return
-                                }
+                                            if (item === "Deutschland") {
+                                                setRadius(item)
+                                                return
+                                            }
+                                            console.log(
+                                                "CHECK",
+                                                user.latitude,
+                                                user.longitude
+                                            )
+                                            if (!user.latitude || !user.longitude) {
 
-                                if (!user.latitude || !user.longitude) {
-                                    setShowLocationModal(true)
-                                    return
-                                }
+                                                setShowLocationModal(true)
+                                                return
+                                            }
 
-                                setRadius(item)
+                                            setRadius(item)
+                                            console.log("RADIUS =", item)
 
-                            }}
-                            className="accent-cyan-400"
-                        />
+                                        }}
+                                        className="accent-cyan-400"
+                                    />
 
-                        {item}
+                                    {item}
 
-                    </label>
+                                </label>
 
-                ))}
+                            ))}
 
-            </div>
+                        </div>
 
-        </div>
+                    </div>
 
-    </>
+                </>
 
-)}
+            )}
 
             {loading ? (
 
@@ -392,3 +400,5 @@ function CategoryAdsPage() {
 }
 
 export default CategoryAdsPage
+
+// Bremen 28195

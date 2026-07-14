@@ -1,6 +1,7 @@
 import {useState, useEffect} from 'react'
-import {useSelector} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 import {useNavigate} from 'react-router-dom'
+import {updateProfile} from "../features/user/userSlice.js";
 
 function EditProfilePage() {
 
@@ -11,6 +12,7 @@ function EditProfilePage() {
     const [name, setName] = useState(user.name || '')
     const [bio, setBio] = useState(user.bio || '')
     const [location, setLocation] = useState(user.location || '')
+    const dispatch = useDispatch()
 
     useEffect(() => {
 
@@ -56,18 +58,35 @@ function EditProfilePage() {
                         'Content-Type': 'application/json',
                     },
 
-                    body: JSON.stringify({telegram_id,  bio, location}),
+                    body: JSON.stringify({telegram_id, bio, location}),
                 }
-
             )
             if (!response.ok) {
                 return
             }
             const data = await response.json()
+
+            console.log("PROFILE UPDATE =", data)
+
             if (!data.ok) {
                 alert(data.error)
                 return
             }
+            dispatch(updateProfile({
+                name: user.name,
+                bio: data.bio,
+                location: data.location,
+                avatar: user.avatar,
+                latitude: data.latitude,
+                longitude: data.longitude,
+            }))
+
+            console.log(
+                "LAT =",
+                data.latitude,
+                "LON =",
+                data.longitude
+            )
             navigate('/profile')
         } catch (err) {
             console.error(err)
