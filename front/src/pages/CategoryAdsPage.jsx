@@ -44,8 +44,16 @@ function CategoryAdsPage() {
 
         async function loadAds() {
             setLoading(true)
+
+            let url = `/api/ads/${slug}?radius=${radius}`
+
+            if (user.id) {
+                url += `&telegram_id=${user.id}`
+            }
+            console.log("URL =", url)
             try {
-                const response = await fetch(`/api/ads/${slug}?radius=${radius}&telegram_id=${user.id}`)
+                const response = await fetch(url)
+                // const response = await fetch(`/api/ads/${slug}?radius=${radius}&telegram_id=${user.id}`)
                 const data = await response.json()
                 console.log('ADS = ', data)
                 console.log("IS ARRAY =", Array.isArray(data))
@@ -63,8 +71,8 @@ function CategoryAdsPage() {
         }
 
         loadAds()
-    }, [slug, radius, user.id,  user.latitude,
-    user.longitude,])
+    }, [slug, radius, user.id, user.latitude,
+        user.longitude,])
 
     console.log("ALL =", allWerbungen)
     console.log("TYPE =", typeof allWerbungen)
