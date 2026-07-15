@@ -205,11 +205,7 @@ async def create_ad(data: AdCreate):
 
 
 @f_api.get("/api/ads/{category}")
-async def get_ads(
-    category: str,
-    radius: str = "Deutschland",
-    telegram_id: int | None = None,
-):
+async def get_ads(category: str,radius: str = "Deutschland", telegram_id: int | None = None,):
     print('\n\nBACK RADIUS = ', radius)
     print(telegram_id)
     if radius == "Deutschland":
@@ -218,10 +214,10 @@ async def get_ads(
     radius_km = int(
         radius.replace(" km", "")
     )
+    user = await get_user_by_tg_id(telegram_id)
+    if (user is None or user.latitude is None or user.longitude is None):
+        return []
 
-    user = await get_user_by_tg_id(
-        telegram_id
-    )
 
     return await get_ads_by_radius_db(
         category=category,

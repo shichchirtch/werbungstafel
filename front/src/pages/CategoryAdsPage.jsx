@@ -48,6 +48,7 @@ function CategoryAdsPage() {
                 const response = await fetch(`/api/ads/${slug}?radius=${radius}&telegram_id=${user.id}`)
                 const data = await response.json()
                 console.log('ADS = ', data)
+                console.log("IS ARRAY =", Array.isArray(data))
                 setAllWerbungen(data)
                 setLoading(false)
 
@@ -60,19 +61,25 @@ function CategoryAdsPage() {
         loadAds()
     }, [slug, radius, user.id])
 
-    const werbungen = allWerbungen.filter(item => {
+    const werbungen = Array.isArray(allWerbungen)
+        ? allWerbungen.filter(item => {
 
-        if (filter === "all") {
-            return true
-        }
+            if (filter === "all") {
+                return true
+            }
 
-        if (filter === "anbieter") {
-            return item.anbieter
-        }
+            if (filter === "anbieter") {
+                return item.anbieter
+            }
 
-        return !item.anbieter
+            return !item.anbieter
 
-    })
+        })
+        : []
+
+    const hasAds =
+        Array.isArray(allWerbungen) &&
+        allWerbungen.length > 0
 
     return (
         <div className="px-4 py-6">
@@ -91,7 +98,7 @@ function CategoryAdsPage() {
                 Neueste Anzeigen zuerst
             </p>
 
-            {werbungen.length > 0 && (
+            {hasAds && (
 
                 <>
 
@@ -232,10 +239,20 @@ function CategoryAdsPage() {
                     Anzeige wird geladen...
                 </div>
 
-            ) : werbungen.length === 0 ? (
+            ) : !hasAds ? (
 
                 <div
-                    className="max-w-xl mx-auto rounded-3xl border border-white/10 bg-white/5 backdrop-blur-md p-8 text-center shadow-2xl">
+                    className="
+            max-w-xl mx-auto
+            rounded-3xl
+            border border-white/10
+            bg-white/5
+            backdrop-blur-md
+            p-8
+            text-center
+            shadow-2xl
+        "
+                >
 
                     <div className="text-6xl mb-4">📭</div>
 
@@ -250,14 +267,49 @@ function CategoryAdsPage() {
                     <button
                         onClick={() => navigate(`/create/${slug}`)}
                         className="
-                        px-6 py-4 rounded-2xl font-bold text-black text-lg
-                        bg-gradient-to-br from-cyan-300 to-blue-500
-                        shadow-lg shadow-cyan-400/30
-                        active:scale-95 transition
-                        "
+                px-6 py-4
+                rounded-2xl
+                font-bold
+                text-black
+                text-lg
+                bg-gradient-to-br
+                from-cyan-300
+                to-blue-500
+                shadow-lg
+                shadow-cyan-400/30
+                active:scale-95
+                transition
+            "
                     >
                         Anzeige erstellen
                     </button>
+
+                </div>
+
+            ) : werbungen.length === 0 ? (
+
+                <div
+                    className="
+            max-w-xl mx-auto
+            rounded-3xl
+            border border-white/10
+            bg-white/5
+            backdrop-blur-md
+            p-8
+            text-center
+            shadow-2xl
+        "
+                >
+
+                    <div className="text-6xl mb-4">📍</div>
+
+                    <h2 className="text-2xl font-bold text-white mb-3">
+                        Keine Anzeigen gefunden
+                    </h2>
+
+                    <p className="text-gray-400 mb-6">
+                        Versuchen Sie einen größeren Suchradius oder wählen Sie „Deutschland“.
+                    </p>
 
                 </div>
 
@@ -266,55 +318,97 @@ function CategoryAdsPage() {
                 <div className="max-w-xl mx-auto flex flex-col gap-4">
 
                     {werbungen.map((item) => (
+
                         <div
+
                             key={item.id}
+
                             className="
+
                             rounded-3xl border border-white/10
+
                             bg-white/5 backdrop-blur-md
+
                             p-4 shadow-xl
+
                             "
+
                         >
 
+
                             {item.photos?.length > 0 && (
+
                                 <img
+
                                     src={item.photos[0].url}
+
                                     alt="preview"
+
                                     className="w-full h-48 object-cover rounded-2xl mb-4"
+
                                 />
+
                             )}
+
 
                             <h2 className="text-xl font-bold text-white mb-2">
+
                                 {item.title}
+
                             </h2>
 
+
                             <p className="text-gray-400 text-sm mb-2">
+
                                 PLZ: {item.plz}
+
                             </p>
+
 
                             {item.price && (
+
                                 <p className="text-cyan-300 font-semibold mb-2">
+
                                     {item.price}
+
                                 </p>
+
                             )}
 
+
                             <p className="text-gray-300 line-clamp-3 mb-4">
+
                                 {item.description}
+
                             </p>
 
+
                             <button
+
                                 onClick={() => navigate(`/ad/${item.id}`)}
+
                                 className="
+
                                 w-full py-3 rounded-2xl
+
                                 font-bold text-black
+
                                 bg-gradient-to-br from-cyan-300 to-blue-500
+
                                 shadow-lg shadow-cyan-400/30
+
                                 active:scale-95 transition
+
                                 "
+
                             >
+
                                 Öffnen
+
                             </button>
 
                         </div>
+
                     ))}
 
                 </div>
