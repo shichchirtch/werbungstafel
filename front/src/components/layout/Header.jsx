@@ -291,6 +291,7 @@ function Header() {
                                             onClick={() => {
 
                                                 dispatch(logout())
+                                                navigate("/")
                                                 setShowMenu(false)
 
                                             }}

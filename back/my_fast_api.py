@@ -12,7 +12,7 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_user_favorites, create_favorite, delete_favorite_db, check_favorite,
                        get_ad_photos, create_ad_photo, update_ad_db, delete_photo_db,
                        get_profile_db, update_profile_db, get_ads_by_radius_db,
-                       create_nachricht_db, get_nachrichten_db,
+                       create_nachricht_db, get_nachrichten_db, get_ads_count_by_category,
                        get_chats_db, mark_messages_read_db, update_profile_and_get_user_db)
 import secrets
 import string
@@ -205,26 +205,50 @@ async def create_ad(data: AdCreate):
 
 
 @f_api.get("/api/ads/{category}")
-async def get_ads(category: str,radius: str = "Deutschland", telegram_id: int | None = None,):
-    print('\n\nBACK RADIUS = ', radius)
-    print(telegram_id)
+async def get_ads(
+    category: str,
+    radius: str = "Deutschland",
+    telegram_id: int | None = None,
+):
+
+    all_ads_count = await get_ads_count_by_category(category)
+
     if radius == "Deutschland":
-        return await get_ads_by_category(category)
+
+        ads = await get_ads_by_category(category)
+
+        return {
+            "all_ads_count": all_ads_count,
+            "ads": ads,
+        }
 
     radius_km = int(
         radius.replace(" km", "")
     )
+
     user = await get_user_by_tg_id(telegram_id)
-    if (user is None or user.latitude is None or user.longitude is None):
-        return []
 
+    if (
+        user is None
+        or user.latitude is None
+        or user.longitude is None
+    ):
+        return {
+            "all_ads_count": all_ads_count,
+            "ads": [],
+        }
 
-    return await get_ads_by_radius_db(
+    ads = await get_ads_by_radius_db(
         category=category,
         center_lat=user.latitude,
         center_lon=user.longitude,
         radius=radius_km,
     )
+
+    return {
+        "all_ads_count": all_ads_count,
+        "ads": ads,
+    }
 
 
 @f_api.get("/api/ad/{ad_id}")

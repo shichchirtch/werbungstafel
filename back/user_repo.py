@@ -832,3 +832,19 @@ async def get_ads_by_radius_db(
             })
 
         return filtered_ads
+
+
+async def get_ads_count_by_category(category: str):
+    async with session_marker() as session:
+
+        return await session.scalar(
+
+            select(func.count())
+
+            .select_from(Ad)
+
+            .where(
+                Ad.category == category
+            )
+
+        )

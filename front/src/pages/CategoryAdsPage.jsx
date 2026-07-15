@@ -38,7 +38,7 @@ function CategoryAdsPage() {
 
     const [radius, setRadius] = useState("Deutschland")
     const [showLocationModal, setShowLocationModal] = useState(false)
-
+    const [hasAds, setHasAds] = useState(false)
 
     useEffect(() => {
 
@@ -49,7 +49,8 @@ function CategoryAdsPage() {
                 const data = await response.json()
                 console.log('ADS = ', data)
                 console.log("IS ARRAY =", Array.isArray(data))
-                setAllWerbungen(data)
+                setAllWerbungen(data.ads)
+                setHasAds(data.all_ads_count > 0)
                 setLoading(false)
 
             } catch (error) {
@@ -77,9 +78,6 @@ function CategoryAdsPage() {
         })
         : []
 
-    const hasAds =
-        Array.isArray(allWerbungen) &&
-        allWerbungen.length > 0
 
     return (
         <div className="px-4 py-6">
