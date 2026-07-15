@@ -480,6 +480,8 @@ async def get_profile_db(telegram_id: int):
             "avatar": user.avatar,
             "ads_count": ads_count,
             "favorites_count": favorites_count,
+            "latitude": user.latitude,
+            "longitude": user.longitude,
             "first_start": user.first_start.strftime("%d.%m.%Y"),
         }
 
