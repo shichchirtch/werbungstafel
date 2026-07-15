@@ -5,7 +5,7 @@ from datetime import datetime, timedelta, UTC
 import shutil
 import os
 from geopy.geocoders import Nominatim
-
+from geopy.distance import geodesic
 geolocator = Nominatim(
     user_agent="werbungstafel"
 )

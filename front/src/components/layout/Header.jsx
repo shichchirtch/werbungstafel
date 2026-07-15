@@ -1,6 +1,6 @@
 import {useNavigate, useLocation} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
-import {setUser, logout} from '../../features/user/userSlice'
+import {setUser, logout, updateProfile} from '../../features/user/userSlice'
 import {useState, useRef, useEffect} from 'react'
 import {clearSelectedChat} from "../../features/messages/messagesSlice.js";
 
@@ -27,6 +27,28 @@ function Header() {
     const isHome = location.pathname === '/'
 
     const menuRef = useRef()
+
+    async function refreshProfile(telegramId) {
+
+    const response = await fetch(
+        `/api/profile/${telegramId}`
+    )
+
+    const data = await response.json()
+
+    if (!data.ok) {
+        return
+    }
+
+    dispatch(updateProfile({
+        name: data.name,
+        bio: data.bio,
+        location: data.location,
+        avatar: data.avatar,
+        latitude: data.latitude,
+        longitude: data.longitude,
+    }))
+}
 
     useEffect(() => {
 
@@ -73,6 +95,8 @@ function Header() {
                         isAuth: true
                     })
                 )
+
+                await refreshProfile(data.telegram_id)
 
                 setShowLoginModal(false)
                 setShowCodeModal(false)
