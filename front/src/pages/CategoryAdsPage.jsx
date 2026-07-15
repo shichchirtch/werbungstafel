@@ -39,7 +39,7 @@ function CategoryAdsPage() {
     const [radius, setRadius] = useState("Deutschland")
     const [showLocationModal, setShowLocationModal] = useState(false)
     const [hasAds, setHasAds] = useState(false)
-
+    console.log("CATEGORY USER =", user)
     useEffect(() => {
 
         async function loadAds() {
@@ -49,6 +49,9 @@ function CategoryAdsPage() {
                 const data = await response.json()
                 console.log('ADS = ', data)
                 console.log("IS ARRAY =", Array.isArray(data))
+                console.log("DATA.ADS =", data.ads)
+                console.log("SET =", data.ads)
+
                 setAllWerbungen(data.ads)
                 setHasAds(data.all_ads_count > 0)
                 setLoading(false)
@@ -60,9 +63,15 @@ function CategoryAdsPage() {
         }
 
         loadAds()
-    }, [slug, radius, user.id])
+    }, [slug, radius, user.id,  user.latitude,
+    user.longitude,])
+
+    console.log("ALL =", allWerbungen)
+    console.log("TYPE =", typeof allWerbungen)
+    console.log("IS ARRAY =", Array.isArray(allWerbungen))
 
     const werbungen = Array.isArray(allWerbungen)
+
         ? allWerbungen.filter(item => {
 
             if (filter === "all") {

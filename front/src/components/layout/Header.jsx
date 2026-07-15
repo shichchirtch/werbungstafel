@@ -103,7 +103,8 @@ function Header() {
                 setCodeToken(null)
                 setLoginToken(null)
                 setShowMenu(false)
-                console.log("LOGIN SUCCESS")
+
+                console.log("USER AFTER REFRESH =", user)
             }
 
         }, 2000)
