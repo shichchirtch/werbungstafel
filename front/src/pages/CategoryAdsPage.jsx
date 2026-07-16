@@ -36,16 +36,21 @@ function CategoryAdsPage() {
     const [allWerbungen, setAllWerbungen] = useState([])
     const [filter, setFilter] = useState("all")
 
-    const [radius, setRadius] = useState("Deutschland")
+    // const [radius, setRadius] = useState("Deutschland")
     const [showLocationModal, setShowLocationModal] = useState(false)
     const [hasAds, setHasAds] = useState(false)
+
+    const [place, setPlace] = useState("Deutschland")
+    const [radius, setRadius] = useState("Alle")
     console.log("CATEGORY USER =", user)
     useEffect(() => {
 
         async function loadAds() {
             setLoading(true)
 
-            let url = `/api/ads/${slug}?radius=${radius}`
+            // let url = `/api/ads/${slug}?radius=${radius}`
+
+            let url = `/api/ads/${slug}?place=${encodeURIComponent(place)}&radius=${radius}`
 
             if (user.id) {
                 url += `&telegram_id=${user.id}`
@@ -71,8 +76,7 @@ function CategoryAdsPage() {
         }
 
         loadAds()
-    }, [slug, radius, user.id, user.latitude,
-        user.longitude,])
+    }, [slug, radius, user.id])
 
     console.log("ALL =", allWerbungen)
     console.log("TYPE =", typeof allWerbungen)
@@ -165,84 +169,133 @@ function CategoryAdsPage() {
 
                     </div>
 
-                    {/* РАДИУС */}
+                    {/*        /!* РАДИУС *!/*/}
 
-                    <div
-                        className="
-                max-w-xl
-                mx-auto
-                mb-6
-                rounded-2xl
-                border
-                border-white/10
-                bg-white/5
-                backdrop-blur-md
-                p-4
-            "
-                    >
+                    {/*        <div*/}
+                    {/*            className="*/}
+                    {/*    max-w-xl*/}
+                    {/*    mx-auto*/}
+                    {/*    mb-6*/}
+                    {/*    rounded-2xl*/}
+                    {/*    border*/}
+                    {/*    border-white/10*/}
+                    {/*    bg-white/5*/}
+                    {/*    backdrop-blur-md*/}
+                    {/*    p-4*/}
+                    {/*"*/}
+                    {/*        >*/}
 
-                        <div className="text-gray-300 font-semibold mb-3">
-                            Radius
-                        </div>
+                    {/*            <div className="text-gray-300 font-semibold mb-3">*/}
+                    {/*                Radius*/}
+                    {/*            </div>*/}
 
-                        <div className="grid grid-cols-2 gap-3">
+                    {/*            <div className="grid grid-cols-2 gap-3">*/}
 
-                            {[
-                                "Deutschland",
-                                "5 km",
-                                "10 km",
-                                "20 km",
-                                "50 km",
-                            ].map(item => (
+                    {/*                {[*/}
+                    {/*                    "Deutschland",*/}
+                    {/*                    "5 km",*/}
+                    {/*                    "10 km",*/}
+                    {/*                    "20 km",*/}
+                    {/*                    "50 km",*/}
+                    {/*                ].map(item => (*/}
 
-                                <label
-                                    key={item}
-                                    className="
-                            flex
-                            items-center
-                            gap-2
-                            cursor-pointer
-                            text-gray-300
-                        "
-                                >
+                    {/*                    <label*/}
+                    {/*                        key={item}*/}
+                    {/*                        className="*/}
+                    {/*                flex*/}
+                    {/*                items-center*/}
+                    {/*                gap-2*/}
+                    {/*                cursor-pointer*/}
+                    {/*                text-gray-300*/}
+                    {/*            "*/}
+                    {/*                    >*/}
 
-                                    <input
-                                        type="radio"
-                                        name="radius"
-                                        checked={radius === item}
-                                        onChange={() => {
+                    {/*                        <input*/}
+                    {/*                            type="radio"*/}
+                    {/*                            name="radius"*/}
+                    {/*                            checked={radius === item}*/}
+                    {/*                            onChange={() => {*/}
 
-                                            if (item === "Deutschland") {
-                                                setRadius(item)
-                                                return
-                                            }
-                                            console.log(
-                                                "CHECK",
-                                                user.latitude,
-                                                user.longitude
-                                            )
-                                            if (!user.latitude || !user.longitude) {
+                    {/*                                if (item === "Deutschland") {*/}
+                    {/*                                    setRadius(item)*/}
+                    {/*                                    return*/}
+                    {/*                                }*/}
+                    {/*                                console.log(*/}
+                    {/*                                    "CHECK",*/}
+                    {/*                                    user.latitude,*/}
+                    {/*                                    user.longitude*/}
+                    {/*                                )*/}
+                    {/*                                if (!user.latitude || !user.longitude) {*/}
 
-                                                setShowLocationModal(true)
-                                                return
-                                            }
+                    {/*                                    setShowLocationModal(true)*/}
+                    {/*                                    return*/}
+                    {/*                                }*/}
 
-                                            setRadius(item)
-                                            console.log("RADIUS =", item)
+                    {/*                                setRadius(item)*/}
+                    {/*                                console.log("RADIUS =", item)*/}
 
-                                        }}
-                                        className="accent-cyan-400"
-                                    />
+                    {/*                            }}*/}
+                    {/*                            className="accent-cyan-400"*/}
+                    {/*                        />*/}
 
-                                    {item}
+                    {/*                        {item}*/}
 
-                                </label>
+                    {/*                    </label>*/}
 
-                            ))}
+                    {/*                ))}*/}
 
-                        </div>
+                    {/*            </div>*/}
+
+                    {/*        </div>*/}
+
+                    <div className="
+    max-w-xl
+    mx-auto
+    mb-6
+    flex
+    gap-3
+">
+                        <input
+                            value={place}
+                            onChange={(e) => setPlace(e.target.value)}
+                            placeholder="Deutschland"
+                            className="
+        flex-1
+        bg-white/5
+        border border-white/10
+        rounded-xl
+        px-4
+        py-3
+        text-white
+        placeholder:text-gray-500
+        outline-none
+    "
+                        />
+
+                        <select
+                            value={radius}
+                            onChange={(e) => setRadius(e.target.value)}
+                            className="
+        bg-white/5
+        border border-white/10
+        rounded-xl
+        px-4
+        py-3
+        text-gray-300
+        outline-none
+    "
+                        >
+                            <option>Alle</option>
+                            <option>5 km</option>
+                            <option>10 km</option>
+                            <option>20 km</option>
+                            <option>50 km</option>
+                            <option>100 km</option>
+                        </select>
+
 
                     </div>
+
 
                 </>
 

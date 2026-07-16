@@ -205,11 +205,7 @@ async def create_ad(data: AdCreate):
 
 
 @f_api.get("/api/ads/{category}")
-async def get_ads(
-    category: str,
-    radius: str = "Deutschland",
-    telegram_id: int | None = None,
-):
+async def get_ads(category: str, place: str = "Deutschland", radius: str = "Alle",):
 
     all_ads_count = await get_ads_count_by_category(category)
 
@@ -226,24 +222,44 @@ async def get_ads(
         radius.replace(" km", "")
     )
 
-    user = await get_user_by_tg_id(telegram_id)
+    if radius == "Alle":
+        ads = await get_ads_by_category(category)
 
-    if (
-        user is None
-        or user.latitude is None
-        or user.longitude is None
-    ):
+        return {
+            "all_ads_count": all_ads_count,
+            "ads": ads,
+        }
+
+    location = geolocator.geocode(f"{place}, Germany")
+    if location is None:
         return {
             "all_ads_count": all_ads_count,
             "ads": [],
         }
+    else:
+        ads = await get_ads_by_radius_db(
+            category=category,
+            center_lat=location.latitude,
+            center_lon=location.longitude,
+            radius=int(radius.replace(" km", "")),
+        )
 
-    ads = await get_ads_by_radius_db(
-        category=category,
-        center_lat=user.latitude,
-        center_lon=user.longitude,
-        radius=radius_km,
-    )
+    # if (
+    #     user is None
+    #     or user.latitude is None
+    #     or user.longitude is None
+    # ):
+    #     return {
+    #         "all_ads_count": all_ads_count,
+    #         "ads": [],
+    #     }
+    #
+    # ads = await get_ads_by_radius_db(
+    #     category=category,
+    #     center_lat=user.latitude,
+    #     center_lon=user.longitude,
+    #     radius=radius_km,
+    # )
 
     return {
         "all_ads_count": all_ads_count,
