@@ -61,7 +61,6 @@ function CategoryAdsPage() {
                 // const response = await fetch(`/api/ads/${slug}?radius=${radius}&telegram_id=${user.id}`)
                 console.log("STATUS =", response.status)
 
-
                 const data = await response.json()
                 console.log('ADS = ', data)
                 console.log("IS ARRAY =", Array.isArray(data))
