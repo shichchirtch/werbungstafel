@@ -209,18 +209,6 @@ async def get_ads(category: str, place: str = "Deutschland", radius: str = "Alle
 
     all_ads_count = await get_ads_count_by_category(category)
 
-    if radius == "Deutschland":
-
-        ads = await get_ads_by_category(category)
-
-        return {
-            "all_ads_count": all_ads_count,
-            "ads": ads,
-        }
-
-    radius_km = int(
-        radius.replace(" km", "")
-    )
 
     if radius == "Alle":
         ads = await get_ads_by_category(category)
@@ -230,7 +218,13 @@ async def get_ads(category: str, place: str = "Deutschland", radius: str = "Alle
             "ads": ads,
         }
 
-    location = geolocator.geocode(f"{place}, Germany")
+    try:
+        location = geolocator.geocode(f"{place}, Germany")
+    except Exception:
+        return {
+            "all_ads_count": all_ads_count,
+            "ads": [],
+        }
     if location is None:
         return {
             "all_ads_count": all_ads_count,
@@ -244,22 +238,6 @@ async def get_ads(category: str, place: str = "Deutschland", radius: str = "Alle
             radius=int(radius.replace(" km", "")),
         )
 
-    # if (
-    #     user is None
-    #     or user.latitude is None
-    #     or user.longitude is None
-    # ):
-    #     return {
-    #         "all_ads_count": all_ads_count,
-    #         "ads": [],
-    #     }
-    #
-    # ads = await get_ads_by_radius_db(
-    #     category=category,
-    #     center_lat=user.latitude,
-    #     center_lon=user.longitude,
-    #     radius=radius_km,
-    # )
 
     return {
         "all_ads_count": all_ads_count,
