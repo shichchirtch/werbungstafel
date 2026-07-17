@@ -43,7 +43,8 @@ function CreateAdPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        if (!title || !plz || !description) {
+        if (!title.trim() || !plz.trim() || !description.trim()
+        ) {
             alert('Bitte Pflichtfelder ausfüllen')
             return
         }
@@ -217,10 +218,6 @@ function CreateAdPage() {
                 <input
                     type="text"
                     placeholder="PLZ / Ort"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    maxLength="5"
-                    minLength="5"
                     value={plz}
                     onChange={(e) => setPlz(e.target.value)}
                     className="bg-black/40 text-gray-400 p-4 rounded-2xl outline-none border border-white/10"
@@ -245,18 +242,6 @@ function CreateAdPage() {
                     onChange={(e) => setPrice(e.target.value)}
                     className="bg-black/40 text-gray-400 p-4 rounded-2xl outline-none border border-white/10"
                 />
-
-                {/*<select*/}
-                {/*    value={radius}*/}
-                {/*    onChange={(e) => setRadius(e.target.value)}*/}
-                {/*    className="bg-black/40 text-white p-4 rounded-2xl outline-none border border-white/10"*/}
-                {/*>*/}
-                {/*    <option>5 km</option>*/}
-                {/*    <option>10 km</option>*/}
-                {/*    <option>20 km</option>*/}
-                {/*    <option>50 km</option>*/}
-                {/*    <option>Deutschlandweit</option>*/}
-                {/*</select>*/}
 
                 <div className="flex flex-col gap-3">
 

@@ -180,7 +180,7 @@ async def create_ad(data: AdCreate):
     if location is None:
         return {
             "ok": False,
-            "error": "PLZ nicht gefunden"
+            "error": "Ort oder Postleitzahl wurde nicht gefunden"
         }
 
     latitude = round(location.latitude, 6)
