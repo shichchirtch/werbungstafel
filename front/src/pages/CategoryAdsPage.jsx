@@ -58,7 +58,7 @@ function CategoryAdsPage() {
             console.log("URL =", url)
             try {
                 const response = await fetch(url)
-                // const response = await fetch(`/api/ads/${slug}?radius=${radius}&telegram_id=${user.id}`)
+                //.. const response = await fetch(`/api/ads/${slug}?radius=${radius}&telegram_id=${user.id}`)
                 console.log("STATUS =", response.status)
 
                 const data = await response.json()
