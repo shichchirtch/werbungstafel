@@ -43,7 +43,7 @@ class Ad(Base):
     title: Mapped[str] = mapped_column(String(200))
     description: Mapped[str] = mapped_column(String(5000))
     price: Mapped[str] = mapped_column(String(100), default="")
-    plz: Mapped[str] = mapped_column(String(10))
+    plz: Mapped[str] = mapped_column(String(100))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
     anbieter: Mapped[bool] = mapped_column(default=True)
     latitude: Mapped[float] = mapped_column(Float)

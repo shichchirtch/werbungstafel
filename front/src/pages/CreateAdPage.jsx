@@ -175,6 +175,41 @@ function CreateAdPage() {
                 className="max-w-xl mx-auto bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl shadow-2xl flex flex-col gap-4"
             >
 
+                    <button
+    type="button"
+    onClick={() => {
+
+        const confirmed = window.confirm(
+    "Anzeige wirklich abbrechen?\n\nAlle eingegebenen Daten gehen verloren."
+)
+
+        if (!confirmed) {
+            return
+        }
+
+        navigate('/')
+
+    }}
+    className="
+        absolute
+        top-4
+        right-5
+        w-9
+        h-9
+        rounded-full
+        flex
+        items-center
+        justify-center
+        text-2xl
+        text-gray-400
+        hover:bg-white/10
+        hover:text-white
+        transition
+    "
+>
+    ×
+</button>
+
                 <input
                     type="text"
                     placeholder="Titel der Anzeige"
