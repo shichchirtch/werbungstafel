@@ -26,10 +26,15 @@ function CategoriesPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-zinc-900 via-black to-black px-4 py-6">
-        <div className="flex items-center justify-between mb-6">
+       <div className="relative mb-6">
 
     <h1
-        className="text-4xl font-black text-black"
+        className="
+            text-4xl
+            font-black
+            text-black
+            text-center
+        "
         style={{
             WebkitTextStroke: '0.5px white',
             textShadow: '0 0 8px rgba(255,255,255,0.6)',
@@ -41,12 +46,19 @@ function CategoriesPage() {
     <button
         onClick={() => navigate('/map')}
         className="
+            absolute
+            right-0
+            top-1/2
+            -translate-y-1/2
+
             w-12
             h-12
             rounded-full
+
             bg-gradient-to-br
             from-blue-500
             to-cyan-400
+
             text-2xl
             shadow-lg
         "

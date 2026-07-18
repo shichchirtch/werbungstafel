@@ -848,3 +848,50 @@ async def get_ads_count_by_category(category: str):
             )
 
         )
+
+
+
+async def get_map_data_db():
+
+    async with session_marker() as session:
+
+        result = await session.execute(
+
+            select(
+                Ad.plz,
+                Ad.latitude,
+                Ad.longitude,
+                func.count(Ad.id).label("count"),
+            )
+
+            .where(
+                Ad.latitude.is_not(None),
+                Ad.longitude.is_not(None),
+            )
+
+            .group_by(
+                Ad.plz,
+                Ad.latitude,
+                Ad.longitude,
+            )
+
+            .order_by(
+                func.count(Ad.id).desc()
+            )
+
+        )
+
+        rows = result.all()
+
+        return [
+
+            {
+                "place": row.plz,
+                "latitude": row.latitude,
+                "longitude": row.longitude,
+                "count": row.count,
+            }
+
+            for row in rows
+
+        ]

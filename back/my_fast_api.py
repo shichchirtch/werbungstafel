@@ -13,7 +13,8 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_ad_photos, create_ad_photo, update_ad_db, delete_photo_db,
                        get_profile_db, update_profile_db, get_ads_by_radius_db,
                        create_nachricht_db, get_nachrichten_db, get_ads_count_by_category,
-                       get_chats_db, mark_messages_read_db, update_profile_and_get_user_db)
+                       get_chats_db, mark_messages_read_db, update_profile_and_get_user_db,
+                       get_map_data_db)
 import secrets
 import string
 from lexicon import *
@@ -600,3 +601,10 @@ async def mark_messages_read(data: ReadMessages):
         "ok": True,
         "updated": count,
     }
+
+################################# MAP ##################################
+
+@f_api.get("/api/map")
+async def get_map():
+    data = await get_map_data_db()
+    return data
