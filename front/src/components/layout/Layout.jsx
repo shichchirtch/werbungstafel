@@ -75,31 +75,30 @@ function Layout() {
 
     return (
 
-        <div
-            className="
-                min-h-screen
-                bg-gradient-to-b
-                from-zinc-900
-                to-black
-                px-4
-                py-4
-            "
-        >
+    <div
+        className={`
+            min-h-screen
+            bg-gradient-to-b
+            from-zinc-900
+            to-black
 
-            {
+            ${hideHeader ? "" : "px-4 py-4"}
+        `}
+    >
 
-                !hideHeader &&
+        {
 
-                <Header/>
+            !hideHeader &&
 
-            }
+            <Header/>
 
-            <Outlet/>
+        }
 
-        </div>
+        <Outlet/>
 
-    )
+    </div>
 
+)
 }
 
 export default Layout

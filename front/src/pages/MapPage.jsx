@@ -149,28 +149,17 @@ function MapPage() {
 
     rounded-full
 
-    bg-gradient-to-br
-    from-cyan-500/75
-    to-blue-600/75
+    bg-black/20
 
-    text-white
-    text-2xl
+    backdrop-blur-lg
 
     border
-    border-white/20
+    border-cyan-400/20
+
+    text-white
 
     shadow-lg
-    shadow-cyan-500/20
-
-    backdrop-blur-md
-
-    pointer-events-auto
-
-    hover:scale-110
-    transition
-    hover:from-cyan-500
-    hover:to-blue-600
-    hover:bg-black/55
+    shadow-cyan-500/10
 "
                 >
                     ←
@@ -183,7 +172,7 @@ function MapPage() {
 
         rounded-full
 
-        bg-black/35
+        bg-black/20
         backdrop-blur-md
 
         border
@@ -212,8 +201,8 @@ function MapPage() {
     rounded-full
 
     bg-gradient-to-br
-    from-cyan-500/75
-    to-blue-600/75
+    from-cyan-500/50
+    to-blue-600/50
 
     text-white
     text-2xl
@@ -222,7 +211,7 @@ function MapPage() {
     border-white/20
 
     shadow-lg
-    shadow-cyan-500/20
+    shadow-cyan-500/10
 
     backdrop-blur-md
 
