@@ -26,21 +26,22 @@ function CategoriesPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-zinc-900 via-black to-black px-4 py-6">
-       <div className="
-    flex-1
-    text-center
-    text-3xl
-    md:text-4xl
-    font-black
-    text-black
-"
+       <div
+    className="
+        flex
+        items-center
+        justify-between
+        gap-3
+        mb-6
+    "
 >
 
     <h1
         className="
             flex-1
             text-center
-            text-4xl
+            text-3xl
+            md:text-4xl
             font-black
             text-black
         "
@@ -56,17 +57,13 @@ function CategoriesPage() {
         onClick={() => navigate('/map')}
         className="
             shrink-0
-
-            w-12
-            h-12
-
+            w-11
+            h-11
             rounded-full
-
             bg-gradient-to-br
             from-blue-500
             to-cyan-400
-
-            text-2xl
+            text-xl
             shadow-lg
         "
     >
