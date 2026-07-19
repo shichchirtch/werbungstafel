@@ -183,7 +183,7 @@ function CategoryAdsPage() {
                             onChange={(e) => setPlace(e.target.value)}
                             placeholder="Deutschland"
                             className="
-        flex-1
+        flex-1 min-w-0
         bg-white/5
         border border-white/10
         rounded-xl
@@ -199,7 +199,7 @@ function CategoryAdsPage() {
     value={radius}
     onChange={(e) => setRadius(e.target.value)}
     className="
-        w-28
+        w-24
 
         bg-white/5
         border border-white/10

@@ -115,11 +115,11 @@ function MapPage() {
     return (
 
         <div
-    className="relative"
-    style={{
-        height: "100dvh",
-    }}
->
+            className="relative"
+            style={{
+                height: "100dvh",
+            }}
+        >
 
             {/* Панель поверх карты */}
 
@@ -150,8 +150,8 @@ function MapPage() {
     rounded-full
 
     bg-gradient-to-br
-    from-cyan-500
-    to-blue-600
+    from-cyan-500/75
+    to-blue-600/75
 
     text-white
     text-2xl
@@ -160,10 +160,17 @@ function MapPage() {
     border-white/20
 
     shadow-lg
-    shadow-cyan-500/40
+    shadow-cyan-500/20
+
+    backdrop-blur-md
+
     pointer-events-auto
+
     hover:scale-110
     transition
+    hover:from-cyan-500
+    hover:to-blue-600
+    hover:bg-black/55
 "
                 >
                     ←
@@ -176,20 +183,20 @@ function MapPage() {
 
         rounded-full
 
-        bg-black/55
+        bg-black/35
         backdrop-blur-md
 
         border
-        border-white/10
+        border-white/15
 
         text-white
         text-lg
         font-bold
 
         shadow-lg
-        shadow-cyan-500/20
-        pointer-events-auto
+        shadow-cyan-500/15
 
+        pointer-events-auto
         select-none
     "
                 >Deutschland</p>
@@ -205,8 +212,8 @@ function MapPage() {
     rounded-full
 
     bg-gradient-to-br
-    from-cyan-500
-    to-blue-600
+    from-cyan-500/75
+    to-blue-600/75
 
     text-white
     text-2xl
@@ -215,11 +222,17 @@ function MapPage() {
     border-white/20
 
     shadow-lg
-    shadow-cyan-500/40
+    shadow-cyan-500/20
+
+    backdrop-blur-md
+
     pointer-events-auto
 
     hover:scale-110
     transition
+    hover:from-cyan-500
+    hover:to-blue-600
+    hover:bg-black/55
 "
 
                 >
