@@ -845,9 +845,7 @@ async def get_ads_count_by_category(category: str):
 
             .where(
                 Ad.category == category,
-                Ad.latitude.is_not(None),
-                Ad.longitude.is_not(None),
-                Ad.anbieter == True,
+
             )
 
         )
@@ -870,6 +868,8 @@ async def get_map_data_db():
             .where(
                 Ad.latitude.is_not(None),
                 Ad.longitude.is_not(None),
+                Ad.anbieter == True,
+
             )
 
             .group_by(
@@ -898,6 +898,8 @@ async def get_map_data_db():
             for row in rows
 
         ]
+
+
 
 async def get_ads_by_place_db(place: str):
     async with session_marker() as session:
