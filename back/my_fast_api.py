@@ -178,7 +178,7 @@ async def create_ad(data: AdCreate):
     location = geolocator.geocode(
         f"{data.plz}, Germany"
     )
-    print('\n\nLOCAZION = ', location.row)
+    print('\n\nLOCAZION = ', location.raw)
     if location is None:
         return {
             "ok": False,
