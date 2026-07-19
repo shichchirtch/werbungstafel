@@ -180,6 +180,7 @@ async def create_ad(data: AdCreate):
     )
     print('\n\nLOCAZION = ', location.raw, '\n\n')
     print(location.raw.get("address"))
+
     if location is None:
         return {
             "ok": False,
