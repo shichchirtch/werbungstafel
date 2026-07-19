@@ -18,7 +18,7 @@ function CategoriesPage() {
         {title: 'Foto / Video / Kunst', slug: 'foto-video-kunst'},
         {title: 'IT / Computer / Electronics', slug: 'it-computer-electronics'},
         {title: 'Translators', slug: 'translators'},
-        {title: 'Rechtsdienstleistungen', slug: 'rechtsdienstleistungen'},
+        {title: 'Rechtsdienst leistungen', slug: 'rechtsdienstleistungen'},
         {title: 'Physio / Spa', slug: 'physio-spa'},
         {title: 'Haustiere', slug: 'haustiere'},
         {title: 'Weitere', slug: 'weitere'},

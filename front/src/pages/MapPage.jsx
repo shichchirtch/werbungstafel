@@ -114,11 +114,124 @@ function MapPage() {
 
     return (
 
-        <div className="h-screen">
+        <div
+    className="relative"
+    style={{
+        height: "100dvh",
+    }}
+>
+
+            {/* Панель поверх карты */}
+
+            <div
+                className="
+                    absolute
+                    top-8
+                    left-4
+                    right-4
+
+                    z-[1000]
+
+                    flex
+                    justify-between
+                    items-center
+                    pointer-events-none
+                "
+            >
+
+                <button
+
+                    onClick={() => navigate(-1)}
+
+                    className="
+    w-12
+    h-12
+
+    rounded-full
+
+    bg-gradient-to-br
+    from-cyan-500
+    to-blue-600
+
+    text-white
+    text-2xl
+
+    border
+    border-white/20
+
+    shadow-lg
+    shadow-cyan-500/40
+    pointer-events-auto
+    hover:scale-110
+    transition
+"
+                >
+                    ←
+                </button>
+
+                <p
+                    className="
+        px-5
+        py-2
+
+        rounded-full
+
+        bg-black/55
+        backdrop-blur-md
+
+        border
+        border-white/10
+
+        text-white
+        text-lg
+        font-bold
+
+        shadow-lg
+        shadow-cyan-500/20
+        pointer-events-auto
+
+        select-none
+    "
+                >Deutschland</p>
+
+                <button
+
+                    onClick={() => navigate('/')}
+
+                    className="
+    w-12
+    h-12
+
+    rounded-full
+
+    bg-gradient-to-br
+    from-cyan-500
+    to-blue-600
+
+    text-white
+    text-2xl
+
+    border
+    border-white/20
+
+    shadow-lg
+    shadow-cyan-500/40
+    pointer-events-auto
+
+    hover:scale-110
+    transition
+"
+
+                >
+                    🏠
+                </button>
+
+            </div>
 
             <MapContainer
                 center={[51.1657, 10.4515]}
                 zoom={6}
+                zoomControl={false}
                 scrollWheelZoom={true}
                 style={{
                     height: '100%',

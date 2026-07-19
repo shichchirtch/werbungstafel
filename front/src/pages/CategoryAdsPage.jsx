@@ -171,85 +171,6 @@ function CategoryAdsPage() {
 
                     </div>
 
-                    {/*        /!* РАДИУС *!/*/}
-
-                    {/*        <div*/}
-                    {/*            className="*/}
-                    {/*    max-w-xl*/}
-                    {/*    mx-auto*/}
-                    {/*    mb-6*/}
-                    {/*    rounded-2xl*/}
-                    {/*    border*/}
-                    {/*    border-white/10*/}
-                    {/*    bg-white/5*/}
-                    {/*    backdrop-blur-md*/}
-                    {/*    p-4*/}
-                    {/*"*/}
-                    {/*        >*/}
-
-                    {/*            <div className="text-gray-300 font-semibold mb-3">*/}
-                    {/*                Radius*/}
-                    {/*            </div>*/}
-
-                    {/*            <div className="grid grid-cols-2 gap-3">*/}
-
-                    {/*                {[*/}
-                    {/*                    "Deutschland",*/}
-                    {/*                    "5 km",*/}
-                    {/*                    "10 km",*/}
-                    {/*                    "20 km",*/}
-                    {/*                    "50 km",*/}
-                    {/*                ].map(item => (*/}
-
-                    {/*                    <label*/}
-                    {/*                        key={item}*/}
-                    {/*                        className="*/}
-                    {/*                flex*/}
-                    {/*                items-center*/}
-                    {/*                gap-2*/}
-                    {/*                cursor-pointer*/}
-                    {/*                text-gray-300*/}
-                    {/*            "*/}
-                    {/*                    >*/}
-
-                    {/*                        <input*/}
-                    {/*                            type="radio"*/}
-                    {/*                            name="radius"*/}
-                    {/*                            checked={radius === item}*/}
-                    {/*                            onChange={() => {*/}
-
-                    {/*                                if (item === "Deutschland") {*/}
-                    {/*                                    setRadius(item)*/}
-                    {/*                                    return*/}
-                    {/*                                }*/}
-                    {/*                                console.log(*/}
-                    {/*                                    "CHECK",*/}
-                    {/*                                    user.latitude,*/}
-                    {/*                                    user.longitude*/}
-                    {/*                                )*/}
-                    {/*                                if (!user.latitude || !user.longitude) {*/}
-
-                    {/*                                    setShowLocationModal(true)*/}
-                    {/*                                    return*/}
-                    {/*                                }*/}
-
-                    {/*                                setRadius(item)*/}
-                    {/*                                console.log("RADIUS =", item)*/}
-
-                    {/*                            }}*/}
-                    {/*                            className="accent-cyan-400"*/}
-                    {/*                        />*/}
-
-                    {/*                        {item}*/}
-
-                    {/*                    </label>*/}
-
-                    {/*                ))}*/}
-
-                    {/*            </div>*/}
-
-                    {/*        </div>*/}
-
                     <div className="
     max-w-xl
     mx-auto
@@ -275,18 +196,22 @@ function CategoryAdsPage() {
                         />
 
                         <select
-                            value={radius}
-                            onChange={(e) => setRadius(e.target.value)}
-                            className="
+    value={radius}
+    onChange={(e) => setRadius(e.target.value)}
+    className="
+        w-28
+
         bg-white/5
         border border-white/10
         rounded-xl
-        px-4
+
+        px-3
         py-3
+
         text-gray-300
         outline-none
     "
-                        >
+>
                             <option>Alle</option>
                             <option>5 km</option>
                             <option>10 km</option>

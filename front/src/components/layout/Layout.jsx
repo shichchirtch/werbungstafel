@@ -1,20 +1,21 @@
-import {Outlet} from 'react-router-dom'
+import {Outlet, useLocation} from 'react-router-dom'
 import Header from './Header'
-
 import {useEffect} from 'react'
 import {useDispatch} from 'react-redux'
-
 import {setUser} from '../../features/user/userSlice'
 
+
 function Layout() {
-    console.log("LAYOUT VERSION 777")
+
     const dispatch = useDispatch()
-    console.log('wind Tele', window.Telegram)
+
+    const location = useLocation()
+
+    const hideHeader =
+        location.pathname === '/map'
+
     const wa = window.Telegram?.WebApp
     const tgUser = wa?.initDataUnsafe?.user
-
-    console.log('WA = ', wa)
-    console.log('TG USER = ', tgUser)
 
     useEffect(() => {
 
@@ -31,7 +32,7 @@ function Layout() {
 
                 wa.setHeaderColor('#18181b')
                 wa.setBackgroundColor('#18181b')
-                console.log('tgUser = ', tgUser)
+
                 const response = await fetch(
                     '/api/auth/telegram',
                     {
@@ -63,7 +64,9 @@ function Layout() {
             } catch (error) {
 
                 console.error(error)
+
             }
+
         }
 
         initUser()
@@ -71,144 +74,32 @@ function Layout() {
     }, [])
 
     return (
+
         <div
             className="
                 min-h-screen
                 bg-gradient-to-b
                 from-zinc-900
                 to-black
-                px-4 py-4
+                px-4
+                py-4
             "
         >
-            <div className="max-w-xl mx-auto">
+
+            {
+
+                !hideHeader &&
 
                 <Header/>
 
-                <Outlet/>
+            }
 
-            </div>
+            <Outlet/>
+
         </div>
+
     )
+
 }
 
 export default Layout
-
-
-// import { Outlet } from 'react-router-dom'
-// import Header from './Header'
-//
-// import { useEffect } from 'react'
-// import { useDispatch } from 'react-redux'
-//
-// import { setUser } from '../../features/user/userSlice'
-//
-// function Layout() {
-//
-//     const dispatch = useDispatch()
-//
-//     const wa = window.Telegram?.WebApp
-//     const tgUser = wa?.initDataUnsafe?.user
-//
-//     console.log('User = ', tgUser)
-//
-//     useEffect(() => {
-//
-//     async function initUser() {
-//
-//         try {
-//
-//             // ==========================
-//             // Telegram авторизация
-//             // ==========================
-//             if (wa && tgUser) {
-//
-//                 wa.ready()
-//                 wa.expand()
-//
-//                 wa.setHeaderColor('#18181b')
-//                 wa.setBackgroundColor('#18181b')
-//
-//                 const response = await fetch(
-//                     '/api/auth/telegram',
-//                     {
-//                         method: 'POST',
-//                         headers: {
-//                             'Content-Type': 'application/json',
-//                         },
-//                         credentials: 'include',
-//                         body: JSON.stringify({
-//                             telegram_id: tgUser.id,
-//                             first_name: tgUser.first_name,
-//                             username: tgUser.username,
-//                         }),
-//                     }
-//                 )
-//
-//                 const user = await response.json()
-//                 console.log("AUTH RESPONSE =", user)
-//
-//                 dispatch(
-//                     setUser({
-//                         id: user.telegram_id,
-//                         name: user.first_name,
-//                         isAuth: true,
-//                     })
-//                 )
-//
-//                 return
-//             }
-//
-//             // ==========================
-//             // Обычный браузер
-//             // ==========================
-//             const response = await fetch(
-//                 '/api/me',
-//                 {
-//                     credentials: 'include'
-//                 }
-//             )
-//
-//             const user = await response.json()
-//
-//             if (user.is_auth) {
-//
-//                 dispatch(
-//                     setUser({
-//                         id: user.telegram_id,
-//                         name: user.first_name,
-//                         isAuth: true,
-//                     })
-//                 )
-//             }
-//
-//         } catch (error) {
-//             console.error(error)
-//         }
-//     }
-//
-//     initUser()
-//
-// }, [dispatch])
-//
-//     return (
-//         <div className="
-//             min-h-screen
-//             bg-gradient-to-b
-//             from-zinc-900
-//             to-black
-//             px-4 py-4
-//         ">
-//
-//             <div className="max-w-xl mx-auto">
-//
-//                 <Header />
-//
-//                 <Outlet />
-//
-//             </div>
-//
-//         </div>
-//     )
-// }
-//
-// export default Layout
