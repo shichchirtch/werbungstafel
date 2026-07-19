@@ -149,17 +149,28 @@ function MapPage() {
 
     rounded-full
 
-    bg-black/20
-
-    backdrop-blur-lg
-
-    border
-    border-cyan-400/20
+    bg-gradient-to-br
+    from-cyan-500/50
+    to-blue-600/50
 
     text-white
+    text-2xl
+
+    border
+    border-white/20
 
     shadow-lg
     shadow-cyan-500/10
+
+    backdrop-blur-md
+
+    pointer-events-auto
+
+    hover:scale-110
+    transition
+    hover:from-cyan-500
+    hover:to-blue-600
+    opacity-75
 "
                 >
                     ←
@@ -186,7 +197,7 @@ function MapPage() {
         shadow-cyan-500/15
 
         pointer-events-auto
-        select-none
+        select-none opacity-50
     "
                 >Deutschland</p>
 
@@ -221,7 +232,7 @@ function MapPage() {
     transition
     hover:from-cyan-500
     hover:to-blue-600
-    hover:bg-black/55
+    opacity-75
 "
 
                 >
