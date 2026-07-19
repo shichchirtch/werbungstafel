@@ -14,7 +14,7 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_profile_db, update_profile_db, get_ads_by_radius_db,
                        create_nachricht_db, get_nachrichten_db, get_ads_count_by_category,
                        get_chats_db, mark_messages_read_db, update_profile_and_get_user_db,
-                       get_map_data_db)
+                       get_map_data_db, get_ads_by_place_db)
 import secrets
 import string
 from lexicon import *
@@ -608,3 +608,10 @@ async def mark_messages_read(data: ReadMessages):
 async def get_map():
     data = await get_map_data_db()
     return data
+
+@f_api.get("/api/place/{place}")
+async def get_place_ads(place: str):
+
+    ads = await get_ads_by_place_db(place)
+
+    return ads

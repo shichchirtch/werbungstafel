@@ -2,11 +2,13 @@ import {useEffect, useState} from 'react'
 import {MapContainer, TileLayer, Marker, Popup,} from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
+import {useNavigate} from 'react-router-dom'
 
 
 function MapPage() {
 
     const [places, setPlaces] = useState([])
+    const navigate = useNavigate()
 
     useEffect(() => {
 
@@ -37,19 +39,19 @@ function MapPage() {
     }, [])
 
 
-  function createMarker(count) {
+    function createMarker(count) {
 
-    const size = Math.min(70, 38 + Math.sqrt(count) * 3)
+        const size = Math.min(70, 38 + Math.sqrt(count) * 3)
 
-    return L.divIcon({
+        return L.divIcon({
 
-        className: "",
+            className: "",
 
-        iconSize: [size, size],
+            iconSize: [size, size],
 
-        iconAnchor: [size / 2, size],
+            iconAnchor: [size / 2, size],
 
-        html: `
+            html: `
             <div
                 style="
                     width:${size}px;
@@ -73,9 +75,9 @@ function MapPage() {
                     justify-content:center;
 
                     box-shadow:
-                        0 0 10px #22d3ee,
-                        0 0 20px #22d3ee,
-                        0 0 40px rgba(34,211,238,.9);
+    0 0 4px rgba(34,211,238,.8),
+    0 0 10px rgba(34,211,238,.5),
+    0 0 18px rgba(34,211,238,.25);
 
                     transition:
                         transform .25s ease,
@@ -106,9 +108,10 @@ function MapPage() {
             </div>
         `,
 
-    })
+        })
 
-}
+    }
+
     return (
 
         <div className="h-screen">
@@ -137,18 +140,12 @@ function MapPage() {
                             item.longitude,
                         ]}
                         icon={createMarker(item.count)}
-                    >
-                        <Popup>
-
-                            <b>{item.place}</b>
-
-                            <br/>
-
-                            Anzeigen: {item.count}
-
-                        </Popup>
-
-                    </Marker>
+                        eventHandlers={{
+                            click: () => {
+                                navigate(`/place/${encodeURIComponent(item.place)}`)
+                            }
+                        }}
+                    />
 
                 ))}
 

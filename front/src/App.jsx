@@ -12,6 +12,7 @@ import EditProfilePage from "./pages/EditProfilePage.jsx";
 import MyFavoritesPage from "./pages/MyFavoritePage.jsx";
 import NachrichtenPage from "./pages/NachrichtenPage.jsx";
 import MapPage from './pages/MapPage';
+import PlaceAdsPage from './pages/PlaceAdsPage';
 
 const router = createBrowserRouter([
     {
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
             {
                 path: 'map',
                 element: <MapPage/>,
+            },
+            {
+                path: 'place/:place',
+                element: <PlaceAdsPage/>,
             },
 
         ],
