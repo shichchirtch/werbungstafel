@@ -44,6 +44,7 @@ class Ad(Base):
     description: Mapped[str] = mapped_column(String(5000))
     price: Mapped[str] = mapped_column(String(100), default="")
     plz: Mapped[str] = mapped_column(String(100))
+    osm_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
     anbieter: Mapped[bool] = mapped_column(default=True)
     latitude: Mapped[float] = mapped_column(Float)
@@ -90,5 +91,5 @@ class Nachricht(Base):
 
 async def init_models():
     async with engine.begin() as conn:
-        # await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)

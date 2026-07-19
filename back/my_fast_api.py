@@ -164,6 +164,7 @@ async def auth_telegram(data: dict):
 
 @f_api.post("/api/ads")
 async def create_ad(data: AdCreate):
+
     user = await get_user_by_tg_id(
         data.telegram_id
     )
@@ -177,12 +178,15 @@ async def create_ad(data: AdCreate):
     location = geolocator.geocode(
         f"{data.plz}, Germany"
     )
-    print('\n\n', location.raw, '\n\n')
+
     if location is None:
         return {
             "ok": False,
             "error": "Ort oder Postleitzahl wurde nicht gefunden"
         }
+
+    place = location.raw["name"]
+    osm_id = location.raw["osm_id"]
 
     latitude = round(location.latitude, 6)
     longitude = round(location.longitude, 6)
@@ -193,8 +197,11 @@ async def create_ad(data: AdCreate):
         title=data.title,
         description=data.description,
         price=data.price,
-        plz=data.plz,
+
+        plz=place,
+        osm_id=osm_id,
         anbieter=data.anbieter,
+
         latitude=latitude,
         longitude=longitude,
     )
@@ -203,7 +210,6 @@ async def create_ad(data: AdCreate):
         "ok": True,
         "ad_id": ad.id
     }
-
 
 @f_api.get("/api/ads/{category}")
 async def get_ads(category: str, place: str = "Deutschland", radius: str = "Alle",):
