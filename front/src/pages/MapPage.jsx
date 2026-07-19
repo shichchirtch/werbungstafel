@@ -170,7 +170,7 @@ function MapPage() {
     transition
     hover:from-cyan-500
     hover:to-blue-600
-    opacity-75
+    opacity-85
 "
                 >
                     ←
@@ -197,7 +197,7 @@ function MapPage() {
         shadow-cyan-500/15
 
         pointer-events-auto
-        select-none opacity-50
+        select-none opacity-75
     "
                 >Deutschland</p>
 
@@ -232,7 +232,7 @@ function MapPage() {
     transition
     hover:from-cyan-500
     hover:to-blue-600
-    opacity-75
+    opacity-85
 "
 
                 >
