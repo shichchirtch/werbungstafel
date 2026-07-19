@@ -27,12 +27,14 @@ function CategoriesPage() {
     return (
         <div className="min-h-screen bg-gradient-to-b from-zinc-900 via-black to-black px-4 py-6">
        <div className="
-    flex
-    items-center
-    justify-between
-    gap-4
-    mb-6
-">
+    flex-1
+    text-center
+    text-3xl
+    md:text-4xl
+    font-black
+    text-black
+"
+>
 
     <h1
         className="

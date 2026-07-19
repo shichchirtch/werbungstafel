@@ -59,6 +59,7 @@ function PlaceAdsPage() {
 
         <div className="px-4 py-6 max-w-xl mx-auto">
 
+
             <h1
                 className="text-4xl font-black text-center mb-2 text-black"
                 style={{
@@ -79,44 +80,52 @@ function PlaceAdsPage() {
 
                 ads.map(item => (
 
-                    <div
+    <div
 
-                        key={item.id}
+        key={item.id}
 
-                        className="
-                            rounded-3xl
-                            border
-                            border-white/10
-                            bg-white/5
-                            backdrop-blur-md
-                            p-4
-                            shadow-xl
-                            mb-4
-                        "
+        onClick={() => navigate(`/ad/${item.id}`)}
 
-                    >
+        className="
+            rounded-3xl
+            border
+            border-white/10
+            bg-white/5
+            backdrop-blur-md
+            p-4
+            shadow-xl
+            mb-4
 
-                        <h2 className="text-white font-bold text-xl mb-2">
+            cursor-pointer
+            hover:border-cyan-400
+            hover:shadow-cyan-400/20
+            hover:scale-[1.02]
+            transition
+        "
 
-                            {item.title}
+    >
 
-                        </h2>
+        <h2 className="text-white font-bold text-xl mb-2">
 
-                        <div className="text-cyan-300 mb-2">
+            {item.title}
 
-                            {item.price} €
+        </h2>
 
-                        </div>
+        <div className="text-cyan-300 mb-2">
 
-                        <p className="text-gray-300">
+            {item.price} €
 
-                            {item.description}
+        </div>
 
-                        </p>
+        <p className="text-gray-300">
 
-                    </div>
+            {item.description}
 
-                ))
+        </p>
+
+    </div>
+
+))
 
             }
 
