@@ -289,21 +289,6 @@ async def get_ad(ad_id: int):
     }
 
 
-@f_api.delete("/api/ad/{ad_id}")
-async def delete_ad(ad_id: int):
-    success = await delete_ad_db(ad_id)
-
-    if not success:
-        return {
-            "ok": False,
-            "error": "Anzeige nicht gefunden"
-        }
-
-    return {
-        "ok": True
-    }
-
-
 @f_api.get("/api/my-ads/{telegram_id}")
 async def get_my_ads(telegram_id: int):
     user = await get_user_by_tg_id(telegram_id)
@@ -445,7 +430,9 @@ async def upload_photos(ad_id: int = Form(...), photos: list[UploadFile] = File(
 
 @f_api.delete("/api/ad/{ad_id}")
 async def delete_ad(ad_id: int):
+
     print(f"DELETE AD {ad_id}")
+
     success = await delete_ad_db(ad_id)
 
     if not success:
@@ -497,7 +484,7 @@ async def delete_photo(photo_id: int):
         "ok": True
     }
 
-################################Profile###########################
+################################ Profile ###########################
 
 @f_api.get("/api/profile/{telegram_id}")
 async def get_profile(telegram_id: int,):

@@ -259,9 +259,9 @@ async def delete_ad_db(ad_id: int):
         print(f"DELETE FAVORITES {ad_id}")
         await delete_ad_favorites(session, ad_id)
 
-        await delete_ad_photos(session, ad_id)
-
         await delete_upload_folder(ad_id)
+
+        await delete_ad_photos(session, ad_id)
 
         await session.delete(ad)
 
@@ -440,7 +440,7 @@ async def delete_photo_db(photo_id: int):
         return photo_url  # возращает строку с адресом для удаления по os.remove
 
 
-############################Profil###################
+############################ Profil ###################
 
 
 async def get_profile_db(telegram_id: int):
