@@ -20,7 +20,7 @@ import string
 from lexicon import *
 from fastapi.staticfiles import StaticFiles
 import os
-import shutil
+from PIL import Image, ImageOps
 from static_functions import notify_receiver
 
 from geopy.geocoders import Nominatim
@@ -396,7 +396,10 @@ async def is_favorite(telegram_id: int, ad_id: int):
 ######################### Загрузка фото ##############################
 
 @f_api.post("/api/upload-photo")
-async def upload_photos(ad_id: int = Form(...), photos: list[UploadFile] = File(...)):
+async def upload_photos(
+    ad_id: int = Form(...),
+    photos: list[UploadFile] = File(...)
+):
     folder = f"uploads/{ad_id}"
 
     os.makedirs(folder, exist_ok=True)
@@ -404,14 +407,44 @@ async def upload_photos(ad_id: int = Form(...), photos: list[UploadFile] = File(
     urls = []
 
     for photo in photos:
-        file_path = (
-            f"{folder}/{photo.filename}"
+
+        # Имя файла без расширения
+        filename = (
+            os.path.splitext(photo.filename)[0]
+            + ".jpg"
         )
 
-        with open(file_path, "wb") as buffer:
-            shutil.copyfileobj(photo.file, buffer)
+        file_path = f"{folder}/{filename}"
 
-        photo_url = f"/uploads/{ad_id}/{photo.filename}"
+        # Открываем изображение и учитываем EXIF (автоповорот)
+        img = ImageOps.exif_transpose(
+            Image.open(photo.file)
+        )
+
+        # Защита от гигантских изображений
+        if img.width > 10000 or img.height > 10000:
+            return {
+                "ok": False,
+                "error": "Bild ist zu groß"
+            }
+
+        # JPEG не поддерживает прозрачность
+        if img.mode != "RGB":
+            img = img.convert("RGB")
+
+        # Максимальный размер 1600 px
+        img.thumbnail((1600, 1600))
+
+        # Сохраняем как JPEG
+        img.save(
+            file_path,
+            format="JPEG",
+            quality=70,
+            optimize=True,
+            progressive=True
+        )
+
+        photo_url = f"/uploads/{ad_id}/{filename}"
 
         await create_ad_photo(
             ad_id=ad_id,
