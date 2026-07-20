@@ -43,6 +43,89 @@ function CreateAdPage() {
 
     const categoryTitle = categoryNames[slug] || 'Kategorie'
 
+
+    const compressImage = (file) => {
+
+    return new Promise((resolve, reject) => {
+
+        const img = new Image()
+
+        img.onload = () => {
+
+            const canvas = document.createElement("canvas")
+
+            let width = img.width
+            let height = img.height
+
+            const maxSize = 1600
+
+            if (width > height) {
+
+                if (width > maxSize) {
+
+                    height *= maxSize / width
+                    width = maxSize
+
+                }
+
+            } else {
+
+                if (height > maxSize) {
+
+                    width *= maxSize / height
+                    height = maxSize
+
+                }
+
+            }
+
+            canvas.width = width
+            canvas.height = height
+
+            const ctx = canvas.getContext("2d")
+
+            ctx.drawImage(img, 0, 0, width, height)
+
+            canvas.toBlob(
+
+                (blob) => {
+
+                    if (!blob) {
+                        reject("Compression failed")
+                        return
+                    }
+
+                    resolve(
+
+                        new File(
+                            [blob],
+                            file.name.replace(/\.\w+$/, ".jpg"),
+                            {
+                                type: "image/jpeg",
+                            }
+                        )
+
+                    )
+
+                },
+
+                "image/jpeg",
+                0.7
+
+            )
+
+        }
+
+        img.onerror = reject
+
+        img.src = URL.createObjectURL(file)
+
+    })
+
+}
+
+
+
     const handleSubmit = async (e) => {
         e.preventDefault()
 
@@ -143,37 +226,78 @@ function CreateAdPage() {
         }
     }
 
-    const handlePhotoChange = (e) => {
+    const handlePhotoChange = async (e) => {
 
-        const files = Array.from(e.target.files)
+    const files = Array.from(e.target.files)
 
-        if (photos.length + files.length > 5) {
-            alert("Можно загрузить не более 5 фотографий")
-            return
-        }
-
-        const selectedSize = photos.reduce(
-            (sum, photo) => sum + photo.file.size,
-            0
-        )
-
-        const newSize = files.reduce(
-            (sum, file) => sum + file.size,
-            0
-        )
-
-        if (selectedSize + newSize > 20 * 1024 * 1024) {
-            alert("Общий размер фотографий не должен превышать 20 МБ")
-            return
-        }
-
-        const newPhotos = files.map((file) => ({
-            file,
-            preview: URL.createObjectURL(file),
-        }))
-
-        setPhotos((prev) => [...prev, ...newPhotos])
+    if (photos.length + files.length > 5) {
+        alert("Можно загрузить не более 5 фотографий")
+        return
     }
+
+    const compressed = []
+
+    for (const file of files) {
+
+        const small = await compressImage(file)
+
+        compressed.push({
+            file: small,
+            preview: URL.createObjectURL(small),
+        })
+
+    }
+
+    const selectedSize = photos.reduce(
+        (sum, photo) => sum + photo.file.size,
+        0
+    )
+
+    const newSize = compressed.reduce(
+        (sum, photo) => sum + photo.file.size,
+        0
+    )
+
+    if (selectedSize + newSize > 20 * 1024 * 1024) {
+        alert("Общий размер фотографий не должен превышать 20 МБ")
+        return
+    }
+
+    setPhotos((prev) => [...prev, ...compressed])
+
+}
+
+    // const handlePhotoChange = (e) => {
+    //
+    //     const files = Array.from(e.target.files)
+    //
+    //     if (photos.length + files.length > 5) {
+    //         alert("Можно загрузить не более 5 фотографий")
+    //         return
+    //     }
+    //
+    //     const selectedSize = photos.reduce(
+    //         (sum, photo) => sum + photo.file.size,
+    //         0
+    //     )
+    //
+    //     const newSize = files.reduce(
+    //         (sum, file) => sum + file.size,
+    //         0
+    //     )
+    //
+    //     if (selectedSize + newSize > 20 * 1024 * 1024) {
+    //         alert("Общий размер фотографий не должен превышать 20 МБ")
+    //         return
+    //     }
+    //
+    //     const newPhotos = files.map((file) => ({
+    //         file,
+    //         preview: URL.createObjectURL(file),
+    //     }))
+    //
+    //     setPhotos((prev) => [...prev, ...newPhotos])
+    // }
 
     const removePhoto = (index) => {
         setPhotos((prev) => prev.filter((_, i) => i !== index))
