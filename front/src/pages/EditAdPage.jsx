@@ -80,7 +80,7 @@ function EditAdPage() {
             )
 
             if (!response.ok) {
-                alert("Serverfehler")
+                alert("Serverfehler1")
                 return
             }
 
@@ -122,7 +122,7 @@ function EditAdPage() {
                 )
 
                 if (!uploadResponse.ok) {
-                    alert("Serverfehler")
+                    alert("Serverfehler2")
                     return
                 }
 
@@ -152,7 +152,7 @@ function EditAdPage() {
         } catch
             (error) {
             console.error(error)
-            alert("Serverfehler")
+            alert("Serverfehler3")
         }
     }
 
@@ -160,14 +160,32 @@ function EditAdPage() {
 
         const files = Array.from(e.target.files)
 
+        if (photos.length + files.length > 5) {
+            alert("Можно загрузить не более 5 фотографий")
+            return
+        }
+
+        const selectedSize = photos.reduce(
+            (sum, photo) => sum + photo.file.size,
+            0
+        )
+
+        const newSize = files.reduce(
+            (sum, file) => sum + file.size,
+            0
+        )
+
+        if (selectedSize + newSize > 20 * 1024 * 1024) {
+            alert("Общий размер фотографий не должен превышать 20 МБ")
+            return
+        }
+
         const newPhotos = files.map((file) => ({
             file,
             preview: URL.createObjectURL(file),
         }))
 
-        setPhotos((prev) =>
-            [...prev, ...newPhotos].slice(0, 5)
-        )
+        setPhotos((prev) => [...prev, ...newPhotos])
     }
 
     const removePhoto = async (index) => {

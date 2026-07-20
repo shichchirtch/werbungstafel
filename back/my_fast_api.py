@@ -440,8 +440,8 @@ async def upload_photos(
             file_path,
             format="JPEG",
             quality=70,
-            optimize=True,
-            progressive=True
+            # optimize=True,
+            # progressive=True
         )
 
         photo_url = f"/uploads/{ad_id}/{filename}"
