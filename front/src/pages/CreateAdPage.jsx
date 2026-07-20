@@ -14,6 +14,8 @@ function CreateAdPage() {
     const [price, setPrice] = useState('')
     const [anbieter, setAnbieter] = useState(true)
 
+    const [isSubmitting, setIsSubmitting] = useState(false)
+
     const [photos, setPhotos] = useState([])
 
     const [successModal, setSuccessModal] = useState(false)
@@ -43,6 +45,7 @@ function CreateAdPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+
         if (!title.trim() || !plz.trim() || !description.trim()
         ) {
             alert('Bitte Pflichtfelder ausfüllen')
@@ -52,6 +55,11 @@ function CreateAdPage() {
             alert('Bitte zuerst einloggen')
             return
         }
+        if (isSubmitting) return
+
+        setIsSubmitting(true)
+
+        let created = false
 
         try {
             const response = await fetch('/api/ads',
@@ -120,11 +128,18 @@ function CreateAdPage() {
                     return
                 }
             }
+            created = true
             setSuccessModal(true)
 
         } catch (error) {
             console.error(error)
             alert('Serverfehler')
+        } finally {
+
+            if (!created) {
+                setIsSubmitting(false)
+            }
+
         }
     }
 
@@ -175,22 +190,22 @@ function CreateAdPage() {
                 className="max-w-xl mx-auto bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl shadow-2xl flex flex-col gap-4"
             >
 
-                    <button
-    type="button"
-    onClick={() => {
+                <button
+                    type="button"
+                    onClick={() => {
 
-        const confirmed = window.confirm(
-    "Anzeige wirklich abbrechen?\n\nAlle eingegebenen Daten gehen verloren."
-)
+                        const confirmed = window.confirm(
+                            "Anzeige wirklich abbrechen?\n\nAlle eingegebenen Daten gehen verloren."
+                        )
 
-        if (!confirmed) {
-            return
-        }
+                        if (!confirmed) {
+                            return
+                        }
 
-        navigate('/')
+                        navigate('/')
 
-    }}
-    className="
+                    }}
+                    className="
         absolute
         top-4
         right-5
@@ -206,9 +221,9 @@ function CreateAdPage() {
         hover:text-white
         transition
     "
->
-    ×
-</button>
+                >
+                    ×
+                </button>
 
                 <input
                     type="text"
@@ -331,6 +346,7 @@ function CreateAdPage() {
 
                 <button
                     type="submit"
+                    disabled={isSubmitting}
                     className="
                     mt-2 py-4 rounded-2xl font-bold text-black text-lg
                     bg-gradient-to-br from-cyan-300 via-cyan-400 to-blue-500
@@ -338,7 +354,11 @@ function CreateAdPage() {
                     active:scale-95 transition
                     "
                 >
-                    Anzeige veröffentlichen
+                    {
+                        isSubmitting
+                            ? "Veröffentlichen..."
+                            : "Anzeige veröffentlichen"
+                    }
                 </button>
 
             </form>
