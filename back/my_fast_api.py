@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware import Middleware
 import logging
 from pydantic import BaseModel
+import time
 from typing import Optional
 from datetime import datetime, timezone
 from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
@@ -165,9 +166,7 @@ async def auth_telegram(data: dict):
 @f_api.post("/api/ads")
 async def create_ad(data: AdCreate):
 
-    user = await get_user_by_tg_id(
-        data.telegram_id
-    )
+    user = await get_user_by_tg_id(data.telegram_id)
 
     if not user:
         return {
@@ -175,11 +174,15 @@ async def create_ad(data: AdCreate):
             "error": "User not found"
         }
 
-    location = geolocator.geocode(
-        f"{data.plz}, Germany"
-    )
-    print('\n\nLOCAZION = ', location.raw, '\n\n')
-    print(location.raw.get("address"))
+    try:
+        location = geolocator.geocode(
+            f"{data.plz}, Germany"
+        )
+    except Exception:
+        return {
+            "ok": False,
+            "error": "Fehler beim Suchen des Ortes"
+        }
 
     if location is None:
         return {
@@ -187,7 +190,9 @@ async def create_ad(data: AdCreate):
             "error": "Ort oder Postleitzahl wurde nicht gefunden"
         }
 
-    place = location.raw["name"]
+    print("\n\nLOCATION =", location.raw, "\n\n")
+
+    place = location.raw.get("name", data.plz)
     osm_id = location.raw["osm_id"]
 
     latitude = round(location.latitude, 6)
@@ -199,11 +204,9 @@ async def create_ad(data: AdCreate):
         title=data.title,
         description=data.description,
         price=data.price,
-
         plz=place,
         osm_id=osm_id,
         anbieter=data.anbieter,
-
         latitude=latitude,
         longitude=longitude,
     )
@@ -395,20 +398,28 @@ async def is_favorite(telegram_id: int, ad_id: int):
 
 ######################### Загрузка фото ##############################
 
+
 @f_api.post("/api/upload-photo")
 async def upload_photos(
     ad_id: int = Form(...),
     photos: list[UploadFile] = File(...)
 ):
+    total = time.perf_counter()
+
     folder = f"uploads/{ad_id}"
 
     os.makedirs(folder, exist_ok=True)
 
     urls = []
 
-    for photo in photos:
+    print("=" * 70)
+    print("UPLOAD START", time.strftime("%H:%M:%S"))
+    print("FILES =", len(photos))
 
-        # Имя файла без расширения
+    for i, photo in enumerate(photos, 1):
+
+        print(f"\n----- PHOTO {i}: {photo.filename} -----")
+
         filename = (
             os.path.splitext(photo.filename)[0]
             + ".jpg"
@@ -416,26 +427,48 @@ async def upload_photos(
 
         file_path = f"{folder}/{filename}"
 
-        # Открываем изображение и учитываем EXIF (автоповорот)
+        # Проверяем скорость чтения файла
+        t = time.perf_counter()
+
+        photo.file.read()
+
+        print(f"READ FILE     : {time.perf_counter() - t:.3f} sec")
+
+        photo.file.seek(0)
+
+        # Открытие изображения
+        t = time.perf_counter()
+
         img = ImageOps.exif_transpose(
             Image.open(photo.file)
         )
 
-        # Защита от гигантских изображений
+        print(f"IMAGE OPEN    : {time.perf_counter() - t:.3f} sec")
+
         if img.width > 10000 or img.height > 10000:
             return {
                 "ok": False,
                 "error": "Bild ist zu groß"
             }
 
-        # JPEG не поддерживает прозрачность
+        # RGB
+        t = time.perf_counter()
+
         if img.mode != "RGB":
             img = img.convert("RGB")
 
-        # Максимальный размер 1600 px
+        print(f"RGB CONVERT   : {time.perf_counter() - t:.3f} sec")
+
+        # Уменьшение
+        t = time.perf_counter()
+
         img.thumbnail((1600, 1600))
 
-        # Сохраняем как JPEG
+        print(f"THUMBNAIL     : {time.perf_counter() - t:.3f} sec")
+
+        # Сохранение JPEG
+        t = time.perf_counter()
+
         img.save(
             file_path,
             format="JPEG",
@@ -444,20 +477,97 @@ async def upload_photos(
             # progressive=True
         )
 
+        print(f"JPEG SAVE     : {time.perf_counter() - t:.3f} sec")
+
         photo_url = f"/uploads/{ad_id}/{filename}"
+
+        # База
+        t = time.perf_counter()
 
         await create_ad_photo(
             ad_id=ad_id,
             photo_url=photo_url,
         )
 
+        print(f"DB INSERT     : {time.perf_counter() - t:.3f} sec")
+
         urls.append(photo_url)
+
+    print(f"\nTOTAL UPLOAD  : {time.perf_counter() - total:.3f} sec")
+    print("UPLOAD END", time.strftime("%H:%M:%S"))
+    print("=" * 70)
 
     return {
         "ok": True,
         "photos": urls,
     }
 
+
+# @f_api.post("/api/upload-photo")
+# async def upload_photos(
+#     ad_id: int = Form(...),
+#     photos: list[UploadFile] = File(...)
+# ):
+#     folder = f"uploads/{ad_id}"
+#
+#     os.makedirs(folder, exist_ok=True)
+#
+#     urls = []
+#     print("=" * 50)
+#     print("UPLOAD START", time.strftime("%H:%M:%S"))
+#     print("FILES =", len(photos))
+#     for photo in photos:
+#
+#         # Имя файла без расширения
+#         filename = (
+#             os.path.splitext(photo.filename)[0]
+#             + ".jpg"
+#         )
+#
+#         file_path = f"{folder}/{filename}"
+#
+#         # Открываем изображение и учитываем EXIF (автоповорот)
+#         img = ImageOps.exif_transpose(
+#             Image.open(photo.file)
+#         )
+#
+#         # Защита от гигантских изображений
+#         if img.width > 10000 or img.height > 10000:
+#             return {
+#                 "ok": False,
+#                 "error": "Bild ist zu groß"
+#             }
+#
+#         # JPEG не поддерживает прозрачность
+#         if img.mode != "RGB":
+#             img = img.convert("RGB")
+#
+#         # Максимальный размер 1600 px
+#         img.thumbnail((1600, 1600))
+#
+#         # Сохраняем как JPEG
+#         img.save(
+#             file_path,
+#             format="JPEG",
+#             quality=70,
+#             # optimize=True,
+#             # progressive=True
+#         )
+#
+#         photo_url = f"/uploads/{ad_id}/{filename}"
+#
+#         await create_ad_photo(
+#             ad_id=ad_id,
+#             photo_url=photo_url,
+#         )
+#
+#         urls.append(photo_url)
+#
+#     return {
+#         "ok": True,
+#         "photos": urls,
+#     }
+#
 
 ################################## DELETE WERBUNG ###################################
 
