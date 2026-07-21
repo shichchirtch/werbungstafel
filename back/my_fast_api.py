@@ -15,14 +15,15 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_profile_db, update_profile_db, get_ads_by_radius_db,
                        create_nachricht_db, get_nachrichten_db, get_ads_count_by_category,
                        get_chats_db, mark_messages_read_db, update_profile_and_get_user_db,
-                       get_map_data_db, get_ads_by_place_db)
+                       get_map_data_db, get_ads_by_place_db, toggle_user_ban)
 import secrets
 import string
 from lexicon import *
 from fastapi.staticfiles import StaticFiles
 import os
 from PIL import Image, ImageOps
-from static_functions import notify_receiver,  notify_ad_changed, notify_ad_created, notify_ad_deleted
+from static_functions import (notify_receiver,  notify_ad_changed, notify_ad_created,
+                              notify_ad_deleted, notify_user_ban_changed)
 
 from geopy.geocoders import Nominatim
 
@@ -130,7 +131,11 @@ async def login_status(token: str):
         return {
             "confirmed": False
         }
-
+    if user.is_banned:
+        return {
+            "ok": False,
+            "error": "Ihr Konto wurde gesperrt."
+        }
     await delete_login_request(token)
 
     return {
@@ -156,7 +161,11 @@ async def auth_telegram(data: dict):
         username=username,
         lan=lan
     )
-    # await load_user_avatar(message)
+
+    if isinstance(user, dict):
+        return user
+
+
     return {
         "user_id": user.id,
         "telegram_id": user.telegram_id,
@@ -176,6 +185,11 @@ async def create_ad(data: AdCreate):
         return {
             "ok": False,
             "error": "User not found"
+        }
+    if user.is_banned:
+        return {
+            "ok": False,
+            "error": "Ihr Konto wurde gesperrt."
         }
 
     try:
@@ -266,7 +280,7 @@ async def get_ads(category: str, place: str = "Deutschland", radius: str = "Alle
 async def get_ad(ad_id: int):
     """Хэндлер возвращающий данные вербунга на фронт из постгреса"""
 
-    ad = await get_ad_by_id(ad_id)
+    ad, owner_name = await get_ad_by_id(ad_id)
 
     if not ad:
         return {"ok": False}
@@ -282,6 +296,7 @@ async def get_ad(ad_id: int):
         "price": ad.price,
         "plz": ad.plz,
         "anbieter": ad.anbieter,
+        "ownerName": owner_name,
         "photos": [
             {
                 "id": photo.id,
@@ -688,7 +703,13 @@ async def update_profile(telegram_id: int, data: ProfileUpdate,
 
 @f_api.post("/api/messages")
 async def create_nachricht(data: CreateNachricht):
+    sender = await get_user_by_tg_id(data.sender_id)
 
+    if sender.is_banned:
+        return {
+            "ok": False,
+            "error": "Ihr Konto wurde gesperrt."
+        }
     nachricht = await create_nachricht_db(
         ad_id=data.ad_id,
         sender_id=data.sender_id,
@@ -766,3 +787,26 @@ async def get_place_ads(place: str):
     ads = await get_ads_by_place_db(place)
 
     return ads
+
+################################ B A N #####################################
+
+@f_api.put("/api/users/{user_id}/ban")
+async def ban_user(user_id: int):
+
+    success, is_banned = await toggle_user_ban(user_id)
+
+    if not success:
+        return {
+            "ok": False,
+            "error": "Benutzer nicht gefunden"
+        }
+
+    await notify_user_ban_changed(
+        user_id=user_id,
+        is_banned=is_banned,
+    )
+
+    return {
+        "ok": True,
+        "is_banned": is_banned,
+    }

@@ -40,17 +40,31 @@ async def create_user(tg_id: int, first_name: str,
         return user
 
 
-async def create_user_if_not_exists(tg_id: int, first_name: str, lan: str,
-                                    username, ) -> User:
+async def create_user_if_not_exists(
+    tg_id: int,
+    first_name: str,
+    lan: str,
+    username,
+) -> User | dict:
+
     user = await get_user_by_tg_id(tg_id)
+
     if user:
+
+        if user.is_banned:
+            return {
+                "ok": False,
+                "error": "Ihr Konto wurde gesperrt."
+            }
+
         return user
 
     return await create_user(
         tg_id=tg_id,
         first_name=first_name,
         lan=lan,
-        username=username)
+        username=username,
+    )
 
 
 async def update_avatar_db(
@@ -225,12 +239,31 @@ async def get_ads_by_category(category: str):
 
 async def get_ad_by_id(ad_id: int):
     async with session_marker() as session:
-        result = await session.execute(
-            select(Ad).where(
-                Ad.id == ad_id)
-        )
-        return result.scalar_one_or_none()
 
+        stmt = (
+            select(
+                Ad,
+                User.first_name
+            )
+            .join(
+                User,
+                User.id == Ad.owner_id
+            )
+            .where(
+                Ad.id == ad_id
+            )
+        )
+
+        result = await session.execute(stmt)
+
+        row = result.first()
+
+        if not row:
+            return None, None
+
+        ad, owner_name = row
+
+        return ad, owner_name
 
 async def delete_ad_favorites(session, ad_id: int, ):
     await session.execute(
@@ -917,5 +950,26 @@ async def get_ads_by_place_db(place: str):
             )
         )
         return result.scalars().all()
+
+############################# B A N #################################
+
+async def toggle_user_ban(user_id: int):
+
+    async with session_marker() as session:
+
+        result = await session.execute(
+            select(User).where(User.id == user_id)
+        )
+
+        user = result.scalar_one_or_none()
+
+        if not user:
+            return False, None
+
+        user.is_banned = not user.is_banned
+
+        await session.commit()
+
+        return True, user.is_banned
 
 

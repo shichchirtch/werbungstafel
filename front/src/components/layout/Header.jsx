@@ -30,25 +30,25 @@ function Header() {
 
     async function refreshProfile(telegramId) {
 
-    const response = await fetch(
-        `/api/profile/${telegramId}`
-    )
+        const response = await fetch(
+            `/api/profile/${telegramId}`
+        )
 
-    const data = await response.json()
+        const data = await response.json()
 
-    if (!data.ok) {
-        return
+        if (!data.ok) {
+            return
+        }
+
+        dispatch(updateProfile({
+            name: data.name,
+            bio: data.bio,
+            location: data.location,
+            avatar: data.avatar,
+            latitude: data.latitude,
+            longitude: data.longitude,
+        }))
     }
-
-    dispatch(updateProfile({
-        name: data.name,
-        bio: data.bio,
-        location: data.location,
-        avatar: data.avatar,
-        latitude: data.latitude,
-        longitude: data.longitude,
-    }))
-}
 
     useEffect(() => {
 
@@ -83,6 +83,20 @@ function Header() {
 
             const data = await response.json()
             console.log("LOGIN STATUS =", data)
+            if (data.ok === false) {
+                alert(data.error)
+
+                clearInterval(interval)
+
+                setLoginToken(null)
+
+                setCodeToken(null)
+
+                setShowCodeModal(false)
+
+
+                return
+            }
             if (data.confirmed) {
 
                 clearInterval(interval)

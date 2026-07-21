@@ -175,7 +175,7 @@ function AdDetailsPage() {
 
     return (
         <div className="px-4 py-6">
-            <p className="text-cyan-300 text-sm mb-3 font-semibold">
+            <p className="text-cyan-300 text-sm mb-3 font-semibold text-center">
 
                 {categoryNames[werbung.category]}
 
@@ -370,11 +370,12 @@ transition
                         {werbung.title}
                     </h1>
 
-            <div className="mb-4">
+                    <div className="mb-4">
 
-    {werbung.anbieter ? (
+                        <div className="flex items-center gap-2 mt-2">
 
-        <span className="
+                            {werbung.anbieter ? (
+                                <span className="
             inline-block
             px-3 py-1
             rounded-full
@@ -382,14 +383,11 @@ transition
             text-cyan-300
             text-xs
             font-bold
-            tracking-wider
         ">
             BIETE
         </span>
-
-    ) : (
-
-        <span className="
+                            ) : (
+                                <span className="
             inline-block
             px-3 py-1
             rounded-full
@@ -397,50 +395,65 @@ transition
             text-pink-300
             text-xs
             font-bold
-            tracking-wider
         ">
             SUCHE
         </span>
+                            )}
 
-    )}
+                            <button
+                                onClick={() => navigate(`/profile/${werbung.ownerId}`)}
+                                className="
+            text-cyan-300
+            hover:text-cyan-200
+            transition
+            text-sm
+        "
+                            >
+                                von
+                                <span className="font-semibold">
+                                {werbung.ownerName}
+                                </span>
+                            </button>
 
-</div>
+                        </div>
+                    </div>
 
 
-                    <p className="text-gray-400 mb-2">
-                        PLZ: {werbung.plz}
-                    </p>
-
-                    {werbung.price && (
-                        <p className="text-cyan-300 font-semibold mb-3">
-                            {werbung.price}
+                        <p className="text-gray-400 mb-2">
+                            PLZ: {werbung.plz}
                         </p>
-                    )}
 
-                    <p className="text-gray-300 leading-relaxed">
-                        {werbung.description}
-                    </p>
+                        {werbung.price && (
+                            <p className="text-cyan-300 font-semibold mb-3">
+                                {werbung.price}
+                            </p>
+                        )}
+
+                        <p className="text-gray-300 leading-relaxed">
+                            {werbung.description}
+                        </p>
 
 
-                </div>
+                    </div>
 
-                {/* ACTION */}
-                <div className="flex flex-row gap-4">
+                    {/* ACTION */}
+                    <div className="flex flex-row gap-4">
 
-                    {!user.isAuth ? (
+                        {!user.isAuth ? (
 
                             <button
                                 onClick={() => showToast(
-                                    '🔐 Bitte melden Sie sich über Telegram an.')}
+                                    '🔐 Bitte melden Sie sich über Telegram an.'
+                                )}
                                 className="
                 w-full py-3 rounded-2xl font-bold
-                bg-blue-500 text-white"
+                bg-blue-500 text-white
+            "
                             >
                                 🔐 Anmelden, um zu kontaktieren
                             </button>
 
-                        ) :
-                        (isOwner || user.role === "admin") ? (
+                        ) : isOwner ? (
 
                             <>
                                 <button
@@ -456,23 +469,35 @@ transition
                                 </button>
 
                                 <button
+                                    onClick={() => navigate(`/edit/${werbung.id}`)}
                                     className="
                     flex-1 py-3 rounded-2xl font-bold text-white
                     bg-gradient-to-br from-gray-500 to-gray-700
                     shadow-lg shadow-cyan-500/20
                     active:scale-95 transition
                 "
-                                    onClick={() => navigate(`/edit/${werbung.id}`)}
                                 >
                                     ✏️ Bearbeiten
                                 </button>
-
                             </>
+
+                        ) : user.role === "admin" ? (
+
+                            <button
+                                onClick={() => setShowDeleteModal(true)}
+                                className="
+                w-full py-3 rounded-2xl font-bold text-white
+                bg-gradient-to-br from-gray-700 to-gray-900
+                shadow-lg shadow-cyan-500/20
+                active:scale-95 transition
+            "
+                            >
+                                🗑 Löschen
+                            </button>
 
                         ) : (
 
                             <>
-
                                 <button
                                     onClick={handleToggleFavorite}
                                     className={`
@@ -489,16 +514,17 @@ transition
                                         ? '❤️ Gespeichert'
                                         : '🤍 Merken'}
                                 </button>
-                                {!isOwner && !showChat && (
+
+                                {!showChat && (
 
                                     <button
                                         onClick={() => setShowChat(prev => !prev)}
                                         className="
-                flex-1 py-4 rounded-2xl font-bold text-black text-lg
-                bg-gradient-to-br from-pink-500 via-fuchsia-500 to-violet-600
-                shadow-lg shadow-pink-500/40
-                active:scale-95 transition
-            "
+                        flex-1 py-4 rounded-2xl font-bold text-black text-lg
+                        bg-gradient-to-br from-pink-500 via-fuchsia-500 to-violet-600
+                        shadow-lg shadow-pink-500/40
+                        active:scale-95 transition
+                    "
                                     >
                                         💬 Kontaktieren
                                     </button>
@@ -509,73 +535,73 @@ transition
 
                         )}
 
+                    </div>
+
+                    {showChat && (
+                        <Chat
+                            adId={werbung.id}
+                            senderId={user.dbId}
+                            receiverId={werbung.ownerId}
+                        />
+                    )}
+
                 </div>
-
-                {showChat && (
-                    <Chat
-                        adId={werbung.id}
-                        senderId={user.dbId}
-                        receiverId={werbung.ownerId}
-                    />
-                )}
-
-            </div>
-            {/*modalka*/}
-            {showDeleteModal && (
-                <div className="
+                {/*modalka*/}
+                {showDeleteModal && (
+                    <div className="
         fixed inset-0 bg-black/70
         flex items-center justify-center z-50
     ">
 
-                    <div className="
+                        <div className="
             w-full max-w-sm mx-4
             bg-zinc-900 border border-white/10
             rounded-3xl p-6 text-center
         ">
 
-                        <h2 className="text-white text-xl font-bold mb-4">
-                            Anzeige löschen?
-                        </h2>
+                            <h2 className="text-white text-xl font-bold mb-4">
+                                Anzeige löschen?
+                            </h2>
 
-                        <p className="text-gray-400 mb-6">
-                            Diese Aktion kann nicht rückgängig gemacht werden.
-                        </p>
+                            <p className="text-gray-400 mb-6">
+                                Diese Aktion kann nicht rückgängig gemacht werden.
+                            </p>
 
-                        <div className="flex gap-3">
+                            <div className="flex gap-3">
 
-                            <button
-                                onClick={() => setShowDeleteModal(false)}
-                                className="
+                                <button
+                                    onClick={() => setShowDeleteModal(false)}
+                                    className="
                         flex-1 py-3 rounded-2xl
                         bg-white/10 text-white
                     "
-                            >
-                                Abbrechen
-                            </button>
+                                >
+                                    Abbrechen
+                                </button>
 
-                            <button
-                                onClick={handleDeleteAd}
-                                className="
+                                <button
+                                    onClick={handleDeleteAd}
+                                    className="
         flex-1 py-3 rounded-2xl
         bg-red-500 text-white font-bold
     "
-                            >
-                                Löschen
-                            </button>
+                                >
+                                    Löschen
+                                </button>
+
+                            </div>
 
                         </div>
 
                     </div>
+                )
+                }
 
-                </div>
-            )
-            }
+                {
+                    toast && (
 
-            {
-                toast && (
-
-                    <div
-                        className="
+                        <div
+                            className="
             fixed bottom-6 left-1/2
             -translate-x-1/2
             bg-zinc-900 text-white
@@ -584,14 +610,14 @@ transition
             shadow-2xl
             z-50
         "
-                    >
-                        {toast}
-                    </div>
+                        >
+                            {toast}
+                        </div>
 
-                )
+                    )
+                }
+            </div>
+            )
             }
-        </div>
-    )
-}
 
-export default AdDetailsPage
+            export default AdDetailsPage

@@ -132,6 +132,7 @@ function CreateAdPage() {
             alert('Bitte zuerst einloggen')
             return
         }
+
         if (isSubmitting) return
 
         setIsSubmitting(true)

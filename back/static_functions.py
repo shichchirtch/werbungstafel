@@ -266,3 +266,41 @@ async def notify_ad_changed(owner_id: int, ad: Ad,):
     except Exception as e:
 
         print(e)
+
+async def notify_user_ban_changed(
+    user_id: int,
+    is_banned: bool,
+):
+
+    user = await get_user_by_id(user_id)
+
+    if not user:
+        return
+
+    try:
+
+        if is_banned:
+
+            text = (
+                "🚫 <b>Ihr Konto wurde gesperrt.</b>\n\n"
+                "Sie können keine Anzeigen mehr veröffentlichen "
+                "und keine Nachrichten senden.\n\n"
+                "Falls Sie Fragen haben, kontaktieren Sie bitte den Administrator."
+            )
+
+        else:
+
+            text = (
+                "✅ <b>Ihr Konto wurde entsperrt.</b>\n\n"
+                "Sie können Werbungstafel jetzt wieder uneingeschränkt nutzen."
+            )
+
+        await bot.send_message(
+            chat_id=user.telegram_id,
+            text=text,
+            parse_mode="HTML",
+        )
+
+    except Exception as e:
+
+        print(e)

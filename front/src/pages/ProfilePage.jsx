@@ -39,6 +39,30 @@ function ProfilePage() {
 
     }, [user.id])
 
+    const handleBanUser = async () => {
+
+        const response = await fetch(
+            `/api/users/${profile.id}/ban`,
+            {
+                method: "PUT",
+            }
+        )
+
+        const data = await response.json()
+
+        if (!data.ok) {
+            alert(data.error)
+            return
+        }
+
+        setProfile(prev => ({
+            ...prev,
+            is_banned: data.is_banned,
+        }))
+
+    }
+
+
     if (!profile) {
 
         return (
@@ -176,6 +200,26 @@ function ProfilePage() {
                 >
                     🚪 Logout
                 </button>
+                {user.role === "admin" &&
+                    user.dbId !== profile.id && (
+
+                        <button
+                            onClick={handleBanUser}
+                            className="
+            py-3 rounded-2xl font-bold
+            text-white
+            bg-gradient-to-br
+            from-red-500
+            to-red-700
+        "
+                        >
+                            {profile.is_banned
+                                ? "✅ Benutzer entsperren"
+                                : "🚫 Benutzer sperren"
+                            }
+                        </button>
+
+                    )}
 
             </div>
 

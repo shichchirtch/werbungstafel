@@ -32,6 +32,7 @@ class User(Base):
     first_start: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
     latitude: Mapped[float | None] = mapped_column(Float, nullable=True )
     longitude: Mapped[float | None] = mapped_column( Float, nullable=True )
+    is_banned = mapped_column(default=False)
 
 
 class Ad(Base):
@@ -49,6 +50,7 @@ class Ad(Base):
     anbieter: Mapped[bool] = mapped_column(default=True)
     latitude: Mapped[float] = mapped_column(Float)
     longitude: Mapped[float] = mapped_column(Float)
+    pinned: Mapped[bool] = mapped_column(default=False)
 
 
 class LoginRequest(Base):
