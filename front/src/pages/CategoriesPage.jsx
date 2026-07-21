@@ -1,6 +1,4 @@
 import {useNavigate} from 'react-router-dom'
-import ButtonZuruck from "../components/common/ButtonZuruck.jsx";
-import HomeButton from "../components/common/HomeButton.jsx";
 
 function CategoriesPage() {
     const navigate = useNavigate()

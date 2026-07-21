@@ -106,7 +106,7 @@ function NachrichtenPage() {
 
         return (
 
-            <div className="px-4 py-6">
+            <div className="max-w-5xl mx-auto px-4 py-6">
 
                 <h1 className="text-2xl text-slate-200 font-bold mb-6">
                     Nachrichten
@@ -272,7 +272,7 @@ function NachrichtenPage() {
 
     return (
 
-        <div className="px-4 py-6">
+        <div className="max-w-5xl mx-auto px-4 py-6">
 
             <button
                 onClick={() => dispatch(clearSelectedChat())}
