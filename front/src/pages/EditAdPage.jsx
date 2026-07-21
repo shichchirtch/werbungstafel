@@ -13,6 +13,8 @@ function EditAdPage() {
     const [werbung, setWerbung] = useState(null)
     const [anbieter, setAnbieter] = useState('')
     const [successModal, setSuccessModal] = useState(false)
+    const [isCompressing, setIsCompressing] = useState(false)
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
     useEffect(() => {
         async function loadAd() {
@@ -57,8 +59,89 @@ function EditAdPage() {
 
     }
 
+    const compressImage = (file) => {
+
+        return new Promise((resolve, reject) => {
+
+            const img = new Image()
+
+            img.onload = () => {
+
+                const canvas = document.createElement("canvas")
+
+                let width = img.width
+                let height = img.height
+
+                const maxSize = 1600
+
+                if (width > height) {
+
+                    if (width > maxSize) {
+
+                        height *= maxSize / width
+                        width = maxSize
+
+                    }
+
+                } else {
+
+                    if (height > maxSize) {
+
+                        width *= maxSize / height
+                        height = maxSize
+
+                    }
+
+                }
+
+                canvas.width = width
+                canvas.height = height
+
+                const ctx = canvas.getContext("2d")
+
+                ctx.drawImage(img, 0, 0, width, height)
+
+                canvas.toBlob(
+                    (blob) => {
+
+                        if (!blob) {
+                            reject("Compression failed")
+                            return
+                        }
+
+                        resolve(
+                            new File(
+                                [blob],
+                                file.name.replace(/\.\w+$/, ".jpg"),
+                                {
+                                    type: "image/jpeg",
+                                }
+                            )
+                        )
+
+                    },
+
+                    "image/jpeg",
+                    0.7
+                )
+
+            }
+
+            img.onerror = reject
+
+            img.src = URL.createObjectURL(file)
+
+        })
+
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
+        if (isSubmitting || isCompressing) {
+            return
+        }
+
+        setIsSubmitting(true)
 
         try {
             const response = await fetch(
@@ -153,10 +236,12 @@ function EditAdPage() {
             (error) {
             console.error(error)
             alert("Serverfehler3")
+        } finally {
+            setIsSubmitting(false)
         }
     }
 
-    const handlePhotoChange = (e) => {
+    const handlePhotoChange = async (e) => {
 
         const files = Array.from(e.target.files)
 
@@ -165,27 +250,45 @@ function EditAdPage() {
             return
         }
 
-        const selectedSize = photos.reduce(
-            (sum, photo) => sum + photo.file.size,
-            0
-        )
+        setIsCompressing(true)
 
-        const newSize = files.reduce(
-            (sum, file) => sum + file.size,
-            0
-        )
+        try {
 
-        if (selectedSize + newSize > 20 * 1024 * 1024) {
-            alert("Общий размер фотографий не должен превышать 20 МБ")
-            return
+            const compressed = []
+
+            for (const file of files) {
+
+                const small = await compressImage(file)
+
+                compressed.push({
+                    file: small,
+                    preview: URL.createObjectURL(small),
+                })
+
+            }
+
+            const selectedSize = photos.reduce(
+                (sum, photo) => sum + (photo.file?.size || 0),
+                0
+            )
+
+            const newSize = compressed.reduce(
+                (sum, photo) => sum + photo.file.size,
+                0
+            )
+
+            if (selectedSize + newSize > 20 * 1024 * 1024) {
+                alert("Общий размер фотографий не должен превышать 20 МБ")
+                return
+            }
+
+            setPhotos((prev) => [...prev, ...compressed])
+
+        } finally {
+
+            setIsCompressing(false)
+
         }
-
-        const newPhotos = files.map((file) => ({
-            file,
-            preview: URL.createObjectURL(file),
-        }))
-
-        setPhotos((prev) => [...prev, ...newPhotos])
     }
 
     const removePhoto = async (index) => {
@@ -339,14 +442,18 @@ function EditAdPage() {
                         cursor-pointer text-center
                     "
                 >
-                    Fotos hinzufügen
-
+                    {
+                        isCompressing
+                            ? "Fotos werden verarbeitet..."
+                            : "Fotos hinzufügen"
+                    }
                     <input
                         type="file"
                         multiple
                         accept="image/*"
                         onChange={handlePhotoChange}
                         className="hidden"
+                        disabled={isCompressing}
                     />
                 </label>
 
@@ -391,6 +498,16 @@ function EditAdPage() {
                     </div>
                 )}
 
+                <div className="text-right text-sm text-gray-400">
+                    {photos.length}/5 Fotos
+                </div>
+
+                {isCompressing && (
+                    <div className="text-center text-cyan-300 font-semibold animate-pulse">
+                        📷 Bilder werden komprimiert...
+                    </div>
+                )}
+
                 <button
                     type="submit"
                     className="
@@ -400,8 +517,15 @@ function EditAdPage() {
                         from-cyan-300 via-cyan-400 to-blue-500
                         shadow-lg shadow-cyan-400/30
                     "
+                    disabled={isSubmitting || isCompressing}
                 >
-                    Änderungen speichern
+                    {
+                        isCompressing
+                            ? "Fotos werden verarbeitet..."
+                            : isSubmitting
+                                ? "Speichern..."
+                                : "Speichern"
+                    }
                 </button>
 
             </form>

@@ -20,6 +20,8 @@ function CreateAdPage() {
 
     const [successModal, setSuccessModal] = useState(false)
 
+    const [isCompressing, setIsCompressing] = useState(false)
+
     const user = useSelector((state) => state.user)
 
     const categoryNames = {
@@ -46,84 +48,76 @@ function CreateAdPage() {
 
     const compressImage = (file) => {
 
-    return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
 
-        const img = new Image()
+            const img = new Image()
 
-        img.onload = () => {
+            img.onload = () => {
 
-            const canvas = document.createElement("canvas")
+                const canvas = document.createElement("canvas")
 
-            let width = img.width
-            let height = img.height
+                let width = img.width
+                let height = img.height
 
-            const maxSize = 1600
+                const maxSize = 1600
 
-            if (width > height) {
+                if (width > height) {
 
-                if (width > maxSize) {
+                    if (width > maxSize) {
 
-                    height *= maxSize / width
-                    width = maxSize
+                        height *= maxSize / width
+                        width = maxSize
 
+                    }
+
+                } else {
+
+                    if (height > maxSize) {
+
+                        width *= maxSize / height
+                        height = maxSize
+                    }
                 }
+                canvas.width = width
+                canvas.height = height
 
-            } else {
+                const ctx = canvas.getContext("2d")
 
-                if (height > maxSize) {
+                ctx.drawImage(img, 0, 0, width, height)
 
-                    width *= maxSize / height
-                    height = maxSize
+                canvas.toBlob(
+                    (blob) => {
 
-                }
+                        if (!blob) {
+                            reject("Compression failed")
+                            return
+                        }
+
+                        resolve(
+                            new File(
+                                [blob],
+                                file.name.replace(/\.\w+$/, ".jpg"),
+                                {
+                                    type: "image/jpeg",
+                                }
+                            )
+                        )
+
+                    },
+
+                    "image/jpeg",
+                    0.7
+                )
 
             }
 
-            canvas.width = width
-            canvas.height = height
+            img.onerror = reject
 
-            const ctx = canvas.getContext("2d")
+            img.src = URL.createObjectURL(file)
 
-            ctx.drawImage(img, 0, 0, width, height)
+        })
 
-            canvas.toBlob(
-
-                (blob) => {
-
-                    if (!blob) {
-                        reject("Compression failed")
-                        return
-                    }
-
-                    resolve(
-
-                        new File(
-                            [blob],
-                            file.name.replace(/\.\w+$/, ".jpg"),
-                            {
-                                type: "image/jpeg",
-                            }
-                        )
-
-                    )
-
-                },
-
-                "image/jpeg",
-                0.7
-
-            )
-
-        }
-
-        img.onerror = reject
-
-        img.src = URL.createObjectURL(file)
-
-    })
-
-}
-
+    }
 
 
     const handleSubmit = async (e) => {
@@ -228,44 +222,53 @@ function CreateAdPage() {
 
     const handlePhotoChange = async (e) => {
 
-    const files = Array.from(e.target.files)
+        const files = Array.from(e.target.files)
 
-    if (photos.length + files.length > 5) {
-        alert("Можно загрузить не более 5 фотографий")
-        return
+        if (photos.length + files.length > 5) {
+            alert("Можно загрузить не более 5 фотографий")
+            return
+        }
+
+        setIsCompressing(true)
+
+        try {
+
+            const compressed = []
+
+            for (const file of files) {
+
+                const small = await compressImage(file)
+
+                compressed.push({
+                    file: small,
+                    preview: URL.createObjectURL(small),
+                })
+
+            }
+
+            const selectedSize = photos.reduce(
+                (sum, photo) => sum + (photo.file?.size || 0),
+                0
+            )
+
+            const newSize = compressed.reduce(
+                (sum, photo) => sum + photo.file.size,
+                0
+            )
+
+            if (selectedSize + newSize > 20 * 1024 * 1024) {
+                alert("Общий размер фотографий не должен превышать 20 МБ")
+                return
+            }
+
+            setPhotos((prev) => [...prev, ...compressed])
+
+        } finally {
+
+            setIsCompressing(false)
+
+        }
     }
-
-    const compressed = []
-
-    for (const file of files) {
-
-        const small = await compressImage(file)
-
-        compressed.push({
-            file: small,
-            preview: URL.createObjectURL(small),
-        })
-
-    }
-
-    const selectedSize = photos.reduce(
-        (sum, photo) => sum + photo.file.size,
-        0
-    )
-
-    const newSize = compressed.reduce(
-        (sum, photo) => sum + photo.file.size,
-        0
-    )
-
-    if (selectedSize + newSize > 20 * 1024 * 1024) {
-        alert("Общий размер фотографий не должен превышать 20 МБ")
-        return
-    }
-
-    setPhotos((prev) => [...prev, ...compressed])
-
-}
 
     // const handlePhotoChange = (e) => {
     //
@@ -451,6 +454,7 @@ function CreateAdPage() {
                             accept="image/*"
                             onChange={handlePhotoChange}
                             className="hidden"
+                            disabled={isCompressing}
                         />
                     </label>
 
@@ -486,6 +490,11 @@ function CreateAdPage() {
                     <div className="text-right text-sm text-gray-400">
                         {photos.length}/5 Fotos
                     </div>
+                    {isCompressing && (
+                        <div className="text-center text-cyan-300 font-semibold animate-pulse">
+                            📷 Bilder werden komprimiert...
+                        </div>
+                    )}
 
                 </div>
 
@@ -500,9 +509,11 @@ function CreateAdPage() {
                     "
                 >
                     {
-                        isSubmitting
-                            ? "Veröffentlichen..."
-                            : "Anzeige veröffentlichen"
+                        isCompressing
+                            ? "Fotos werden verarbeitet..."
+                            : isSubmitting
+                                ? "Veröffentlichen..."
+                                : "Anzeige veröffentlichen"
                     }
                 </button>
 
