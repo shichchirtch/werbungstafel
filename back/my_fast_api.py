@@ -15,7 +15,7 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_profile_db, update_profile_db, get_ads_by_radius_db,
                        create_nachricht_db, get_nachrichten_db, get_ads_count_by_category,
                        get_chats_db, mark_messages_read_db, update_profile_and_get_user_db,
-                       get_map_data_db, get_ads_by_place_db, toggle_user_ban)
+                       get_map_data_db, get_ads_by_place_db, toggle_user_ban, get_user_profile_by_id)
 import secrets
 import string
 from lexicon import *
@@ -809,4 +809,22 @@ async def ban_user(user_id: int):
     return {
         "ok": True,
         "is_banned": is_banned,
+    }
+
+############################## Профиль юзера
+
+@f_api.get("/api/user-profile/{user_id}")
+async def get_user_profile(user_id: int):
+
+    profile = await get_user_profile_by_id(user_id)
+
+    if not profile:
+        return {
+            "ok": False,
+            "error": "Benutzer wurde nicht gefunden"
+        }
+
+    return {
+        "ok": True,
+        **profile
     }

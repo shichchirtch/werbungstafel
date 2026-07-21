@@ -973,3 +973,59 @@ async def toggle_user_ban(user_id: int):
         return True, user.is_banned
 
 
+async def get_ads_count(user_id: int):
+
+    async with session_marker() as session:
+
+        return await session.scalar(
+
+            select(func.count())
+
+            .select_from(Ad)
+
+            .where(
+                Ad.owner_id == user_id
+            )
+
+        )
+
+async def get_favorites_count(user_id: int):
+
+    async with session_marker() as session:
+
+        return await session.scalar(
+
+            select(func.count())
+
+            .select_from(Favorite)
+
+            .where(
+                Favorite.user_id == user_id
+            )
+
+        )
+
+async def get_user_profile_by_id(user_id: int):
+
+    user = await get_user_by_id(user_id)
+
+    if not user:
+        return None
+
+    ads_count = await get_ads_count(user.id)
+
+    favorites_count = await get_favorites_count(user.id)
+
+    return {
+        "id": user.id,
+        "telegram_id": user.telegram_id,
+        "name": user.first_name,
+        "avatar": user.avatar,
+        "bio": user.description,
+        "location": user.city,
+        "first_start": user.first_start.strftime("%d.%m.%Y"),
+        "ads_count": ads_count,
+        "favorites_count": favorites_count,
+        "is_banned": user.is_banned,
+    }
+

@@ -13,6 +13,7 @@ import MyFavoritesPage from "./pages/MyFavoritePage.jsx";
 import NachrichtenPage from "./pages/NachrichtenPage.jsx";
 import MapPage from './pages/MapPage';
 import PlaceAdsPage from './pages/PlaceAdsPage';
+import UserProfielePage from './pages/UserProfilePage.jsx';
 
 const router = createBrowserRouter([
     {
@@ -71,6 +72,11 @@ const router = createBrowserRouter([
                 path: 'place/:place',
                 element: <PlaceAdsPage/>,
             },
+
+            {
+                path: "/profile/:userId",
+                element: <UserProfielePage/>
+            }
 
         ],
     },
