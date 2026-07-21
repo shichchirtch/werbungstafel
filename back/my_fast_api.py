@@ -22,7 +22,7 @@ from lexicon import *
 from fastapi.staticfiles import StaticFiles
 import os
 from PIL import Image, ImageOps
-from static_functions import notify_receiver
+from static_functions import notify_receiver,  notify_ad_changed, notify_ad_created, notify_ad_deleted
 
 from geopy.geocoders import Nominatim
 
@@ -210,6 +210,7 @@ async def create_ad(data: AdCreate):
         latitude=latitude,
         longitude=longitude,
     )
+    await notify_ad_changed(user.id, ad)
 
     return {
         "ok": True,
@@ -404,7 +405,7 @@ async def upload_photos(
     ad_id: int = Form(...),
     photos: list[UploadFile] = File(...)
 ):
-    total = time.perf_counter()
+    # total = time.perf_counter()
 
     folder = f"uploads/{ad_id}"
 
@@ -412,13 +413,13 @@ async def upload_photos(
 
     urls = []
 
-    print("=" * 70)
-    print("UPLOAD START", time.strftime("%H:%M:%S"))
-    print("FILES =", len(photos))
+    # print("=" * 70)
+    # print("UPLOAD START", time.strftime("%H:%M:%S"))
+    # print("FILES =", len(photos))
 
     for i, photo in enumerate(photos, 1):
 
-        print(f"\n----- PHOTO {i}: {photo.filename} -----")
+        # print(f"\n----- PHOTO {i}: {photo.filename} -----")
 
         filename = (
             os.path.splitext(photo.filename)[0]
@@ -428,22 +429,22 @@ async def upload_photos(
         file_path = f"{folder}/{filename}"
 
         # Проверяем скорость чтения файла
-        t = time.perf_counter()
+        # t = time.perf_counter()
+        #
+        # photo.file.read()
+        #
+        # print(f"READ FILE     : {time.perf_counter() - t:.3f} sec")
 
-        photo.file.read()
-
-        print(f"READ FILE     : {time.perf_counter() - t:.3f} sec")
-
-        photo.file.seek(0)
+        # photo.file.seek(0)
 
         # Открытие изображения
-        t = time.perf_counter()
+        # t = time.perf_counter()
 
         img = ImageOps.exif_transpose(
             Image.open(photo.file)
         )
 
-        print(f"IMAGE OPEN    : {time.perf_counter() - t:.3f} sec")
+        # print(f"IMAGE OPEN    : {time.perf_counter() - t:.3f} sec")
 
         if img.width > 10000 or img.height > 10000:
             return {
@@ -452,50 +453,50 @@ async def upload_photos(
             }
 
         # RGB
-        t = time.perf_counter()
+        # t = time.perf_counter()
 
         if img.mode != "RGB":
             img = img.convert("RGB")
 
-        print(f"RGB CONVERT   : {time.perf_counter() - t:.3f} sec")
+        # print(f"RGB CONVERT   : {time.perf_counter() - t:.3f} sec")
 
         # Уменьшение
-        t = time.perf_counter()
+        # t = time.perf_counter()
 
         img.thumbnail((1600, 1600))
 
-        print(f"THUMBNAIL     : {time.perf_counter() - t:.3f} sec")
+        # print(f"THUMBNAIL     : {time.perf_counter() - t:.3f} sec")
 
         # Сохранение JPEG
-        t = time.perf_counter()
+        # t = time.perf_counter()
 
         img.save(
             file_path,
             format="JPEG",
             quality=70,
-            # optimize=True,
-            # progressive=True
+            optimize=True,
+            progressive=True
         )
 
-        print(f"JPEG SAVE     : {time.perf_counter() - t:.3f} sec")
+        # print(f"JPEG SAVE     : {time.perf_counter() - t:.3f} sec")
 
         photo_url = f"/uploads/{ad_id}/{filename}"
 
         # База
-        t = time.perf_counter()
+        # t = time.perf_counter()
 
         await create_ad_photo(
             ad_id=ad_id,
             photo_url=photo_url,
         )
 
-        print(f"DB INSERT     : {time.perf_counter() - t:.3f} sec")
+        # print(f"DB INSERT     : {time.perf_counter() - t:.3f} sec")
 
         urls.append(photo_url)
 
-    print(f"\nTOTAL UPLOAD  : {time.perf_counter() - total:.3f} sec")
-    print("UPLOAD END", time.strftime("%H:%M:%S"))
-    print("=" * 70)
+    # print(f"\nTOTAL UPLOAD  : {time.perf_counter() - total:.3f} sec")
+    # print("UPLOAD END", time.strftime("%H:%M:%S"))
+    # print("=" * 70)
 
     return {
         "ok": True,
@@ -571,27 +572,32 @@ async def upload_photos(
 
 ################################## DELETE WERBUNG ###################################
 
+############################### Удаление объявления ##############################
 @f_api.delete("/api/ad/{ad_id}")
 async def delete_ad(ad_id: int):
+    ad = await delete_ad_db(ad_id)
 
-    print(f"DELETE AD {ad_id}")
-
-    success = await delete_ad_db(ad_id)
-
-    if not success:
+    if not ad:
         return {
             "ok": False,
             "error": "Anzeige nicht gefunden"
         }
+
+    await notify_ad_deleted(
+        owner_id=ad.owner_id,
+        ad=ad,
+    )
 
     return {
         "ok": True
     }
 
 ################################ Редактирование объявления ###########################
+
 @f_api.put("/api/ad/{ad_id}")
-async def update_ad(ad_id: int, data: AdUpdate,):
-    success = await update_ad_db(
+async def update_ad(ad_id: int, data: AdUpdate):
+
+    ad = await update_ad_db(
         ad_id=ad_id,
         title=data.title,
         description=data.description,
@@ -599,11 +605,21 @@ async def update_ad(ad_id: int, data: AdUpdate,):
         plz=data.plz,
         anbieter=data.anbieter,
     )
-    if not success:
+
+    if not ad:
         return {
             "ok": False,
-            "error": "Anzeige nicht gefunden"}
-    return {"ok": True}
+            "error": "Anzeige nicht gefunden"
+        }
+
+    await notify_ad_changed(
+        owner_id=ad.owner_id,
+        ad=ad,
+    )
+
+    return {
+        "ok": True
+    }
 
 
 @f_api.delete("/api/photo/{photo_id}")
@@ -638,14 +654,8 @@ async def get_profile(telegram_id: int,):
     return {"ok": True,**profile}
 
 
-
-
-
-
 @f_api.put("/api/profile/{telegram_id}")
-async def update_profile(
-    telegram_id: int,
-    data: ProfileUpdate,
+async def update_profile(telegram_id: int, data: ProfileUpdate,
 ):
 
     user = await update_profile_and_get_user_db(
@@ -674,7 +684,6 @@ async def update_profile(
 
 @f_api.post("/api/messages")
 async def create_nachricht(data: CreateNachricht):
-    bescheid = '📩 Sie haben eine neue Nachricht.\n\nÖffnen Sie Werbungstafel.'
 
     nachricht = await create_nachricht_db(
         ad_id=data.ad_id,

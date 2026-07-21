@@ -267,7 +267,7 @@ async def delete_ad_db(ad_id: int):
 
         await session.commit()
 
-        return True
+        return ad
 
 
 async def get_ads_by_owner(owner_id: int):
@@ -418,7 +418,7 @@ async def update_ad_db(ad_id: int, title: str, description: str, price: str, plz
 
         await session.refresh(ad)
 
-        return True
+        return ad
 
 
 async def delete_photo_db(photo_id: int):
@@ -917,3 +917,5 @@ async def get_ads_by_place_db(place: str):
             )
         )
         return result.scalars().all()
+
+

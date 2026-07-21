@@ -170,3 +170,103 @@ async def notify_receiver(receiver_id: int):
         except Exception as e:
 
             print(e)
+
+async def notify_ad_created(
+    owner_id: int,
+    ad: Ad,
+):
+
+    user = await get_user_by_id(owner_id)
+
+    if not user:
+        return
+
+    try:
+
+        await bot.send_message(
+
+            chat_id=user.telegram_id,
+
+            text=(
+
+                "✅ <b>Ihre Anzeige wurde veröffentlicht!</b>\n\n"
+
+                f"📌 <b>{ad.title}</b>\n"
+
+                f"📍 {ad.plz}\n\n"
+
+                "Ihre Anzeige wurde erfolgreich veröffentlicht und ist jetzt für andere Benutzer sichtbar.\n\nVielen Dank für Ihre Nutzung von Werbungstafel!"
+
+            ),
+
+            parse_mode="HTML",
+
+        )
+
+    except Exception as e:
+
+        print(e)
+
+async def notify_ad_deleted(owner_id: int,ad: Ad):
+
+    user = await get_user_by_id(owner_id)
+
+    if not user:
+        return
+
+    try:
+
+        await bot.send_message(
+
+            chat_id=user.telegram_id,
+
+            text=(
+
+                "✅ <b>Ihre Anzeige wurde entfernt!</b>\n\n"
+
+                f"📌 <b>{ad.title}</b>\n"
+
+                f"📍 {ad.plz}\n\n"
+
+                "Ihre Anzeige wurde erfolgreich entfernt"
+
+            ),
+
+            parse_mode="HTML",
+
+        )
+
+    except Exception as e:
+
+        print(e)
+
+async def notify_ad_changed(owner_id: int, ad: Ad,):
+
+    user = await get_user_by_id(owner_id)
+
+    if not user:
+        return
+
+    try:
+
+        await bot.send_message(
+
+            chat_id=user.telegram_id,
+
+            text=(
+
+                "✅ <b>Ihre Anzeige wurde verändert!</b>\n\n"
+
+                f"📌 <b>{ad.title}</b>\n"
+
+                f"📍 {ad.plz}\n\n"
+
+                "Ihre Anzeige wurde erfolgreich verändert !"
+            ),
+
+            parse_mode="HTML",
+        )
+
+    except Exception as e:
+
+        print(e)
