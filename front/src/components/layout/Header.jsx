@@ -92,6 +92,7 @@ function Header() {
                         id: data.telegram_id,
                         name: data.first_name,
                         dbId: data.user_id,
+                        role: data.role,
                         isAuth: true
                     })
                 )

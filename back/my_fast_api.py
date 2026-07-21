@@ -114,6 +114,7 @@ async def browser_login():
 
 @f_api.get("/api/login-status/{token}")
 async def login_status(token: str):
+    """авторизаия через обычный браузер"""
     login_request = await get_confirmed_login(token)
 
     if not login_request:
@@ -137,11 +138,13 @@ async def login_status(token: str):
         "telegram_id": user.telegram_id,
         "user_id": user.id,
         "first_name": user.first_name,
+        "role": user.role,
     }
 
 
 @f_api.post("/api/auth/telegram")
 async def auth_telegram(data: dict):
+    """Авторизация через телефон"""
     tg_id = data["telegram_id"]
     first_name = data["first_name"]
     username = data.get("username")
@@ -158,6 +161,7 @@ async def auth_telegram(data: dict):
         "user_id": user.id,
         "telegram_id": user.telegram_id,
         "first_name": user.first_name,
+        "role": user.role,
     }
 
 
@@ -210,7 +214,7 @@ async def create_ad(data: AdCreate):
         latitude=latitude,
         longitude=longitude,
     )
-    await notify_ad_changed(user.id, ad)
+    await notify_ad_created(user.id, ad)
 
     return {
         "ok": True,

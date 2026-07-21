@@ -195,7 +195,7 @@ async def notify_ad_created(
 
                 f"📍 {ad.plz}\n\n"
 
-                "Ihre Anzeige wurde erfolgreich veröffentlicht und ist jetzt für andere Benutzer sichtbar.\n\nVielen Dank für Ihre Nutzung von Werbungstafel!"
+                "Und ist jetzt für andere Benutzer sichtbar.\n\nVielen Dank für Ihre Nutzung von Werbungstafel!"
 
             ),
 
@@ -228,8 +228,6 @@ async def notify_ad_deleted(owner_id: int,ad: Ad):
 
                 f"📍 {ad.plz}\n\n"
 
-                "Ihre Anzeige wurde erfolgreich entfernt"
-
             ),
 
             parse_mode="HTML",
@@ -260,8 +258,6 @@ async def notify_ad_changed(owner_id: int, ad: Ad,):
                 f"📌 <b>{ad.title}</b>\n"
 
                 f"📍 {ad.plz}\n\n"
-
-                "Ihre Anzeige wurde erfolgreich verändert !"
             ),
 
             parse_mode="HTML",

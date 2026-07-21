@@ -26,6 +26,7 @@ const userSlice = createSlice({
             state.dbId = action.payload.dbId      // users.id
             state.isAuth = true
             state.lan = action.payload.lan
+            state.role = action.payload.role
             state.isTelegram = action.payload.isTelegram
             localStorage.setItem('user', JSON.stringify(state))
         },

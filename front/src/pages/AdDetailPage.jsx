@@ -19,7 +19,7 @@ function AdDetailsPage() {
     const [werbung, setWerbung] = useState(null)
     const [isFavorite, setIsFavorite] = useState(false)
     const [messages, setMessages] = useState([])
-    const [message, setMessage] = useState("")
+
 
     useEffect(() => {
 
@@ -440,7 +440,7 @@ transition
                             </button>
 
                         ) :
-                        isOwner ? (
+                        (isOwner || user.role === "admin") ? (
 
                             <>
                                 <button

@@ -21,6 +21,8 @@ function CategoriesPage() {
         {title: 'Rechtsdienst leistungen', slug: 'rechtsdienstleistungen'},
         {title: 'Physio / Spa', slug: 'physio-spa'},
         {title: 'Haustiere', slug: 'haustiere'},
+        {title: 'Immobilie', slug: 'immobilie' },
+        {title: 'Garten', slug: 'garten' },
         {title: 'Weitere', slug: 'weitere'},
     ]
 
