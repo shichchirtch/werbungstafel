@@ -409,7 +409,7 @@ transition
             text-sm
         "
                             >
-                                von
+                                von{" "}
                                 <span className="font-semibold">
                                 {werbung.ownerName}
                                 </span>
@@ -419,205 +419,177 @@ transition
                     </div>
 
 
-                        <p className="text-gray-400 mb-2">
-                            PLZ: {werbung.plz}
+                    <p className="text-gray-400 mb-2">
+                        PLZ: {werbung.plz}
+                    </p>
+
+                    {werbung.price && (
+                        <p className="text-cyan-300 font-semibold mb-3">
+                            {werbung.price}
                         </p>
+                    )}
 
-                        {werbung.price && (
-                            <p className="text-cyan-300 font-semibold mb-3">
-                                {werbung.price}
-                            </p>
-                        )}
-
-                        <p className="text-gray-300 leading-relaxed">
-                            {werbung.description}
-                        </p>
+                    <p className="text-gray-300 leading-relaxed">
+                        {werbung.description}
+                    </p>
 
 
-                    </div>
+                </div>
 
-                    {/* ACTION */}
-                    <div className="flex flex-row gap-4">
+                {/* ACTION */}
+                <div className="flex flex-row gap-4">
 
-                        {!user.isAuth ? (
+                    {!user.isAuth ? (
 
-                            <button
-                                onClick={() => showToast(
-                                    '🔐 Bitte melden Sie sich über Telegram an.'
-                                )}
-                                className="
+                        <button
+                            onClick={() => showToast(
+                                '🔐 Bitte melden Sie sich über Telegram an.'
+                            )}
+                            className="
                 w-full py-3 rounded-2xl font-bold
                 bg-blue-500 text-white
             "
-                            >
-                                🔐 Anmelden, um zu kontaktieren
-                            </button>
+                        >
+                            🔐 Anmelden, um zu kontaktieren
+                        </button>
 
-                        ) : isOwner ? (
+                    ) : isOwner ? (
 
-                            <>
-                                <button
-                                    onClick={() => setShowDeleteModal(true)}
-                                    className="
+                        <>
+                            <button
+                                onClick={() => setShowDeleteModal(true)}
+                                className="
                     flex-1 py-3 rounded-2xl font-bold text-white
                     bg-gradient-to-br from-gray-700 to-gray-900
                     shadow-lg shadow-cyan-500/20
                     active:scale-95 transition
                 "
-                                >
-                                    🗑 Löschen
-                                </button>
+                            >
+                                🗑 Löschen
+                            </button>
 
-                                <button
-                                    onClick={() => navigate(`/edit/${werbung.id}`)}
-                                    className="
+                            <button
+                                onClick={() => navigate(`/edit/${werbung.id}`)}
+                                className="
                     flex-1 py-3 rounded-2xl font-bold text-white
                     bg-gradient-to-br from-gray-500 to-gray-700
                     shadow-lg shadow-cyan-500/20
                     active:scale-95 transition
                 "
-                                >
-                                    ✏️ Bearbeiten
-                                </button>
-                            </>
+                            >
+                                ✏️ Bearbeiten
+                            </button>
+                        </>
 
-                        ) : user.role === "admin" ? (
+                    ) : user.role === "admin" ? (
 
+                        <>
                             <button
                                 onClick={() => setShowDeleteModal(true)}
                                 className="
-                w-full py-3 rounded-2xl font-bold text-white
-                bg-gradient-to-br from-gray-700 to-gray-900
-                shadow-lg shadow-cyan-500/20
-                active:scale-95 transition
-            "
+                    flex-1 py-3 rounded-2xl font-bold text-white
+                    bg-gradient-to-br from-gray-700 to-gray-900
+                    shadow-lg shadow-cyan-500/20
+                    active:scale-95 transition
+                "
                             >
                                 🗑 Löschen
                             </button>
 
-                        ) : (
+                            {!showChat && (
 
-                            <>
                                 <button
-                                    onClick={handleToggleFavorite}
-                                    className={`
-                    flex-1 py-3 rounded-2xl font-bold
-                    transition active:scale-95
-                    ${
-                                        isFavorite
-                                            ? 'bg-gray-500 text-white'
-                                            : 'bg-gray-700 text-gray-300'
-                                    }
-                `}
-                                >
-                                    {isFavorite
-                                        ? '❤️ Gespeichert'
-                                        : '🤍 Merken'}
-                                </button>
-
-                                {!showChat && (
-
-                                    <button
-                                        onClick={() => setShowChat(prev => !prev)}
-                                        className="
+                                    onClick={() => setShowChat(true)}
+                                    className="
                         flex-1 py-4 rounded-2xl font-bold text-black text-lg
                         bg-gradient-to-br from-pink-500 via-fuchsia-500 to-violet-600
                         shadow-lg shadow-pink-500/40
                         active:scale-95 transition
                     "
-                                    >
-                                        💬 Kontaktieren
-                                    </button>
+                                >
+                                    💬 Kontaktieren
+                                </button>
 
-                                )}
+                            )}
 
-                            </>
+                        </>
 
-                        )}
+                    ) : (
 
-                    </div>
+                        <>
+                            <button
+                                onClick={handleToggleFavorite}
+                                className={`
+                    flex-1 py-3 rounded-2xl font-bold
+                    transition active:scale-95
+                    ${
+                                    isFavorite
+                                        ? 'bg-gray-500 text-white'
+                                        : 'bg-gray-700 text-gray-300'
+                                }
+                `}
+                            >
+                                {isFavorite
+                                    ? '❤️ Gespeichert'
+                                    : '🤍 Merken'}
+                            </button>
 
-                    {showChat && (
-                        <Chat
-                            adId={werbung.id}
-                            senderId={user.dbId}
-                            receiverId={werbung.ownerId}
-                        />
+                            {!showChat && (
+
+                                <button
+                                    onClick={() => setShowChat(prev => !prev)}
+                                    className="
+                        flex-1 py-4 rounded-2xl font-bold text-black text-lg
+                        bg-gradient-to-br from-pink-500 via-fuchsia-500 to-violet-600
+                        shadow-lg shadow-pink-500/40
+                        active:scale-95 transition
+                    "
+                                >
+                                    💬 Kontaktieren
+                                </button>
+
+                            )}
+
+                        </>
+
                     )}
 
                 </div>
+
+                {showChat && (
+                    <Chat
+                        adId={werbung.id}
+                        senderId={user.dbId}
+                        receiverId={werbung.ownerId}
+                    />
+                )}
+
                 {/*modalka*/}
-                {showDeleteModal && (
-                    <div className="
-        fixed inset-0 bg-black/70
-        flex items-center justify-center z-50
-    ">
-
-                        <div className="
-            w-full max-w-sm mx-4
-            bg-zinc-900 border border-white/10
-            rounded-3xl p-6 text-center
-        ">
-
-                            <h2 className="text-white text-xl font-bold mb-4">
-                                Anzeige löschen?
-                            </h2>
-
-                            <p className="text-gray-400 mb-6">
-                                Diese Aktion kann nicht rückgängig gemacht werden.
-                            </p>
-
-                            <div className="flex gap-3">
-
-                                <button
-                                    onClick={() => setShowDeleteModal(false)}
-                                    className="
-                        flex-1 py-3 rounded-2xl
-                        bg-white/10 text-white
-                    "
-                                >
-                                    Abbrechen
-                                </button>
-
-                                <button
-                                    onClick={handleDeleteAd}
-                                    className="
-        flex-1 py-3 rounded-2xl
-        bg-red-500 text-white font-bold
-    "
-                                >
-                                    Löschen
-                                </button>
-
-                            </div>
-
-                        </div>
-
+                                {showDeleteModal && (
+                    <div>
+                        ...
                     </div>
-                )
-                }
+                )}
 
-                {
-                    toast && (
+                {toast && (
+                    <div
+                        className="
+                            fixed bottom-6 left-1/2
+                            -translate-x-1/2
+                            bg-zinc-900 text-white
+                            px-6 py-3 rounded-2xl
+                            border border-white/10
+                            shadow-2xl
+                            z-50
+                        "
+                    >
+                        {toast}
+                    </div>
+                )}
 
-                        <div
-                            className="
-            fixed bottom-6 left-1/2
-            -translate-x-1/2
-            bg-zinc-900 text-white
-            px-6 py-3 rounded-2xl
-            border border-white/10
-            shadow-2xl
-            z-50
-        "
-                        >
-                            {toast}
-                        </div>
-
-                    )
-                }
             </div>
-            )
-            }
+        </div>
+    )
+}
 
-            export default AdDetailsPage
+export default AdDetailsPage
