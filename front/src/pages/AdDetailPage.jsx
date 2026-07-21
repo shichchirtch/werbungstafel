@@ -21,6 +21,7 @@ function AdDetailsPage() {
     const [messages, setMessages] = useState([])
 
 
+
     useEffect(() => {
 
         async function loadAd() {
