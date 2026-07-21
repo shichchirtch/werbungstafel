@@ -32,7 +32,7 @@ class User(Base):
     first_start: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
     latitude: Mapped[float | None] = mapped_column(Float, nullable=True )
     longitude: Mapped[float | None] = mapped_column( Float, nullable=True )
-    is_banned = mapped_column(default=False)
+    is_banned: Mapped[bool] = mapped_column(default=False)
 
 
 class Ad(Base):
