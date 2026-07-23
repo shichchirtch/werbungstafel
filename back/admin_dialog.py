@@ -13,6 +13,7 @@ from user_repo import get_user
 from lexicon import *
 from pathlib import Path
 from aiogram.types import FSInputFile
+import os
 
 admin_id = 6685637602
 
@@ -57,6 +58,10 @@ async def downloads_users_db( callback, button,  manager):
 
     file_path = Path("data/telegram_users.json")
 
+    print("PWD =", os.getcwd())
+    # print("FILE =", USERS_FILE)
+    # print("EXISTS =", USERS_FILE.exists())
+    print('file_path = ', file_path.exists())
     if not file_path.exists():
 
         await callback.message.answer(

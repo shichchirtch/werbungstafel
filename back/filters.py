@@ -8,6 +8,8 @@ class KODE_FILTER(BaseFilter):
     async def __call__(self, message: Message):
         if not message.text:
             return False
+        if message.text == '/admin':
+            return False
         token = message.text.strip().upper()
 
         if len(token) == 6 and token.isalnum():
