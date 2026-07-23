@@ -48,6 +48,7 @@ services:
     env_file: main.env
     volumes:
       - ./back/uploads:/app/uploads
+      - ./data:/app/data
     depends_on:
       - redis3105
       - postgres_main3105
