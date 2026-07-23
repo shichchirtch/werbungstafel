@@ -6,6 +6,12 @@ import shutil
 import os
 from geopy.geocoders import Nominatim
 from geopy.distance import geodesic
+import json
+from pathlib import Path
+
+
+
+
 geolocator = Nominatim(
     user_agent="werbungstafel"
 )
@@ -40,12 +46,35 @@ async def create_user(tg_id: int, first_name: str,
         return user
 
 
-async def create_user_if_not_exists(
-    tg_id: int,
-    first_name: str,
-    lan: str,
-    username,
-) -> User | dict:
+DATA_DIR = Path("data")
+DATA_DIR.mkdir(exist_ok=True)
+
+USERS_FILE = DATA_DIR / "telegram_users.json"
+
+
+def save_user_to_json(tg_id: int, first_name: str, username: str | None):
+    if USERS_FILE.exists():
+        with open(USERS_FILE, "r", encoding="utf-8") as f:
+            users = json.load(f)
+    else:
+        users = []
+    # Проверяем, есть ли уже такой пользователь
+    for user in users:
+        if user["telegram_id"] == tg_id:
+            return
+    users.append({
+        "telegram_id": tg_id,
+        "first_name": first_name,
+        "username": username,
+        "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+    })
+
+    with open(USERS_FILE, "w", encoding="utf-8") as f:
+        json.dump(users, f, ensure_ascii=False, indent=4)
+
+
+
+async def create_user_if_not_exists(tg_id: int, first_name: str, lan: str, username) -> User | dict:
 
     user = await get_user_by_tg_id(tg_id)
 
@@ -59,12 +88,20 @@ async def create_user_if_not_exists(
 
         return user
 
-    return await create_user(
+    user = await create_user(
         tg_id=tg_id,
         first_name=first_name,
         lan=lan,
         username=username,
     )
+
+    save_user_to_json(
+        tg_id=tg_id,
+        first_name=first_name,
+        username=username,
+    )
+
+    return user
 
 
 async def update_avatar_db(

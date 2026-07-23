@@ -155,6 +155,8 @@ async def load_user_avatar(message: Message):
     )
     print("AVATAR SAVED")
 
+
+
 async def notify_receiver(receiver_id: int):
         user = await get_user_by_id(receiver_id)
         print('user  = ', user)
