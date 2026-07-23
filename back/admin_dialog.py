@@ -121,7 +121,7 @@ admin_dialog = Dialog(
             id='send_msg'),
         Button(
             text=Const('Загрузить файл БД юзеров'),
-            id='kuck_start',
+            id='zagruz_db',
             on_click=downloads_users_db,
         ),
 
