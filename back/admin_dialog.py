@@ -11,6 +11,8 @@ from aiogram.exceptions import TelegramForbiddenError
 from static_functions import check_len_note, get_translate
 from user_repo import get_user
 from lexicon import *
+from pathlib import Path
+from aiogram.types import FSInputFile
 
 admin_id = 6685637602
 
@@ -43,10 +45,30 @@ async def get_users(redis) -> list[int]:
 
 async def wie_viel_schon_gestarted(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args,
                                    **kwargs):
-    count = 1 # await redis_db.scard("users:all")
+    count = 1  # await redis_db.scard("users:all")
     msg = f'Количество запустивших бота {count}'
     await callback.message.answer(text=msg)
     await dialog_manager.done()
+
+
+
+
+async def downloads_users_db( callback, button,  manager):
+
+    file_path = Path("data/telegram_users.json")
+
+    if not file_path.exists():
+
+        await callback.message.answer(
+            "❌ Файл telegram_users.json не найден."
+        )
+
+        return
+
+    await callback.message.answer_document(
+        document=FSInputFile(file_path),
+        caption="📦 Резервная база пользователей",
+    )
 
 
 # async def sending_msg(cb: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
@@ -92,8 +114,15 @@ admin_dialog = Dialog(
         Next(
             text=Const('Отправить сообщение юзерам'),
             id='send_msg'),
+        Button(
+            text=Const('Загрузить файл БД юзеров'),
+            id='kuck_start',
+            on_click=downloads_users_db,
+        ),
+
         state=ADMIN.first
     ),
+
     Window(  # Принимает текст сообщения и записывает его в словарь data
         Const(text='введите текст сообщения'),
         Cancel(

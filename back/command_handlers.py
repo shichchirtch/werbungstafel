@@ -1,11 +1,9 @@
 from aiogram import Router, F
-
-from filters import KODE_FILTER
-from filters import IS_ADMIN
+from filters import KODE_FILTER, IS_ADMIN
 from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.filters import CommandStart, Command, CommandObject, StateFilter
 from aiogram.fsm.context import FSMContext
-from bot_instance import FSM_ST
+from bot_instance import FSM_ST, ADMIN
 from aiogram_dialog import  DialogManager, StartMode
 import os
 from lexicon import *
@@ -121,9 +119,9 @@ async def accept_login(message: Message, state: FSMContext):
 #     await dialog_manager.reset_stack()
 #     await dialog_manager.start(state=ROOT_WIND.do_nothing)
 #
-# @ch_router.message(Command('admin'), IS_ADMIN())
-# async def admin_enter(message: Message, dialog_manager: DialogManager):
-#     await dialog_manager.start(state=ADMIN.first)
+@ch_router.message(Command('admin'), IS_ADMIN())
+async def admin_enter(message: Message, dialog_manager: DialogManager):
+    await dialog_manager.start(state=ADMIN.first)
 #
 #
 # @ch_router.message(Command('about_project'))
