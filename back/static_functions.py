@@ -114,12 +114,14 @@ async def get_translate(slovo:str, lan:str, temp_dict:dict)->str:
 
 
 async def load_user_avatar(message: Message):
+    print("LOAD AVATAR = ", message.from_user.id)
     user_id = message.from_user.id
 
     photos = await message.bot.get_user_profile_photos(
         user_id,
         limit=1,
     )
+    print("TOTAL FOTO =", photos.total_count)
 
     avatar_dir = Path("uploads/avatar")
     avatar_dir.mkdir(parents=True, exist_ok=True)
@@ -151,6 +153,7 @@ async def load_user_avatar(message: Message):
         telegram_id=user_id,
         avatar=f"/uploads/avatar/{user_id}.jpg",
     )
+    print("AVATAR SAVED")
 
 async def notify_receiver(receiver_id: int):
         user = await get_user_by_id(receiver_id)
