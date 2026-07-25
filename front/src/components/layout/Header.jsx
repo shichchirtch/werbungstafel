@@ -3,6 +3,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import {setUser, logout, updateProfile} from '../../features/user/userSlice'
 import {useState, useRef, useEffect} from 'react'
 import {clearSelectedChat} from "../../features/messages/messagesSlice.js";
+import {useTranslation} from "../../features/customHoock";
 
 
 function Header() {
@@ -13,6 +14,7 @@ function Header() {
 
     const [showLoginModal, setShowLoginModal] = useState(false)
     const [loginToken, setLoginToken] = useState(null)
+    const {t} = useTranslation();
 
     const user = useSelector((state) => state.user)
     // новая модалка со смартфоном
@@ -253,7 +255,7 @@ function Header() {
                                 hover:bg-white/5
                             "
                                     >
-                                        👤 Profil
+                                        👤 {t('Profile')}
                                     </button>
 
                                     <button
@@ -267,7 +269,7 @@ function Header() {
                             hover:bg-white/5
                         "
                                     >
-                                        📦 Meine Anzeigen
+                                        📦 {t('MeineAnzeigen')}
                                     </button>
                                     <button
                                         onClick={() => {
@@ -280,7 +282,7 @@ function Header() {
                                 hover:bg-white/5
                             "
                                     >
-                                        ❤️ Merklist
+                                        ❤️ {t('Merklist')}
                                     </button>
 
                                     <button
@@ -299,7 +301,7 @@ function Header() {
                                 hover:bg-white/5
                             "
                                     >
-                                        💬 Nachrichten
+                                        💬 {t('Nachrichten')}
                                     </button>
                                     {!isTelegram && (
 
@@ -317,7 +319,7 @@ function Header() {
             hover:bg-red-500/10
         "
                                         >
-                                            🚪 Logout
+                                            🚪 {t('Logout')}
                                         </button>
 
                                     )}
@@ -355,7 +357,7 @@ function Header() {
             "
                     >
                         <h2 className="text-xl font-bold text-white mb-4">
-                            Anmeldung erforderlich
+                            {t('AnmeldungErforderlich')}
                         </h2>
 
                         <p className="text-gray-300 mb-6">
@@ -406,7 +408,7 @@ function Header() {
                         bg-white/10 text-white active:scale-95
                     "
                                 >
-                                    Schließen
+                                    {t('Schliessen')}
                                 </button>
                             </div>
 
