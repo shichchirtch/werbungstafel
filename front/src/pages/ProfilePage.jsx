@@ -40,8 +40,6 @@ function ProfilePage() {
     }, [user.id])
 
 
-
-
     if (!profile) {
 
         return (
@@ -170,15 +168,25 @@ function ProfilePage() {
                     ✏️ Profil bearbeiten
                 </button>
 
-                <button
-                    onClick={() => dispatch(logout())}
-                    className="
-                        py-3 rounded-2xl font-bold text-slate-400
-                        bg-gradient-to-br from-gray-600 to-gray-800
-                    "
-                >
-                    🚪 Logout
-                </button>
+                {!user.isTelegram && (
+
+                    <button
+                        onClick={() => {
+
+                            dispatch(logout())
+
+                            navigate("/")
+
+                        }}
+                        className="
+            py-3 rounded-2xl font-bold text-slate-400
+            bg-gradient-to-br from-gray-600 to-gray-800
+        "
+                    >
+                        🚪 Logout
+                    </button>
+
+                )}
             </div>
 
         </div>
