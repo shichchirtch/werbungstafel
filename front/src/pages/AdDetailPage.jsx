@@ -148,35 +148,35 @@ function AdDetailsPage() {
 
     const reportAd = async (reason) => {
 
-    setShowReportModal(false)
+        setShowReportModal(false)
 
-    const response = await fetch(
-        "/api/report-ad",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                ad_id: werbung.id,
-                reason,
-                reporter_id: user.dbId,
-            }),
+        const response = await fetch(
+            "/api/report-ad",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    ad_id: werbung.id,
+                    reason,
+                    reporter_id: user.dbId,
+                }),
+            }
+        )
+
+        const data = await response.json()
+
+        if (!data.ok) {
+            alert(data.error)
+            return
         }
-    )
 
-    const data = await response.json()
+        showToast(
+            "✅ Vielen Dank. Die Meldung wurde gesendet."
+        )
 
-    if (!data.ok) {
-        alert(data.error)
-        return
     }
-
-    showToast(
-        "✅ Vielen Dank. Die Meldung wurde gesendet."
-    )
-
-}
 
     const handleDeleteAd = async () => {
 
@@ -550,38 +550,31 @@ transition
                     ) : (
 
                         <>
-                            {!isOwner && (
-                                <button
-                                    onClick={() => setShowReportModal(true)}
-                                    className="
-            mt-3
-            w-full
-            py-3
-            rounded-2xl
-            font-semibold
-            text-yellow-300
-            bg-yellow-500/10
-            border border-yellow-500/20
-            hover:bg-yellow-500/20
-            transition
-        "
-                                >
-                                    ⚠️ Anzeige melden
-                                </button>
-                            )}
-
+                            <button
+                                onClick={() => setShowReportModal(true)}
+                                className="
+                flex-1 py-3 rounded-2xl font-bold
+                text-yellow-300
+                bg-yellow-500/10
+                border border-yellow-500/20
+                hover:bg-yellow-500/20
+                transition active:scale-95
+            "
+                            >
+                                ⚠️ Melden
+                            </button>
 
                             <button
                                 onClick={handleToggleFavorite}
                                 className={`
-                    flex-1 py-3 rounded-2xl font-bold
-                    transition active:scale-95
-                    ${
+                flex-1 py-3 rounded-2xl font-bold
+                transition active:scale-95
+                ${
                                     isFavorite
                                         ? 'bg-gray-500 text-white'
                                         : 'bg-gray-700 text-gray-300'
                                 }
-                `}
+            `}
                             >
                                 {isFavorite
                                     ? '❤️ Gespeichert'
@@ -591,13 +584,17 @@ transition
                             {!showChat && (
 
                                 <button
-                                    onClick={() => setShowChat(prev => !prev)}
+                                    onClick={() => setShowChat(true)}
                                     className="
-                        flex-1 py-4 rounded-2xl font-bold text-black text-lg
-                        bg-gradient-to-br from-pink-500 via-fuchsia-500 to-violet-600
-                        shadow-lg shadow-pink-500/40
-                        active:scale-95 transition
-                    "
+                    flex-1 py-4 rounded-2xl font-bold
+                    text-black text-lg
+                    bg-gradient-to-br
+                    from-pink-500
+                    via-fuchsia-500
+                    to-violet-600
+                    shadow-lg shadow-pink-500/40
+                    active:scale-95 transition
+                "
                                 >
                                     💬 Kontaktieren
                                 </button>
@@ -605,6 +602,7 @@ transition
                             )}
 
                         </>
+
 
                     )}
 
