@@ -19,7 +19,7 @@ function AdDetailsPage() {
     const [werbung, setWerbung] = useState(null)
     const [isFavorite, setIsFavorite] = useState(false)
     const [messages, setMessages] = useState([])
-
+    const [showReportModal, setShowReportModal] = useState(false)
 
 
     useEffect(() => {
@@ -145,6 +145,38 @@ function AdDetailsPage() {
             handlePrevPhoto()
         }
     }
+
+    const reportAd = async (reason) => {
+
+    setShowReportModal(false)
+
+    const response = await fetch(
+        "/api/report-ad",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                ad_id: werbung.id,
+                reason,
+                reporter_id: user.dbId,
+            }),
+        }
+    )
+
+    const data = await response.json()
+
+    if (!data.ok) {
+        alert(data.error)
+        return
+    }
+
+    showToast(
+        "✅ Vielen Dank. Die Meldung wurde gesendet."
+    )
+
+}
 
     const handleDeleteAd = async () => {
 
@@ -518,6 +550,27 @@ transition
                     ) : (
 
                         <>
+                            {!isOwner && (
+                                <button
+                                    onClick={() => setShowReportModal(true)}
+                                    className="
+            mt-3
+            w-full
+            py-3
+            rounded-2xl
+            font-semibold
+            text-yellow-300
+            bg-yellow-500/10
+            border border-yellow-500/20
+            hover:bg-yellow-500/20
+            transition
+        "
+                                >
+                                    ⚠️ Anzeige melden
+                                </button>
+                            )}
+
+
                             <button
                                 onClick={handleToggleFavorite}
                                 className={`
@@ -566,7 +619,7 @@ transition
                 )}
 
                 {/*modalka*/}
-                                {showDeleteModal && (
+                {showDeleteModal && (
                     <div>
                         ...
                     </div>
@@ -589,8 +642,103 @@ transition
                 )}
 
             </div>
+
+            {showReportModal && (
+
+                <div className="
+fixed inset-0
+bg-black/70
+flex items-center justify-center
+z-50
+px-4
+">
+
+                    <div className="
+w-full
+max-w-sm
+rounded-3xl
+bg-zinc-900
+border border-white/10
+p-6
+">
+
+                        <h2 className="
+text-xl
+font-bold
+text-white
+mb-5
+text-center
+">
+                            ⚠️ Anzeige melden
+                        </h2>
+
+                        <div className="flex flex-col gap-3">
+
+                            <button
+                                onClick={() => reportAd("Betrug / Scam")}
+                                className="py-3 rounded-xl bg-white/5 text-white"
+                            >
+                                🚫 Betrug / Scam
+                            </button>
+
+                            <button
+                                onClick={() => reportAd("Irreführende Anzeige")}
+                                className="py-3 rounded-xl bg-white/5 text-white"
+                            >
+                                ⚠️ Irreführende Anzeige
+                            </button>
+
+                            <button
+                                onClick={() => reportAd("Beleidigungen")}
+                                className="py-3 rounded-xl bg-white/5 text-white"
+                            >
+                                🚫 Beleidigungen
+                            </button>
+
+                            <button
+                                onClick={() => reportAd("Verbotene Ware")}
+                                className="py-3 rounded-xl bg-white/5 text-white"
+                            >
+                                🚫 Verbotene Ware
+                            </button>
+
+                            <button
+                                onClick={() => reportAd("Spam")}
+                                className="py-3 rounded-xl bg-white/5 text-white"
+                            >
+                                🚫 Spam
+                            </button>
+
+                            <button
+                                onClick={() => reportAd("Sonstiges")}
+                                className="py-3 rounded-xl bg-white/5 text-white"
+                            >
+                                ❓ Sonstiges
+                            </button>
+
+                            <button
+                                onClick={() => setShowReportModal(false)}
+                                className="
+mt-3
+py-3
+rounded-xl
+bg-red-500
+text-white
+"
+                            >
+                                Abbrechen
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            )}
         </div>
     )
 }
+
 
 export default AdDetailsPage

@@ -28,6 +28,8 @@ from static_functions import (notify_receiver,  notify_ad_changed, notify_ad_cre
 
 from geopy.geocoders import Nominatim
 
+from bot_instance import bot
+
 geolocator = Nominatim(
     user_agent="werbungstafel"
 )
@@ -36,6 +38,11 @@ geolocator = Nominatim(
 
 ADMIN_ID = 6685637602
 
+
+class ReportAd(BaseModel):
+    ad_id: int
+    reporter_id: int
+    reason: str
 
 class AdCreate(BaseModel):
     telegram_id: int
@@ -834,4 +841,67 @@ async def get_user_profile(user_id: int):
     return {
         "ok": True,
         **profile
+    }
+
+##################################### Melden ################################
+
+
+@f_api.post("/api/report-ad")
+async def report_ad(data: ReportAd):
+
+    reporter = await get_user_by_id(data.reporter_id)
+
+    if not reporter:
+        return {
+            "ok": False,
+            "error": "Benutzer nicht gefunden."
+        }
+
+    ad, owner_name = await get_ad_by_id(data.ad_id)
+
+    if not ad:
+        return {
+            "ok": False,
+            "error": "Anzeige nicht gefunden."
+        }
+
+    link = f"https://werbungstafel.org/ad/{ad.id}"
+
+    try:
+
+        await bot.send_message(
+
+            chat_id=-5574985398,
+
+            text=(
+
+                "🚨 <b>Neue Meldung</b>\n\n"
+
+                f"<b>Grund:</b> {data.reason}\n\n"
+                f"🆔 Anzeige #{ad.id}\n"
+                f"📌 <b>{ad.title}</b>\n"
+                f"👤 von {owner_name}\n"
+                f"📍 {ad.plz}\n\n"
+
+                f"<b>Gemeldet von:</b> {reporter.first_name}\n\n"
+
+                f"🔗 {link}"
+
+            ),
+
+            parse_mode="HTML"
+
+        )
+
+    except Exception as e:
+
+        print(e)
+
+        return {
+            "ok": False,
+            "error": "Telegram Fehler"
+        }
+
+    return {
+        "ok": True
     }
