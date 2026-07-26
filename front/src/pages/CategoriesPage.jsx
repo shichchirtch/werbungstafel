@@ -27,44 +27,43 @@ function CategoriesPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-zinc-900 via-black to-black px-4 py-6">
-      <div
-    className="
-        flex
-        justify-center
-        items-center
-        gap-8
-        mb-6
-    "
->
+      <div className="relative mb-6">
 
-    <h1
-        className="
-            text-3xl
-            md:text-4xl
-            font-black
-            text-black
-        "
-        style={{
-            WebkitTextStroke: '0.5px white',
-            textShadow: '0 0 8px rgba(255,255,255,0.6)',
-        }}
-    >
-        {t('Dienstleistungen')}
-    </h1>
+    <div className="pr-16">
+        <h1
+            className="
+                text-center
+                text-3xl
+                md:text-4xl
+                font-black
+                text-black
+            "
+            style={{
+                WebkitTextStroke: '0.5px white',
+                textShadow: '0 0 8px rgba(255,255,255,0.6)',
+            }}
+        >
+            {t("Dienstleistungen")}
+        </h1>
+    </div>
 
     <button
-        onClick={() => navigate('/map')}
+        onClick={() => navigate("/map")}
         className="
-        ml-6
-        w-11
-        h-11
-        rounded-full
-        bg-gradient-to-br
-        from-blue-500
-        to-cyan-400
-        text-xl
-        shadow-lg
-    "
+            absolute
+            right-0
+            top-1/2
+            -translate-y-1/2
+
+            w-11
+            h-11
+            rounded-full
+            bg-gradient-to-br
+            from-blue-500
+            to-cyan-400
+            text-xl
+            shadow-lg
+        "
     >
         🗺
     </button>
