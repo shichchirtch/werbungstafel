@@ -73,6 +73,7 @@ const translations = {
         Abbrechen: 'Abbrechen',
         AnzeigeLoeschen: "Anzeige löschen",
         AnzeigeLoeschenFrage: "Möchten Sie diese Anzeige wirklich löschen?",
+        VerbWare:'🚫 Verbotene Ware',
     },
 
     ru: {
@@ -94,7 +95,7 @@ const translations = {
         AnzeigeAufgeben: 'Подать объявление',
         SuchAnzeigen: 'Поиск объявлений',
         KategorieWaehlen: 'Выберите категорию',
-        Hallo: 'Привет',
+        Hallo: 'Приветствую',
         NeueAnzeige: 'Новый Вербунг',
         KreuzCreateAnzeige: 'Удалить Вербунг ?\n\nВсе данные будут потеряны',
         TitelDerAnzeige: 'Название Вербунга',
@@ -103,7 +104,7 @@ const translations = {
         PLZ: 'Почтовый индекс / Город',
         BeschreibungAnzeige: 'Описание',
         PreisInfo: 'Стоимость (не обязательно)',
-        FotoAufladen: 'Завантажити фото',
+        FotoAufladen: 'Загрузить фото',
         AnzeigeVeroffentlichen: 'Опубликовать',
         ProzessGeht: 'Публикуется...',
         FotosWerdenVerarbeitet: 'Фотографии загружаются...',
@@ -146,6 +147,7 @@ const translations = {
         Abbrechen: 'Закрыть',
         AnzeigeLoeschen: "Удаление объявления",
         AnzeigeLoeschenFrage: "Вы действительно хотите удалить это объявление?",
+        VerbWare:'🚫 Подозрительная услуга',
     },
 
     uk: {
@@ -218,6 +220,7 @@ const translations = {
         Abbrechen: 'Закрити',
         AnzeigeLoeschen: "Видалення оголошення",
         AnzeigeLoeschenFrage: "Ви дійсно хочете видалити це оголошення?",
+        VerbWare:'🚫 Підозрювальна послуга',
 
     },
 
@@ -291,6 +294,7 @@ const translations = {
         Abbrechen: 'Kapalı',
         AnzeigeLoeschen: "İlanı sil",
         AnzeigeLoeschenFrage: "Bu ilanı gerçekten silmek istiyor musunuz?",
+        VerbWare:'🚫 Şüpheli hizmet',
 
     }
 

@@ -494,7 +494,7 @@ function CreateAdPage() {
                         <div className="text-5xl mb-3">✅</div>
 
                         <h2 className="text-2xl font-bold text-white mb-3">
-                            {t('ErfolgreichVeröffentlicht')}
+                            {t('ErfolgreichVeroeffentlicht')}
                         </h2>
 
                         <p className="text-gray-400 mb-6">
