@@ -21,7 +21,7 @@ async def command_start_process(message: Message, command: CommandObject):
     user_lan = message.from_user.language_code
     user_name = message.from_user.username
     token = command.args
-    print(first_name, user_id,'\n\ntoken = ', token)
+    print(first_name, user_id,'\n\ntoken = ', token, 'LAN = ', user_lan)
 
     await create_user_if_not_exists(
         tg_id=user_id,
