@@ -16,6 +16,7 @@ function Layout() {
 
     const wa = window.Telegram?.WebApp
     const tgUser = wa?.initDataUnsafe?.user
+    console.log('TG US = ', tgUser)
 
     useEffect(() => {
 
@@ -51,11 +52,14 @@ function Layout() {
 
                 const user = await response.json()
 
+                console.log('USER= ', user)
+
                 dispatch(
                     setUser({
                         id: user.telegram_id,
                         name: user.first_name,
                         dbId: user.user_id,
+                        lan: user.lan,
                         isAuth: true,
                         isTelegram: true,
                     })
