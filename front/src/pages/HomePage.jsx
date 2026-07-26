@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import {useTranslation} from "../features/customHoock";
+
 
 
 
@@ -10,7 +12,7 @@ function HomePage() {
     const navigate = useNavigate()
 
     const [showModal, setShowModal] = useState(false)
-
+    const {t} = useTranslation()
     const categories = [
         { title: 'Altenpflege', slug: 'altenpflege' },
         { title: 'Autoservice', slug: 'autoservice' },
@@ -51,13 +53,13 @@ function HomePage() {
                     }}
                 >
                     {isAuth
-    ? `Hallo, ${name}`
+    ? `${t('Hallo')}, ${name}`
     : 'Willkommen auf Werbungstafel'
 }
                 </h1>
 
                 <p className="text-gray-400 text-center mb-8">
-                    Найди услугу рядом с собой
+                    {t('FindBedienung')}
                 </p>
 
                 <div className="flex flex-col gap-4">
@@ -71,7 +73,7 @@ function HomePage() {
                         shadow-lg shadow-cyan-400/40 active:scale-95
                         "
                     >
-                        Подать объявление
+                        {t('AnzeigeAufgeben')}
                     </button>
 
                     <button
@@ -83,7 +85,7 @@ function HomePage() {
                         shadow-lg shadow-pink-500/40 active:scale-95
                         "
                     >
-                        Поиск объявлений
+                        {t('SuchAnzeigen')}
                     </button>
 
                 </div>
@@ -105,7 +107,7 @@ function HomePage() {
                                     textShadow: '0 0 8px rgba(255,255,255,0.6)',
                                 }}
                             >
-                                Kategorie wählen
+                                {t('KategorieWaehlen')}
                             </h2>
 
                             <button

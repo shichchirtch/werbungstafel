@@ -109,6 +109,7 @@ function Header() {
                         name: data.first_name,
                         dbId: data.user_id,
                         role: data.role,
+                        lan: data.lan,
                         isAuth: true
                     })
                 )

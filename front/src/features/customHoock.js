@@ -17,6 +17,10 @@ const translations = {
         Nachrichten:'Nachrichten',
         AnmeldungErforderlich: 'Anmeldung erforderlich',
         Schliessen: 'Schließen',
+        FindBedienung: 'Finden Sie einen Service in Ihrer Nähe',
+        AnzeigeAufgeben: 'Anzeige aufgeben',
+        SuchAnzeigen: 'Suchanzeigen',
+        KategorieWaehlen: 'Wählen Sie eine Kategorie aus',
 
     },
 
@@ -35,6 +39,10 @@ const translations = {
         Nachrichten: 'Сообщения',
         AnmeldungErforderlich: 'Авторизация прошла успешно',
         Schliessen: 'Закрыть',
+        FindBedienung:'Найди услугу рядом с собой',
+        AnzeigeAufgeben: 'Подать объявление',
+        SuchAnzeigen: 'Поиск объявлений',
+        KategorieWaehlen: 'Выберите категорию',
 
     },
 
@@ -52,6 +60,10 @@ const translations = {
         Nachrichten: 'Повідомлення',
         AnmeldungErforderlich: 'Авторизація пройшла успішно',
         Schliessen: 'Закрити',
+        FindBedienung: 'Знайди послугу поряд із собою',
+        AnzeigeAufgeben: 'Подати оголошення',
+        SuchAnzeigen: 'Пошук оголошень',
+        KategorieWaehlen: 'Вибрати категорію',
     },
 
     tr: {
@@ -68,6 +80,10 @@ const translations = {
         Nachrichten: 'Mesajlar',
         AnmeldungErforderlich: 'Yetkilendirme başarılı oldu.',
         Schliessen: 'Kapalı',
+        FindBedienung: 'Size en yakın hizmeti bulun',
+        AnzeigeAufgeben: 'İlan ver',
+        SuchAnzeigen: 'Arama reklamları',
+        KategorieWaehlen:'Bir kategori seçin',
     }
 
 }

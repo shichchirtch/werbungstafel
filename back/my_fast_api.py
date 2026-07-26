@@ -23,7 +23,7 @@ from lexicon import *
 from fastapi.staticfiles import StaticFiles
 import os
 from PIL import Image, ImageOps
-from static_functions import (notify_receiver,  notify_ad_changed, notify_ad_created,
+from static_functions import (notify_receiver, notify_ad_changed, notify_ad_created,
                               notify_ad_deleted, notify_user_ban_changed)
 
 from geopy.geocoders import Nominatim
@@ -34,8 +34,6 @@ geolocator = Nominatim(
     user_agent="werbungstafel"
 )
 
-
-
 ADMIN_ID = 6685637602
 
 
@@ -43,6 +41,7 @@ class ReportAd(BaseModel):
     ad_id: int
     reporter_id: int
     reason: str
+
 
 class AdCreate(BaseModel):
     telegram_id: int
@@ -66,10 +65,12 @@ class AdUpdate(BaseModel):
     plz: str
     anbieter: bool
 
+
 class ProfileUpdate(BaseModel):
     telegram_id: int
     bio: str
     location: str
+
 
 class CreateNachricht(BaseModel):
     ad_id: int
@@ -77,10 +78,12 @@ class CreateNachricht(BaseModel):
     receiver_id: int
     text: str
 
+
 class ReadMessages(BaseModel):
     ad_id: int
     sender_id: int
     receiver_id: int
+
 
 f_api = FastAPI(
     middleware=[
@@ -152,6 +155,8 @@ async def login_status(token: str):
         "user_id": user.id,
         "first_name": user.first_name,
         "role": user.role,
+        "lan": user.lan,
+
     }
 
 
@@ -173,12 +178,12 @@ async def auth_telegram(data: dict):
     if isinstance(user, dict):
         return user
 
-
     return {
         "user_id": user.id,
         "telegram_id": user.telegram_id,
         "first_name": user.first_name,
         "role": user.role,
+        "lan": user.lan
     }
 
 
@@ -186,7 +191,6 @@ async def auth_telegram(data: dict):
 
 @f_api.post("/api/ads")
 async def create_ad(data: AdCreate):
-
     user = await get_user_by_tg_id(data.telegram_id)
 
     if not user:
@@ -243,11 +247,10 @@ async def create_ad(data: AdCreate):
         "ad_id": ad.id
     }
 
+
 @f_api.get("/api/ads/{category}")
-async def get_ads(category: str, place: str = "Deutschland", radius: str = "Alle",):
-
+async def get_ads(category: str, place: str = "Deutschland", radius: str = "Alle", ):
     all_ads_count = await get_ads_count_by_category(category)
-
 
     if radius == "Alle":
         ads = await get_ads_by_category(category)
@@ -276,7 +279,6 @@ async def get_ads(category: str, place: str = "Deutschland", radius: str = "Alle
             center_lon=location.longitude,
             radius=int(radius.replace(" km", "")),
         )
-
 
     return {
         "all_ads_count": all_ads_count,
@@ -429,8 +431,8 @@ async def is_favorite(telegram_id: int, ad_id: int):
 
 @f_api.post("/api/upload-photo")
 async def upload_photos(
-    ad_id: int = Form(...),
-    photos: list[UploadFile] = File(...)
+        ad_id: int = Form(...),
+        photos: list[UploadFile] = File(...)
 ):
     # total = time.perf_counter()
 
@@ -449,8 +451,8 @@ async def upload_photos(
         # print(f"\n----- PHOTO {i}: {photo.filename} -----")
 
         filename = (
-            os.path.splitext(photo.filename)[0]
-            + ".jpg"
+                os.path.splitext(photo.filename)[0]
+                + ".jpg"
         )
 
         file_path = f"{folder}/{filename}"
@@ -619,11 +621,11 @@ async def delete_ad(ad_id: int):
         "ok": True
     }
 
+
 ################################ Редактирование объявления ###########################
 
 @f_api.put("/api/ad/{ad_id}")
 async def update_ad(ad_id: int, data: AdUpdate):
-
     ad = await update_ad_db(
         ad_id=ad_id,
         title=data.title,
@@ -651,11 +653,9 @@ async def update_ad(ad_id: int, data: AdUpdate):
 
 @f_api.delete("/api/photo/{photo_id}")
 async def delete_photo(photo_id: int):
-
     photo_url = await delete_photo_db(photo_id)
 
     if not photo_url:
-
         return {
             "ok": False,
             "error": "Foto nicht gefunden"
@@ -670,21 +670,21 @@ async def delete_photo(photo_id: int):
         "ok": True
     }
 
+
 ################################ Profile ###########################
 
 @f_api.get("/api/profile/{telegram_id}")
-async def get_profile(telegram_id: int,):
+async def get_profile(telegram_id: int, ):
     profile = await get_profile_db(telegram_id)
     if not profile:
         return {"ok": False,
-            "error": "User not found"}
-    return {"ok": True,**profile}
+                "error": "User not found"}
+    return {"ok": True, **profile}
 
 
 @f_api.put("/api/profile/{telegram_id}")
 async def update_profile(telegram_id: int, data: ProfileUpdate,
-):
-
+                         ):
     user = await update_profile_and_get_user_db(
         telegram_id=telegram_id,
         bio=data.bio,
@@ -692,7 +692,6 @@ async def update_profile(telegram_id: int, data: ProfileUpdate,
     )
 
     if not user:
-
         return {
             "ok": False,
             "error": "User not found",
@@ -746,13 +745,13 @@ async def create_nachricht(data: CreateNachricht):
         }
     }
 
+
 @f_api.get("/api/messages/{ad_id}/{sender_id}/{receiver_id}")
 async def get_nachrichten(
-    ad_id: int,
-    sender_id: int,
-    receiver_id: int,
+        ad_id: int,
+        sender_id: int,
+        receiver_id: int,
 ):
-
     nachrichten = await get_nachrichten_db(
         ad_id=ad_id,
         sender_id=sender_id,
@@ -764,9 +763,9 @@ async def get_nachrichten(
         "nachrichten": nachrichten,
     }
 
+
 @f_api.get("/api/chats/{user_id}")
 async def get_chats(user_id: int):
-
     chats = await get_chats_db(user_id)
 
     return {
@@ -774,9 +773,9 @@ async def get_chats(user_id: int):
         "chats": chats,
     }
 
+
 @f_api.put("/api/messages/read")
 async def mark_messages_read(data: ReadMessages):
-
     count = await mark_messages_read_db(
         ad_id=data.ad_id,
         sender_id=data.sender_id,
@@ -788,6 +787,7 @@ async def mark_messages_read(data: ReadMessages):
         "updated": count,
     }
 
+
 ################################# MAP ##################################
 
 @f_api.get("/api/map")
@@ -795,18 +795,18 @@ async def get_map():
     data = await get_map_data_db()
     return data
 
+
 @f_api.get("/api/place/{place}")
 async def get_place_ads(place: str):
-
     ads = await get_ads_by_place_db(place)
 
     return ads
+
 
 ################################ B A N #####################################
 
 @f_api.put("/api/users/{user_id}/ban")
 async def ban_user(user_id: int):
-
     success, is_banned = await toggle_user_ban(user_id)
 
     if not success:
@@ -825,11 +825,11 @@ async def ban_user(user_id: int):
         "is_banned": is_banned,
     }
 
+
 ############################## Профиль юзера
 
 @f_api.get("/api/user-profile/{user_id}")
 async def get_user_profile(user_id: int):
-
     profile = await get_user_profile_by_id(user_id)
 
     if not profile:
@@ -843,12 +843,12 @@ async def get_user_profile(user_id: int):
         **profile
     }
 
+
 ##################################### Melden ################################
 
 
 @f_api.post("/api/report-ad")
 async def report_ad(data: ReportAd):
-
     reporter = await get_user_by_id(data.reporter_id)
 
     if not reporter:
