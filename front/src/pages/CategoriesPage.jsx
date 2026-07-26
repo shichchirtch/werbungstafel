@@ -32,7 +32,7 @@ function CategoriesPage() {
         flex
         justify-center
         items-center
-        gap-3
+        gap-8
         mb-6
     "
 >
@@ -55,16 +55,16 @@ function CategoriesPage() {
     <button
         onClick={() => navigate('/map')}
         className="
-            w-11
-            h-11
-            rounded-full
-            bg-gradient-to-br
-            from-blue-500
-            to-cyan-400
-            text-xl
-            shadow-lg
-            shrink-0
-        "
+        ml-6
+        w-11
+        h-11
+        rounded-full
+        bg-gradient-to-br
+        from-blue-500
+        to-cyan-400
+        text-xl
+        shadow-lg
+    "
     >
         🗺
     </button>
