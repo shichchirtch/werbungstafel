@@ -1,7 +1,8 @@
 import {useParams, useNavigate} from 'react-router-dom'
 import {useState} from 'react'
 import {useEffect} from "react";
-import {useSelector} from 'react-redux'
+import {useSelector} from 'react-redux';
+import {useTranslation} from "../features/customHoock";
 
 
 function CreateAdPage() {
@@ -13,16 +14,12 @@ function CreateAdPage() {
     const [description, setDescription] = useState('')
     const [price, setPrice] = useState('')
     const [anbieter, setAnbieter] = useState(true)
-
     const [isSubmitting, setIsSubmitting] = useState(false)
-
     const [photos, setPhotos] = useState([])
-
     const [successModal, setSuccessModal] = useState(false)
-
     const [isCompressing, setIsCompressing] = useState(false)
-
     const user = useSelector((state) => state.user)
+    const {t} = useTranslation()
 
     const categoryNames = {
         altenpflege: 'Altenpflege',
@@ -125,11 +122,11 @@ function CreateAdPage() {
 
         if (!title.trim() || !plz.trim() || !description.trim()
         ) {
-            alert('Bitte Pflichtfelder ausfüllen')
+            alert(t('BittePflichtfelderAusfuellen'))
             return
         }
         if (!user.isAuth) {
-            alert('Bitte zuerst einloggen')
+            alert(t('BitteZuerstEinloggen'))
             return
         }
 
@@ -226,7 +223,7 @@ function CreateAdPage() {
         const files = Array.from(e.target.files)
 
         if (photos.length + files.length > 5) {
-            alert("Можно загрузить не более 5 фотографий")
+            alert(t("FiveFoto"))
             return
         }
 
@@ -258,7 +255,7 @@ function CreateAdPage() {
             )
 
             if (selectedSize + newSize > 20 * 1024 * 1024) {
-                alert("Общий размер фотографий не должен превышать 20 МБ")
+                alert(t("TwentyMB"))
                 return
             }
 
@@ -271,37 +268,6 @@ function CreateAdPage() {
         }
     }
 
-    // const handlePhotoChange = (e) => {
-    //
-    //     const files = Array.from(e.target.files)
-    //
-    //     if (photos.length + files.length > 5) {
-    //         alert("Можно загрузить не более 5 фотографий")
-    //         return
-    //     }
-    //
-    //     const selectedSize = photos.reduce(
-    //         (sum, photo) => sum + photo.file.size,
-    //         0
-    //     )
-    //
-    //     const newSize = files.reduce(
-    //         (sum, file) => sum + file.size,
-    //         0
-    //     )
-    //
-    //     if (selectedSize + newSize > 20 * 1024 * 1024) {
-    //         alert("Общий размер фотографий не должен превышать 20 МБ")
-    //         return
-    //     }
-    //
-    //     const newPhotos = files.map((file) => ({
-    //         file,
-    //         preview: URL.createObjectURL(file),
-    //     }))
-    //
-    //     setPhotos((prev) => [...prev, ...newPhotos])
-    // }
 
     const removePhoto = (index) => {
         setPhotos((prev) => prev.filter((_, i) => i !== index))
@@ -327,7 +293,7 @@ function CreateAdPage() {
                     textShadow: '0 0 8px rgba(255,255,255,0.6)',
                 }}
             >
-                Neue Anzeige
+                {t('NeueAnzeige')}
             </h1>
 
             <p className="text-center text-cyan-300 mb-6">
@@ -344,7 +310,7 @@ function CreateAdPage() {
                     onClick={() => {
 
                         const confirmed = window.confirm(
-                            "Anzeige wirklich abbrechen?\n\nAlle eingegebenen Daten gehen verloren."
+                            t('KreuzCreateAnzeige')
                         )
 
                         if (!confirmed) {
@@ -376,7 +342,7 @@ function CreateAdPage() {
 
                 <input
                     type="text"
-                    placeholder="Titel der Anzeige"
+                    placeholder={t('TitelDerAnzeige')}
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     className="bg-black/40 text-gray-400 p-4 rounded-2xl outline-none border border-white/10"
@@ -394,7 +360,7 @@ function CreateAdPage() {
                             className="w-4 h-4 accent-cyan-400"
                         />
 
-                        <span>Ich biete</span>
+                        <span>{t('Biete')}</span>
 
                     </label>
 
@@ -408,7 +374,7 @@ function CreateAdPage() {
                             className="w-4 h-4 accent-pink-500"
                         />
 
-                        <span>Ich suche</span>
+                        <span>{t('Suche')}</span>
 
                     </label>
 
@@ -416,7 +382,7 @@ function CreateAdPage() {
 
                 <input
                     type="text"
-                    placeholder="PLZ / Ort"
+                    placeholder={t('PLZ')}
                     value={plz}
                     onChange={(e) => setPlz(e.target.value)}
                     className="bg-black/40 text-gray-400 p-4 rounded-2xl outline-none border border-white/10"
@@ -424,7 +390,7 @@ function CreateAdPage() {
 
                 <textarea
                     rows="5"
-                    placeholder="Beschreibung deiner Dienstleistung"
+                    placeholder={t('BeschreibungAnzeige')}
                     maxLength={2000}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
@@ -436,7 +402,7 @@ function CreateAdPage() {
 
                 <input
                     type="text"
-                    placeholder="Preisinfo (optional)"
+                    placeholder={t('PreisInfo')}
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
                     className="bg-black/40 text-gray-400 p-4 rounded-2xl outline-none border border-white/10"
@@ -448,7 +414,7 @@ function CreateAdPage() {
         bg-black/40 text-gray-400 p-4 rounded-2xl
         border border-white/10 cursor-pointer text-center
     ">
-                        Фото загрузить
+                        {t('FotoAufladen')}
                         <input
                             type="file"
                             multiple
@@ -493,7 +459,7 @@ function CreateAdPage() {
                     </div>
                     {isCompressing && (
                         <div className="text-center text-cyan-300 font-semibold animate-pulse">
-                            📷 Bilder werden komprimiert...
+                            {t('BilderWerdenKomprimiert')}
                         </div>
                     )}
 
@@ -511,10 +477,10 @@ function CreateAdPage() {
                 >
                     {
                         isCompressing
-                            ? "Fotos werden verarbeitet..."
+                            ? t('FotosWerdenVerarbeitet')
                             : isSubmitting
-                                ? "Veröffentlichen..."
-                                : "Anzeige veröffentlichen"
+                                ? t('ProzessGeht')
+                                : t('AnzeigeVeroffentlichen')
                     }
                 </button>
 
@@ -528,11 +494,11 @@ function CreateAdPage() {
                         <div className="text-5xl mb-3">✅</div>
 
                         <h2 className="text-2xl font-bold text-white mb-3">
-                            Erfolgreich veröffentlicht
+                            {t('ErfolgreichVeröffentlicht')}
                         </h2>
 
                         <p className="text-gray-400 mb-6">
-                            Deine Anzeige ist jetzt online.
+                            {t('AnzeigeOnLine')}
                         </p>
 
                         <button
@@ -547,7 +513,7 @@ function CreateAdPage() {
                     active:scale-95 transition
                 "
                         >
-                            Weiter
+                            {t('Weiter')}
                         </button>
 
                     </div>

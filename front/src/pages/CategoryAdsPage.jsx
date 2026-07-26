@@ -1,14 +1,15 @@
 import {useEffect, useState} from 'react'
 import {useNavigate, useParams} from 'react-router-dom'
 import {useSelector} from 'react-redux'
+import {useTranslation} from "../features/customHoock";
 
 
 function CategoryAdsPage() {
     const {slug} = useParams()
     const navigate = useNavigate()
     const user = useSelector(state => state.user)
+    const {t} = useTranslation()
 
-    console.log("USER COORDS =", user.latitude, user.longitude)
 
 const categoryNames = {
     "altenpflege": "Altenpflege",
@@ -38,8 +39,6 @@ const categoryNames = {
     const [allWerbungen, setAllWerbungen] = useState([])
     const [filter, setFilter] = useState("all")
 
-    // const [radius, setRadius] = useState("Deutschland")
-    const [showLocationModal, setShowLocationModal] = useState(false)
     const [hasAds, setHasAds] = useState(false)
 
     const [place, setPlace] = useState("Deutschland")
@@ -49,8 +48,6 @@ const categoryNames = {
 
         async function loadAds() {
             setLoading(true)
-
-            // let url = `/api/ads/${slug}?radius=${radius}`
 
             let url = `/api/ads/${slug}?place=${encodeURIComponent(place)}&radius=${radius}`
 
@@ -118,7 +115,7 @@ const categoryNames = {
             </h1>
 
             <p className="text-center text-gray-400 mb-6">
-                Neueste Anzeigen zuerst
+                {t('NeuesteAnzeigenZuerst')}
             </p>
 
             {hasAds && (
@@ -140,7 +137,7 @@ const categoryNames = {
                             }
                 `}
                         >
-                            Alle
+                            {t('Alle')}
                         </button>
 
                         <button
@@ -154,7 +151,7 @@ const categoryNames = {
                             }
                 `}
                         >
-                            Angebot
+                            {t('Angebot')}
                         </button>
 
                         <button
@@ -168,7 +165,7 @@ const categoryNames = {
                             }
                 `}
                         >
-                            Gesucht
+                            {t('Gesucht')}
                         </button>
 
                     </div>
@@ -183,7 +180,7 @@ const categoryNames = {
                         <input
                             value={place}
                             onChange={(e) => setPlace(e.target.value)}
-                            placeholder="Deutschland"
+                            placeholder={t("Deutschland")}
                             className="
         flex-1 min-w-0
         bg-white/5
@@ -214,7 +211,7 @@ const categoryNames = {
         outline-none
     "
 >
-                            <option>Alle</option>
+                            <option>{t('Alle')}</option>
                             <option>5 km</option>
                             <option>10 km</option>
                             <option>20 km</option>
@@ -233,7 +230,7 @@ const categoryNames = {
             {loading ? (
 
                 <div className="text-center text-gray-400 py-12">
-                    Anzeige wird geladen...
+                    {t('AnzeigeWirdGeladen')}
                 </div>
 
             ) : !hasAds ? (
@@ -254,11 +251,11 @@ const categoryNames = {
                     <div className="text-6xl mb-4">📭</div>
 
                     <h2 className="text-2xl font-bold text-white mb-3">
-                        Noch keine Anzeigen
+                        {t('NochKeineAnzeigen')}
                     </h2>
 
                     <p className="text-gray-400 mb-6">
-                        Sei der Erste und veröffentliche dein Angebot.
+                        {t('SeiErste')}
                     </p>
 
                     <button
@@ -278,7 +275,7 @@ const categoryNames = {
                 transition
             "
                     >
-                        Anzeige erstellen
+                        {t('AnzeigeErstellen')}
                     </button>
 
                 </div>
@@ -301,11 +298,11 @@ const categoryNames = {
                     <div className="text-6xl mb-4">📍</div>
 
                     <h2 className="text-2xl font-bold text-white mb-3">
-                        Keine Anzeigen gefunden
+                        {t('KeineAnzeigenGefunden')}
                     </h2>
 
                     <p className="text-gray-400 mb-6">
-                        Versuchen Sie einen größeren Suchradius oder wählen Sie „Deutschland“.
+                        {t('Suchradius')}
                     </p>
 
                 </div>
@@ -327,165 +324,46 @@ const categoryNames = {
                             bg-white/5 backdrop-blur-md
 
                             p-4 shadow-xl
-
                             "
-
                         >
-
-
                             {item.photos?.length > 0 && (
-
                                 <img
-
                                     src={item.photos[0].url}
-
                                     alt="preview"
-
                                     className="w-full h-48 object-cover rounded-2xl mb-4"
-
                                 />
 
                             )}
-
-
                             <h2 className="text-xl font-bold text-white mb-2">
-
                                 {item.title}
-
                             </h2>
-
-
                             <p className="text-gray-400 text-sm mb-2">
-
-                                PLZ: {item.plz}
-
+                                {t('PLZ')}: {item.plz}
                             </p>
-
-
                             {item.price && (
-
                                 <p className="text-cyan-300 font-semibold mb-2">
-
                                     {item.price}
-
                                 </p>
-
                             )}
-
-
                             <p className="text-gray-300 line-clamp-3 mb-4">
-
                                 {item.description}
-
                             </p>
-
-
                             <button
-
                                 onClick={() => navigate(`/ad/${item.id}`)}
-
                                 className="
-
                                 w-full py-3 rounded-2xl
-
                                 font-bold text-black
-
                                 bg-gradient-to-br from-cyan-300 to-blue-500
-
                                 shadow-lg shadow-cyan-400/30
-
                                 active:scale-95 transition
-
                                 "
-
                             >
-
-                                Öffnen
-
+                                {t('Oeffnen')}
                             </button>
-
                         </div>
-
                     ))}
-
                 </div>
-
             )}
-
-            {showLocationModal && (
-
-                <div
-                    className="
-            fixed inset-0
-            bg-black/70
-            flex
-            items-center
-            justify-center
-            z-50
-        "
-                >
-
-                    <div
-                        className="
-                w-[90%]
-                max-w-md
-                rounded-3xl
-                bg-zinc-900
-                border
-                border-white/10
-                p-6
-            "
-                    >
-
-                        <h2 className="text-xl font-bold text-white mb-3">
-                            📍 Standort erforderlich
-                        </h2>
-
-                        <p className="text-gray-400 mb-6">
-                            Um Anzeigen im Umkreis zu finden,
-                            vervollständigen Sie bitte zuerst Ihr Profil.
-                        </p>
-
-                        <div className="flex gap-3">
-
-                            <button
-                                onClick={() => setShowLocationModal(false)}
-                                className="
-                        flex-1
-                        py-3
-                        rounded-2xl
-                        bg-zinc-700
-                        text-white
-                    "
-                            >
-                                Abbrechen
-                            </button>
-
-                            <button
-                                onClick={() => {
-                                    setShowLocationModal(false)
-                                    navigate("/edit-profile")
-                                }}
-                                className="
-                        flex-1
-                        py-3
-                        rounded-2xl
-                        bg-cyan-400
-                        text-black
-                        font-bold
-                    "
-                            >
-                                Profil öffnen
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            )}
-
         </div>
     )
 }

@@ -3,6 +3,7 @@ import {useState, useEffect, useRef} from 'react'
 import {useSelector} from 'react-redux'
 import {categoryNames} from '../constants/nameKategories.js'
 import Chat from "../components/Chat.jsx";
+import {useTranslation} from "../features/customHoock.js";
 
 function AdDetailsPage() {
     const {id} = useParams()
@@ -20,6 +21,7 @@ function AdDetailsPage() {
     const [isFavorite, setIsFavorite] = useState(false)
     const [messages, setMessages] = useState([])
     const [showReportModal, setShowReportModal] = useState(false)
+    const {t} = useTranslation()
 
 
     useEffect(() => {
@@ -173,7 +175,7 @@ function AdDetailsPage() {
         }
 
         showToast(
-            "✅ Vielen Dank. Die Meldung wurde gesendet."
+            t("Meldung")
         )
 
     }
@@ -417,7 +419,7 @@ transition
             text-xs
             font-bold
         ">
-            BIETE
+            {t('BIETE')}
         </span>
                             ) : (
                                 <span className="
@@ -429,7 +431,7 @@ transition
             text-xs
             font-bold
         ">
-            SUCHE
+            {t('SUCHE')}
         </span>
                             )}
 
@@ -442,7 +444,7 @@ transition
             text-sm
         "
                             >
-                                von{" "}
+                                {t('von')}{" "}
                                 <span className="font-semibold">
                                 {werbung.ownerName}
                                 </span>
@@ -453,7 +455,7 @@ transition
 
 
                     <p className="text-gray-400 mb-2">
-                        PLZ: {werbung.plz}
+                        {t('PLZ')}: {werbung.plz}
                     </p>
 
                     {werbung.price && (
@@ -476,14 +478,14 @@ transition
 
                         <button
                             onClick={() => showToast(
-                                '🔐 Bitte melden Sie sich über Telegram an.'
+                                t('DurchTelegram')
                             )}
                             className="
                 w-full py-3 rounded-2xl font-bold
                 bg-blue-500 text-white
             "
                         >
-                            🔐 Anmelden, um zu kontaktieren
+                            {t('ZuKontact')}
                         </button>
 
                     ) : isOwner ? (
@@ -498,7 +500,7 @@ transition
                     active:scale-95 transition
                 "
                             >
-                                🗑 Löschen
+                                {t('Loeschen')}
                             </button>
 
                             <button
@@ -510,7 +512,7 @@ transition
                     active:scale-95 transition
                 "
                             >
-                                ✏️ Bearbeiten
+                                {t('Bearbeiten')}
                             </button>
                         </>
 
@@ -526,7 +528,7 @@ transition
                     active:scale-95 transition
                 "
                             >
-                                🗑 Löschen
+                                {t('Loeschen')}
                             </button>
 
                             {!showChat && (
@@ -540,7 +542,7 @@ transition
                         active:scale-95 transition
                     "
                                 >
-                                    💬 Kontaktieren
+                                    {t('Schreiben')}
                                 </button>
 
                             )}
@@ -561,7 +563,7 @@ transition
                 transition active:scale-95
             "
                             >
-                                ⚠️ Melden
+                                {t('Melden')}
                             </button>
 
                             <button
@@ -577,8 +579,8 @@ transition
             `}
                             >
                                 {isFavorite
-                                    ? '❤️ Gespeichert'
-                                    : '🤍 Merken'}
+                                    ? t('Gespeichert')
+                                    : t('Merken')}
                             </button>
 
                             {!showChat && (
@@ -596,14 +598,10 @@ transition
                     active:scale-95 transition
                 "
                                 >
-                                    💬 Kontaktieren
+                                    {t('Schreiben')}
                                 </button>
-
                             )}
-
                         </>
-
-
                     )}
 
                 </div>
@@ -616,11 +614,90 @@ transition
                     />
                 )}
 
-                {/*modalka*/}
+                {/* DELETE MODAL */}
                 {showDeleteModal && (
-                    <div>
-                        ...
+
+                    <div
+                        className="
+            fixed inset-0
+            bg-black/70
+            flex items-center justify-center
+            z-50
+            px-4
+        "
+                    >
+
+                        <div
+                            className="
+                w-full
+                max-w-sm
+                rounded-3xl
+                bg-zinc-900
+                border border-white/10
+                p-6
+            "
+                        >
+
+                            <h2
+                                className="
+                    text-xl
+                    font-bold
+                    text-white
+                    text-center
+                    mb-4
+                "
+                            >
+                                🗑 {t("AnzeigeLoeschen")}
+                            </h2>
+
+                            <p
+                                className="
+                    text-gray-400
+                    text-center
+                    mb-6
+                "
+                            >
+                                {t("AnzeigeLoeschenFrage")}
+                            </p>
+
+                            <div className="flex gap-3">
+
+                                <button
+                                    onClick={() => setShowDeleteModal(false)}
+                                    className="
+                        flex-1
+                        py-3
+                        rounded-2xl
+                        bg-zinc-700
+                        text-white
+                        font-semibold
+                    "
+                                >
+                                    {t("Abbrechen")}
+                                </button>
+
+                                <button
+                                    onClick={handleDeleteAd}
+                                    className="
+                        flex-1
+                        py-3
+                        rounded-2xl
+                        bg-red-600
+                        text-white
+                        font-bold
+                        hover:bg-red-700
+                        transition
+                    "
+                                >
+                                    {t("Loeschen")}
+                                </button>
+
+                            </div>
+
+                        </div>
+
                     </div>
+
                 )}
 
                 {toast && (
@@ -667,7 +744,7 @@ text-white
 mb-5
 text-center
 ">
-                            ⚠️ Anzeige melden
+                            {t('AnzMelden')}
                         </h2>
 
                         <div className="flex flex-col gap-3">
@@ -683,14 +760,14 @@ text-center
                                 onClick={() => reportAd("Irreführende Anzeige")}
                                 className="py-3 rounded-xl bg-white/5 text-white"
                             >
-                                ⚠️ Irreführende Anzeige
+                                {t('Falsch')}
                             </button>
 
                             <button
                                 onClick={() => reportAd("Beleidigungen")}
                                 className="py-3 rounded-xl bg-white/5 text-white"
                             >
-                                🚫 Beleidigungen
+                                {t('Beleidigungen')}
                             </button>
 
                             <button
@@ -724,7 +801,7 @@ bg-red-500
 text-white
 "
                             >
-                                Abbrechen
+                                {t('Abbrechen')}
                             </button>
 
                         </div>

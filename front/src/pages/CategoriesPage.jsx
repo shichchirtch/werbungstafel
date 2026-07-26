@@ -1,8 +1,9 @@
 import {useNavigate} from 'react-router-dom'
+import {useTranslation} from "../features/customHoock.js";
 
 function CategoriesPage() {
     const navigate = useNavigate()
-
+    const {t} = useTranslation()
     const categories = [
         {title: 'Altenpflege', slug: 'altenpflege'},
         {title: 'Autoservice', slug: 'autoservice'},
@@ -50,7 +51,7 @@ function CategoriesPage() {
             textShadow: '0 0 8px rgba(255,255,255,0.6)',
         }}
     >
-        Dienstleistungen
+        {t('Dienstleistungen')}
     </h1>
 
     <button
