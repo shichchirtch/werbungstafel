@@ -774,7 +774,7 @@ text-center
                                 onClick={() => reportAd("Verbotene Ware")}
                                 className="py-3 rounded-xl bg-white/5 text-white"
                             >
-                                🚫 Verbotene Ware
+                                {t('VerbWare')}
                             </button>
 
                             <button
