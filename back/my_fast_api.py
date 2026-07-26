@@ -167,7 +167,7 @@ async def auth_telegram(data: dict):
     first_name = data["first_name"]
     username = data.get("username")
     lan = data.get("lan", "de")
-    print('tg_id =', tg_id, 'first_name =', first_name, 'username =', username)
+    print('tg_id =', tg_id, 'first_name =', first_name, 'username =', username, 'lan=', lan)
     user = await create_user_if_not_exists(
         tg_id=tg_id,
         first_name=first_name,
