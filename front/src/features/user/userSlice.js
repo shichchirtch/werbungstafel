@@ -55,6 +55,7 @@ const userSlice = createSlice({
             state.avatar = action.payload.avatar
             state.latitude = action.payload.latitude
             state.longitude = action.payload.longitude
+            state.lan = action.payload.lan
 
             localStorage.setItem('user', JSON.stringify(state))
         }

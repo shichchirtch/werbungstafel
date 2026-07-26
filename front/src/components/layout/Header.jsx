@@ -49,6 +49,7 @@ function Header() {
             avatar: data.avatar,
             latitude: data.latitude,
             longitude: data.longitude,
+            lan: data.lan
         }))
     }
 

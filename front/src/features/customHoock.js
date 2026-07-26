@@ -21,6 +21,7 @@ const translations = {
         AnzeigeAufgeben: 'Anzeige aufgeben',
         SuchAnzeigen: 'Suchanzeigen',
         KategorieWaehlen: 'Wählen Sie eine Kategorie aus',
+        Hallo:'Hallo',
 
     },
 
@@ -43,6 +44,7 @@ const translations = {
         AnzeigeAufgeben: 'Подать объявление',
         SuchAnzeigen: 'Поиск объявлений',
         KategorieWaehlen: 'Выберите категорию',
+        Hallo:'Привет',
 
     },
 
@@ -64,6 +66,7 @@ const translations = {
         AnzeigeAufgeben: 'Подати оголошення',
         SuchAnzeigen: 'Пошук оголошень',
         KategorieWaehlen: 'Вибрати категорію',
+        Hallo:'Привіт',
     },
 
     tr: {
@@ -84,6 +87,7 @@ const translations = {
         AnzeigeAufgeben: 'İlan ver',
         SuchAnzeigen: 'Arama reklamları',
         KategorieWaehlen:'Bir kategori seçin',
+        Hallo:'Merhaba',
     }
 
 }
