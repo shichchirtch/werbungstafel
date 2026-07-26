@@ -16,12 +16,7 @@ second_window_text = {
           'Notlarınızı görüntülemek için 📚 düğmesine tıklayın.'
 }
 
-bot_reply = {
-    'ru': 'Вы потратили в месяце ',
-    'uk': 'Ви витратили на місяць',
-    'de': 'Sie haben ausgegeben im Monat ',
-    'tr': 'Ay içinde harcadınız'
-}
+
 
 start_dict = {
     'ru': 'Приветствую',
@@ -30,19 +25,43 @@ start_dict = {
     'tr': 'Selamlar'
 }
 
-notiz_wurde_beifugen = {
-    'ru': 'Эта заметка будет добавлена к вашим заметкам',
-    'uk': 'Ця нотатка буде додана до ваших нотаток',
-    'de': 'Gut, Diese Note wurde in deine Noten beifügen',
-    'tr': 'Bu not, notlarınıza eklenecektir.'
+start_zwei={
+    'de':'Das ist WerbungsTafel, um zu login kliclen Sie bitte auf den Taste',
+    'ru':'Для входа нажмите на кнопку под сообщением',
+    'uk':'Для входу натисніть кнопку під повідомленням',
+    'tr':'Giriş yapmak için mesajın altındaki butona tıklayın.'
 }
 
-error_enter_type = {
-    'ru': 'Отправьте мне текст заметки или фото',
-    'uk': 'Надішліть мені текст нотатки або фото',
-    'de': 'Senden Sie mir den Text oder das Foto',
-    'tr': 'Notun metnini veya fotoğrafını bana gönderin.'
+start_drei = {
+    'de':"👋 Willkommen bei WerbungsTafel!\n\n"
+        "Um sich auf der Website\n\n<a>https://werbungstafel.org/</a> \n\n anzumelden, "
+        "klicken Sie dort auf "
+        "\"Mit Telegram anmelden\".",
+
+    'ru':'👋 Добро пожаловать на WerbungsTafel!\n\n'
+         'Чтобы войти на сайт\n\n<a>https://werbungstafel.org/</a> \n\n,'
+         'нажмите на кнопку "Войти через Telegram\"».',
+
+
+    'uk':'👋 Ласкаво просимо до WerbungsTafel!\n\n'
+         'Щоб увійти на веб-сайт\n\n<a>https://werbungstafel.org/</a> \n\n,'
+         'натисніть на Увійти за допомогою Telegram\"."',
+
+
+    'tr':'👋 WerbungsTafel Hoş Geldiniz!\n\n'
+         'Web sitesine giriş yapmak için\n\n<a>https://werbungstafel.org/</a> \n\n,'
+         'Telegram ile Giriş Yap" seçeneğine tıklayın."',
+
 }
+
+autorization_erfolg = {
+    'de':'✅ Die Autorisierung war erfolgreich.\nSie können zu Ihrem Browser zurückkehren.',
+    'ru':'✅ Авторизация прошла успешно.\nМожете вернуться в браузер.',
+    'uk':'✅ Авторизація пройшла успішно.\nМожете повернутися до браузера.',
+    'tr':'✅ Yetkilendirme başarılı oldu.\nTarayıcınıza geri dönebilirsiniz.'
+}
+
+
 
 EingebenCaptura = {
     'ru': 'Введите подпись',
@@ -63,26 +82,14 @@ capture_wurde_instlliert = {
     'tr': 'Fotoğrafınıza Capture eklendi.'
 }
 
-captura_type_error = {
-    'ru': 'Отправь мне текст',
-    'uk': 'Надішліть мені текст',
-    'de': 'schick mir Text',
-    'tr': 'Bana mesaj gönder'
+captura_code = {
+    'ru': 'Отправь мне код с экрана',
+    'uk': 'Надішліть мені код з екрану',
+    'de': 'Sende mir den Code vom Bildschirm.',
+    'tr': 'Ekrandaki kodu bana gönder.'
 }
 
-NotizAczeptiert = {
-    'ru': 'Заметка принята',
-    'uk': 'Нотатка прийнята',
-    'de': 'Notiz Aczeptiert',
-    'tr': 'Not kabul edildi.'
-}
 
-keine_notiz_noch = {
-    'ru': 'Ещё нет заметок',
-    'uk': 'Ще немає нотаток',
-    'de': 'Keine Notiz noch',
-    'tr': 'Henüz not yok.'
-}
 
 Klicken_zu_sehen = {
     'ru': 'Нажмите чтобы посмотреть',
@@ -91,19 +98,7 @@ Klicken_zu_sehen = {
     'tr': 'Görüntülemek için tıklayın'
 }
 
-Wahle = {
-    'ru': 'Выберите заметку из списка:',
-    'uk': 'Виберіть нотатку зі списку:',
-    'de': 'Wähle eine Notiz aus der Liste:',
-    'tr': 'Listeden bir not seçin:'
-}
 
-neu_notiz = {
-    'ru': 'Чтобы написать новую заметку, вернитесь назад.',
-    'uk': 'Щоб написати нову нотатку, поверніться назад.',
-    'de': 'Um eine neue Notiz zu schreiben, gehen Sie zurück',
-    'tr': 'Yeni bir not yazmak için geri dönün.'
-}
 
 about = {
     'ru': '<b>О проекте</b>\n\n'
@@ -175,19 +170,7 @@ help_msg = {
 
 }
 
-Neue_Notiz_erstellen = {
-    'ru': 'Записать новую заметку',
-    'uk': 'Записати нову нотатку',
-    'de': 'Schreibe eine neue Notiz',
-    'tr': 'Yeni bir not yazın'
-}
 
-Kuck_meine_Notizen = {
-    'ru': 'Посмотреть мои заметки',
-    'uk': 'Переглянути мої нотатки',
-    'de': 'Meine Notizen ansehen',
-    'tr': 'Notlarımı görüntüle'
-}
 
 send_to_dev = {
     'ru': 'Отправьте следующее сообщение разработчику или нажмите на ◀️',
@@ -195,110 +178,6 @@ send_to_dev = {
     'de': 'Senden Sie die folgende Nachricht an den Entwickler oder klicken Sie auf ◀️',
     'tr': 'Geliştiriciye aşağıdaki mesajı gönderin veya ◀️ simgesine tıklayın.'
 }
-
-wurde_gesendet = {
-    'ru': 'Сообщение успешно отправлено.',
-    'uk': 'Повідомлення успішно надіслано.',
-    'de': 'Die Nachricht wurde erfolgreich gesendet',
-    'tr': 'Mesaj başarıyla gönderildi.'
-}
-
-Schiken_mir_Capture = {
-    'ru': 'Отправь мне картинку !',
-    'uk': 'Відправ мені картинку !',
-    'de': 'Schick mir ein Foto!',
-    'tr': 'Bana bir fotoğraf gönder!'
-}
-
-CATEGORY_EMOJI = {'ru': {
-
-    "Продукты": "🛒",
-    "Аренда": "🏠",
-    "Транспорт": "🚗",
-    "Связь и Интернет": "📱",
-    "Подарки": "🎁",
-    "Развлечения": "🎮",
-    "Налоги": "💰",
-    "Путешествия": "✈️",
-    "Лекарства": "💊",
-    "Одежда / Косметика": "👕",
-    "Для дома": "🛋️",
-    "Благотворительность": "🤝",
-    "Учёба": "📚",
-    "Хобби": "🎨",
-    "Спорт": "🏋️",
-    "Иное": "📦"},
-
-    'uk': {
-        'Продукти': '🛒',
-        'Оренда': '🏠',
-        'Транспорт': '🚗',
-        'Звязок та Інтернет': '📱',
-        'Подарунки': '🎁',
-        'Розваги': '🎮',
-        'Податки': '💰',
-        'Подорожі': '✈️',
-        'Ліки': '💊',
-        'Одяг / Косметика': '👕',
-        'Для дому': '🛋️',
-        'Благодійність': '🤝',
-        'Навчання': '📚',
-        'Хоббі': '🎨',
-        'Спорт': '🏋️',
-        'Інше': '📦',
-
-    },
-    'de': {
-        'Lebensmittel': '🛒',
-        'Miete': '🏠',
-        'Transport': '🚗',
-        'Kommunikation und Internet': '📱',
-        'Geschenke': '🎁',
-        'Unterhaltung': '🎮',
-        'Steuern': '💰',
-        'Reisen': '✈️',
-        'Medikamente': '💊',
-        'Kleidung/Kosmetik': '👕',
-        'Wohnen': '🛋️',
-        'Wohltätigkeit': '🤝',
-        'Studium': '📚',
-        'Hobbys': '🎨',
-        'Sport': '🏋️',
-        'Sonstiges': '📦'
-    },
-
-    'tr': {'Market': '🛒',
-           'Kira': '🏠',
-           'Ulaşım': '🚗',
-           'İletişim ve İnternet': '📱',
-           'Hediyeler': '🎁',
-           'Eğlence': '🎮',
-           'Vergiler': '💰',
-           'Seyahat': '✈️',
-           'İlaçlar': '💊',
-           'Giyim/Kozmetik': '👕',
-           'Ev': '🛋️',
-           'Hayır Kurumu': '🤝',
-           'Eğitim': '📚',
-           'Hobiler': '🎨',
-           'Spor': '🏋️',
-           'Diğer': '📦'
-
-           }
-
-}
-no_expenses = {
-    'ru': '<b>Нет расходов за этот месяц 🤷</b>',
-    'uk': '<b>Немає видатків за цей місяць 🤷</b>',
-    'de': '<b>Keine Ausgaben für diesen Monat 🤷</b>',
-    'tr': '<b>Bu ay için herhangi bir masraf yok 🤷</b>',
-
-}
-
-report_for = {'ru': 'Отчёт за ',
-              'uk': 'Звіт за ',
-              'de': 'Bericht für ',
-              'tr': 'Rapor için '}
 
 code_dict = {
     'ru': '❌ Код неверный или уже использован\n\nОтправьте мне команду /login ещё раз. Код действителен 2 минтуты',

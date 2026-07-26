@@ -42,28 +42,25 @@ async def command_start_process(message: Message, command: CommandObject):
     start_keyboard = InlineKeyboardMarkup(
         inline_keyboard=[[login_button]])
 
-    await message.answer(text=f'👋\n\n<b>Hello, {message.from_user.first_name}!</b>\n'
-                              'Das ist WerbungsTafel, um zu login kliclen Sie bitte auf den Taste',
+    await message.answer(text=f'👋\n\n<b>{start_dict[user_lan]}, {message.from_user.first_name}!</b>\n'
+                              f'{start_zwei[user_lan]}',
                          reply_markup=start_keyboard)
 
 
 @ch_router.message(CommandStart(), F.text == "/start")
 async def start_common(message: Message):
     await load_user_avatar(message)
-    await message.answer(
-        "👋 Willkommen bei WerbungsTafel!\n\n"
-        "Um sich auf der Website\n\n<a>https://werbungstafel.org/</a> \n\n anzumelden, "
-        "klicken Sie dort auf "
-        "\"Mit Telegram anmelden\"."
-    )
+    lan = message.from_user.language_code
+    await message.answer(start_drei[lan])
 
 
 @ch_router.message(Command('login'))
 async def command_login(message: Message, state: FSMContext):
     print("ENTER /LOGIN")
     await load_user_avatar(message)
+    lan = message.from_user.language_code
     await state.set_state(FSM_ST.accept_login)
-    await message.answer('Отправьте мне код с экрана')
+    await message.answer(captura_code[lan])
 
 
 @ch_router.message(StateFilter(FSM_ST.accept_login), KODE_FILTER())
@@ -99,8 +96,7 @@ async def accept_login(message: Message, state: FSMContext):
     await state.clear()
 
     await message.answer(
-        "✅ Авторизация прошла успешно.\n"
-        "Можете вернуться в браузер."
+        autorization_erfolg[us_lan]
     )
 
 
@@ -119,6 +115,8 @@ async def accept_login(message: Message, state: FSMContext):
 #     await dialog_manager.reset_stack()
 #     await dialog_manager.start(state=ROOT_WIND.do_nothing)
 #
+
+
 @ch_router.message(Command('admin'), IS_ADMIN())
 async def admin_enter(message: Message, dialog_manager: DialogManager):
     await dialog_manager.start(state=ADMIN.first)
