@@ -38,6 +38,8 @@ function Header() {
 
         const data = await response.json()
 
+        console.log("PROFILE =", data)
+
         if (!data.ok) {
             return
         }
