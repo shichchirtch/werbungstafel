@@ -6,6 +6,83 @@ function Chat({adId, senderId, receiverId,}) {
     const [message, setMessage] = useState("")
     const [selectedPhotos, setSelectedPhotos] = useState([])
     const fileInputRef = useRef(null)
+    const [isSending, setIsSending] = useState(false)
+    const [openedPhoto, setOpenedPhoto] = useState(null)
+
+    const compressImage = (file) => {
+
+        return new Promise((resolve, reject) => {
+
+            const img = new Image()
+
+            img.onload = () => {
+
+                const canvas = document.createElement("canvas")
+
+                let width = img.width
+                let height = img.height
+
+                const maxSize = 1600
+
+                if (width > height) {
+
+                    if (width > maxSize) {
+
+                        height *= maxSize / width
+                        width = maxSize
+
+                    }
+
+                } else {
+
+                    if (height > maxSize) {
+
+                        width *= maxSize / height
+                        height = maxSize
+                    }
+                }
+                canvas.width = width
+                canvas.height = height
+
+                const ctx = canvas.getContext("2d")
+
+                ctx.drawImage(img, 0, 0, width, height)
+
+                canvas.toBlob(
+                    (blob) => {
+
+                        if (!blob) {
+                            reject("Compression failed")
+                            return
+                        }
+
+                        resolve(
+                            new File(
+                                [blob],
+                                file.name.replace(/\.\w+$/, ".jpg"),
+                                {
+                                    type: "image/jpeg",
+                                }
+                            )
+                        )
+
+                    },
+
+                    "image/jpeg",
+                    0.7
+                )
+
+            }
+
+            img.onerror = reject
+
+            img.src = URL.createObjectURL(file)
+
+        })
+
+    }
+
+
     useEffect(() => {
 
         async function loadMessages() {
@@ -33,7 +110,11 @@ function Chat({adId, senderId, receiverId,}) {
 
 
     const handleSend = async () => {
+        if (isSending) {
+            return
+        }
 
+        setIsSending(true)
         if (
             !message.trim() &&
             selectedPhotos.length === 0
@@ -50,7 +131,11 @@ function Chat({adId, senderId, receiverId,}) {
             formData.append("receiver_id", receiverId)
             formData.append("text", message)
 
-            selectedPhotos.forEach(photo => {
+            const compressedPhotos = await Promise.all(
+                selectedPhotos.map(compressImage)
+            )
+
+            compressedPhotos.forEach(photo => {
 
                 formData.append("photos", photo)
 
@@ -90,59 +175,13 @@ function Chat({adId, senderId, receiverId,}) {
 
             console.error(err)
 
+        } finally {
+
+            setIsSending(false)
+
         }
 
     }
-
-    // const handleSend = async () => {
-    //
-    //     if (!message.trim()) {
-    //         return
-    //     }
-    //
-    //     try {
-    //
-    //         const response = await fetch(
-    //             "/api/messages",
-    //             {
-    //                 method: "POST",
-    //                 headers: {
-    //                     "Content-Type": "application/json",
-    //                 },
-    //
-    //                 body: JSON.stringify({
-    //                     ad_id: adId,
-    //                     sender_id: senderId,
-    //                     receiver_id: receiverId,
-    //                     text: message,
-    //                 }),
-    //             }
-    //         )
-    //
-    //         if (!response.ok) {
-    //             return
-    //         }
-    //
-    //         const data = await response.json()
-    //
-    //         if (!data.ok) {
-    //             return
-    //         }
-    //
-    //         setMessages(prev => [
-    //             ...prev,
-    //             data.nachricht,
-    //         ])
-    //
-    //         setMessage("")
-    //
-    //     } catch (err) {
-    //
-    //         console.error(err)
-    //
-    //     }
-    //
-    // }
 
 
     return (
@@ -210,6 +249,11 @@ function Chat({adId, senderId, receiverId,}) {
                                                     key={index}
                                                     src={attachment.file_url}
                                                     alt="attachment"
+                                                    onClick={() =>
+                                                        setOpenedPhoto(
+                                                            attachment.file_url
+                                                        )
+                                                    }
                                                     className="
                         rounded-xl
                         max-w-full
@@ -276,34 +320,34 @@ function Chat({adId, senderId, receiverId,}) {
 
                     setSelectedPhotos(
                         files.slice(0, 5)
-                    )}}
+                    )
+                }}
             />
 
             <div className="flex gap-2">
 
-                <div className="flex gap-2">
 
-                    <button
-                        onClick={() => fileInputRef.current?.click()}
-                        className="
+                <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="
         px-4
         rounded-xl
         bg-white/10
         text-white
         text-xl
     "
-                    >
-                        📎
-                    </button>
+                >
+                    📎
+                </button>
 
-                    <input
-                        value={message}
-                        onChange={(e) =>
-                            setMessage(e.target.value)
-                        }
-                        maxLength={400}
-                        placeholder="Nachricht..."
-                        className="
+                <input
+                    value={message}
+                    onChange={(e) =>
+                        setMessage(e.target.value)
+                    }
+                    maxLength={400}
+                    placeholder="Nachricht..."
+                    className="
             flex-1
             bg-black/40
             text-white
@@ -313,22 +357,24 @@ function Chat({adId, senderId, receiverId,}) {
             border-white/10
             outline-none
         "
-                    />
+                />
 
-                    <button
-                        onClick={handleSend}
-                        className="
-            px-4
-            rounded-xl
-            bg-cyan-400
-            text-black
-            font-bold
-        "
-                    >
-                        →
-                    </button>
-
-                </div>
+                <button
+                    onClick={handleSend}
+                    disabled={isSending}
+                    className={`
+        px-4
+        rounded-xl
+        font-bold
+        ${
+                        isSending
+                            ? "bg-gray-600 text-gray-300 cursor-not-allowed"
+                            : "bg-cyan-400 text-black"
+                    }
+    `}
+                >
+                    {isSending ? "..." : "→"}
+                </button>
 
             </div>
             {selectedPhotos.length > 0 && (
@@ -359,6 +405,42 @@ function Chat({adId, senderId, receiverId,}) {
             <div className="text-right text-xs text-gray-500 mt-1">
                 {message.length}/400
             </div>
+
+            {openedPhoto && (
+
+                <div
+                    onClick={() =>
+                        setOpenedPhoto(null)
+                    }
+                    className="
+            fixed
+            inset-0
+            bg-black/90
+            z-50
+            flex
+            items-center
+            justify-center
+            p-4
+        "
+                >
+
+                    <img
+                        src={openedPhoto}
+                        alt=""
+                        onClick={(e) =>
+                            e.stopPropagation()
+                        }
+                        className="
+                max-w-full
+                max-h-full
+                rounded-2xl
+            "
+                    />
+
+                </div>
+
+            )}
+
 
         </div>
 
