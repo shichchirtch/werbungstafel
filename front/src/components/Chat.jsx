@@ -9,6 +9,7 @@ function Chat({adId, senderId, receiverId,}) {
     const [isSending, setIsSending] = useState(false)
     const [openedPhoto, setOpenedPhoto] = useState(null)
 
+
     const compressImage = (file) => {
 
         return new Promise((resolve, reject) => {
@@ -22,7 +23,7 @@ function Chat({adId, senderId, receiverId,}) {
                 let width = img.width
                 let height = img.height
 
-                const maxSize = 1600
+                const maxSize = 900
 
                 if (width > height) {
 
@@ -108,20 +109,38 @@ function Chat({adId, senderId, receiverId,}) {
 
     }, [adId, senderId, receiverId])
 
+    const removePhoto = (indexToRemove) => {
+
+        URL.revokeObjectURL(
+            selectedPhotos[indexToRemove].preview
+        )
+
+        setSelectedPhotos(prev =>
+            prev.filter((_, index) =>
+                index !== indexToRemove
+            )
+        )
+
+        if (
+            fileInputRef.current &&
+            selectedPhotos.length === 1
+        ) {
+            fileInputRef.current.value = ""
+        }
+
+    }
+
 
     const handleSend = async () => {
         if (isSending) {
             return
         }
-
-        setIsSending(true)
-        if (
-            !message.trim() &&
+        if (!message.trim() &&
             selectedPhotos.length === 0
         ) {
             return
         }
-
+        setIsSending(true)
         try {
 
             const formData = new FormData()
@@ -132,7 +151,9 @@ function Chat({adId, senderId, receiverId,}) {
             formData.append("text", message)
 
             const compressedPhotos = await Promise.all(
-                selectedPhotos.map(compressImage)
+                selectedPhotos.map(photo =>
+                    compressImage(photo.file)
+                )
             )
 
             compressedPhotos.forEach(photo => {
@@ -166,6 +187,12 @@ function Chat({adId, senderId, receiverId,}) {
             ])
 
             setMessage("")
+            selectedPhotos.forEach(photo => {
+
+                URL.revokeObjectURL(photo.preview)
+
+            })
+
             setSelectedPhotos([])
             if (fileInputRef.current) {
                 fileInputRef.current.value = ""
@@ -319,12 +346,18 @@ function Chat({adId, senderId, receiverId,}) {
                     }
 
                     setSelectedPhotos(
-                        files.slice(0, 5)
+                        files
+                            .slice(0, 5)
+                            .map(file => ({
+                                file,
+                                preview: URL.createObjectURL(file),
+                            }))
                     )
+
                 }}
             />
 
-            <div className="flex gap-2">
+            <div className="w-full flex items-center gap-2">
 
 
                 <button
@@ -335,6 +368,7 @@ function Chat({adId, senderId, receiverId,}) {
         bg-white/10
         text-white
         text-xl
+        shrink-0
     "
                 >
                     📎
@@ -348,6 +382,7 @@ function Chat({adId, senderId, receiverId,}) {
                     maxLength={400}
                     placeholder="Nachricht..."
                     className="
+            min-w-0
             flex-1
             bg-black/40
             text-white
@@ -366,6 +401,7 @@ function Chat({adId, senderId, receiverId,}) {
         px-4
         rounded-xl
         font-bold
+        shrink-0
         ${
                         isSending
                             ? "bg-gray-600 text-gray-300 cursor-not-allowed"
@@ -383,19 +419,46 @@ function Chat({adId, senderId, receiverId,}) {
 
                     {selectedPhotos.map((photo, index) => (
 
-                        <img
+                        <div
                             key={index}
-                            src={URL.createObjectURL(photo)}
-                            alt=""
-                            className="
-                    w-20
-                    h-20
-                    rounded-xl
-                    object-cover
-                    border
-                    border-white/10
-                "
-                        />
+                            className="relative"
+                        >
+
+                            <img
+                                src={photo.preview}
+                                alt=""
+                                className="
+                w-20
+                h-20
+                rounded-xl
+                object-cover
+                border
+                border-white/10
+            "
+                            />
+
+                            <button
+                                onClick={() => removePhoto(index)}
+                                className="
+                absolute
+                -top-2
+                -right-2
+                w-6
+                h-6
+                rounded-full
+                bg-red-500
+                text-white
+                text-xs
+                flex
+                items-center
+                justify-center
+                shadow-lg
+            "
+                            >
+                                ✕
+                            </button>
+
+                        </div>
 
                     ))}
 
