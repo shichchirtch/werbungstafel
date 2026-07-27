@@ -1,5 +1,6 @@
 from sqlalchemy import select, delete, func, and_, or_, update
-from postgres_table import User, LoginRequest, Ad, Favorite, AdPhoto, Nachricht
+from postgres_table import (User, LoginRequest, Ad, Favorite, AdPhoto,
+                            Nachricht, MessageAttachment)
 from postgres_table import session_marker
 from datetime import datetime, timedelta, UTC
 import shutil
@@ -664,12 +665,58 @@ async def create_nachricht_db(ad_id: int, sender_id: int, receiver_id: int, text
         return nachrict
 
 
+# async def get_nachrichten_db(
+#         ad_id: int,
+#         sender_id: int,
+#         receiver_id: int,
+# ):
+#     async with session_marker() as session:
+#         result = await session.execute(
+#
+#             select(Nachricht).where(
+#
+#                 Nachricht.ad_id == ad_id,
+#
+#                 or_(
+#
+#                     and_(
+#                         Nachricht.sender_id == sender_id,
+#                         Nachricht.receiver_id == receiver_id,
+#                     ),
+#
+#                     and_(
+#                         Nachricht.sender_id == receiver_id,
+#                         Nachricht.receiver_id == sender_id,
+#                     ),
+#
+#                 )
+#
+#             ).order_by(
+#                 Nachricht.created_at
+#             )
+#         )
+#         nachrichten = result.scalars().all()
+#         return [
+#
+#             {
+#                 "id": n.id,
+#                 "sender_id": n.sender_id,
+#                 "receiver_id": n.receiver_id,
+#                 "text": n.text,
+#                 "created_at": n.created_at.isoformat(),
+#                 "is_read": n.is_read,
+#             }
+#             for n in nachrichten
+#         ]
+
+
 async def get_nachrichten_db(
         ad_id: int,
         sender_id: int,
         receiver_id: int,
 ):
     async with session_marker() as session:
+
         result = await session.execute(
 
             select(Nachricht).where(
@@ -694,7 +741,39 @@ async def get_nachrichten_db(
                 Nachricht.created_at
             )
         )
+
         nachrichten = result.scalars().all()
+
+        # ---------- Загружаем все вложения одним запросом ----------
+
+        message_ids = [n.id for n in nachrichten]
+
+        attachments_by_message = {}
+
+        if message_ids:
+
+            result = await session.execute(
+
+                select(MessageAttachment).where(
+                    MessageAttachment.message_id.in_(message_ids)
+                )
+
+            )
+
+            for attachment in result.scalars():
+
+                attachments_by_message.setdefault(
+                    attachment.message_id,
+                    []
+                ).append({
+
+                    "type": attachment.type,
+                    "file_url": attachment.file_url,
+
+                })
+
+        # ---------- Формируем ответ ----------
+
         return [
 
             {
@@ -704,10 +783,16 @@ async def get_nachrichten_db(
                 "text": n.text,
                 "created_at": n.created_at.isoformat(),
                 "is_read": n.is_read,
-            }
-            for n in nachrichten
-        ]
 
+                "attachments": attachments_by_message.get(
+                    n.id,
+                    []
+                ),
+            }
+
+            for n in nachrichten
+
+        ]
 
 async def get_chats_db(user_id: int):
     async with session_marker() as session:
@@ -1066,4 +1151,16 @@ async def get_user_profile_by_id(user_id: int):
         "favorites_count": favorites_count,
         "is_banned": user.is_banned,
     }
+############################Фото в сообщении ##################################
+
+async def create_message_attachment(message_id: int, type: str, file_url: str,):
+    async with session_marker() as session:
+        attachment = MessageAttachment(
+            message_id=message_id,
+            type=type,
+            file_url=file_url,
+        )
+        session.add(attachment)
+        await session.commit()
+        return attachment
 

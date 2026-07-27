@@ -2,17 +2,12 @@ import { createSlice } from '@reduxjs/toolkit'
 
 
 const initialState = {
-
     selectedChat: null,
-
 }
 
 const messagesSlice = createSlice({
-
     name: 'messages',
-
     initialState,
-
     reducers: {
 
         selectChat(state, action) {
@@ -24,19 +19,9 @@ const messagesSlice = createSlice({
         clearSelectedChat(state) {
 
             state.selectedChat = null
-
         },
-
     },
-
 })
 
-export const {
-
-    selectChat,
-
-    clearSelectedChat,
-
-} = messagesSlice.actions
-
+export const {selectChat, clearSelectedChat} = messagesSlice.actions
 export default messagesSlice.reducer

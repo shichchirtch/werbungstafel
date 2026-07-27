@@ -91,6 +91,15 @@ class Nachricht(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
 
 
+class MessageAttachment(Base):
+    __tablename__ = "message_attachments"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    message_id: Mapped[int] = mapped_column(ForeignKey("messages.id"))
+    type: Mapped[str] = mapped_column(String(100))
+    file_url: Mapped[str] = mapped_column(String)
+
+
 async def init_models():
     async with engine.begin() as conn:
         # await conn.run_sync(Base.metadata.drop_all)

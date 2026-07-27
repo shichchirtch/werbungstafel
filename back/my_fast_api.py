@@ -16,7 +16,7 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        create_nachricht_db, get_nachrichten_db, get_ads_count_by_category,
                        get_chats_db, mark_messages_read_db, update_profile_and_get_user_db,
                        get_map_data_db, get_ads_by_place_db, toggle_user_ban,
-                       get_user_profile_by_id, get_user_by_id)
+                       get_user_profile_by_id, get_user_by_id, create_message_attachment)
 import secrets
 import string
 from lexicon import *
@@ -708,10 +708,10 @@ async def update_profile(telegram_id: int, data: ProfileUpdate):
 
 ############################### Nachricht #########################################
 
-@f_api.post("/api/messages")
-async def create_nachricht(data: CreateNachricht):
-    sender = await get_user_by_id(data.sender_id)
 
+@f_api.post("/api/messages")
+async def create_nachricht(ad_id: int = Form(...), sender_id: int = Form(...),receiver_id: int = Form(...),text: str = Form(""), photos: list[UploadFile] = File(default=[]),):
+    sender = await get_user_by_id(sender_id)
     if not sender:
         return {
             "ok": False,
@@ -723,14 +723,74 @@ async def create_nachricht(data: CreateNachricht):
             "ok": False,
             "error": "Ihr Konto wurde gesperrt."
         }
+
     nachricht = await create_nachricht_db(
-        ad_id=data.ad_id,
-        sender_id=data.sender_id,
-        receiver_id=data.receiver_id,
-        text=data.text,
+        ad_id=ad_id,
+        sender_id=sender_id,
+        receiver_id=receiver_id,
+        text=text,
     )
-    print('received ID = ', data.receiver_id)
-    await notify_receiver(data.receiver_id)
+
+    folder = f"uploads/messages/{nachricht.id}"
+
+    os.makedirs(folder, exist_ok=True)
+
+    attachments = []
+
+    for photo in photos:
+
+        filename = (
+                os.path.splitext(photo.filename or "photo")[0]
+                + ".jpg"
+        )
+
+        file_path = f"{folder}/{filename}"
+
+        img = ImageOps.exif_transpose(
+            Image.open(photo.file)
+        )
+
+        if img.width > 10000 or img.height > 10000:
+            return {
+                "ok": False,
+                "error": "Bild ist zu groß"
+            }
+
+        if img.mode != "RGB":
+            img = img.convert("RGB")
+
+        img.thumbnail((1600, 1600))
+
+        img.save(
+            file_path,
+            format="JPEG",
+            quality=70,
+            optimize=True,
+            progressive=True
+        )
+
+        file_url = (
+            f"/uploads/messages/"
+            f"{nachricht.id}/{filename}"
+        )
+        print(file_url)
+        await create_message_attachment(
+            message_id=nachricht.id,
+            type="photo",
+            file_url=file_url,
+        )
+
+        attachments.append({
+            "type": "photo",
+            "file_url": file_url,
+        })
+
+    print("received ID =", receiver_id)
+
+    await notify_receiver(receiver_id)
+    print("=" * 60)
+    print("MESSAGE ID =", nachricht.id)
+    print("PHOTOS =", len(photos))
 
     return {
         "ok": True,
@@ -742,8 +802,47 @@ async def create_nachricht(data: CreateNachricht):
             "text": nachricht.text,
             "created_at": nachricht.created_at.isoformat(),
             "is_read": nachricht.is_read,
+            "attachments": attachments,
         }
     }
+
+
+# @f_api.post("/api/messages")
+# async def create_nachricht(data: CreateNachricht):
+#     sender = await get_user_by_id(data.sender_id)
+#
+#     if not sender:
+#         return {
+#             "ok": False,
+#             "error": "Benutzer wurde nicht gefunden."
+#         }
+#
+#     if sender.is_banned:
+#         return {
+#             "ok": False,
+#             "error": "Ihr Konto wurde gesperrt."
+#         }
+#     nachricht = await create_nachricht_db(
+#         ad_id=data.ad_id,
+#         sender_id=data.sender_id,
+#         receiver_id=data.receiver_id,
+#         text=data.text,
+#     )
+#     print('received ID = ', data.receiver_id)
+#     await notify_receiver(data.receiver_id)
+#
+#     return {
+#         "ok": True,
+#         "nachricht": {
+#             "id": nachricht.id,
+#             "ad_id": nachricht.ad_id,
+#             "sender_id": nachricht.sender_id,
+#             "receiver_id": nachricht.receiver_id,
+#             "text": nachricht.text,
+#             "created_at": nachricht.created_at.isoformat(),
+#             "is_read": nachricht.is_read,
+#         }
+#     }
 
 
 @f_api.get("/api/messages/{ad_id}/{sender_id}/{receiver_id}")
