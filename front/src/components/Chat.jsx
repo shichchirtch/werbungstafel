@@ -8,7 +8,19 @@ function Chat({adId, senderId, receiverId,}) {
     const fileInputRef = useRef(null)
     const [isSending, setIsSending] = useState(false)
     const [openedPhoto, setOpenedPhoto] = useState(null)
+    const textareaRef = useRef(null)
 
+    const handleMessageChange = (e) => {
+
+        setMessage(e.target.value)
+
+        const ta = textareaRef.current
+
+        ta.style.height = "auto"
+
+        ta.style.height = Math.min(ta.scrollHeight, 120) + "px"
+
+    }
 
     const compressImage = (file) => {
 
@@ -225,7 +237,18 @@ function Chat({adId, senderId, receiverId,}) {
             "
         >
 
-            <div className="max-h-60 overflow-y-auto flex flex-col gap-2 mb-3">
+            <div
+                className="
+        h-60
+        max-h-[70vh]
+        resize-y
+        overflow-auto
+        flex
+        flex-col
+        gap-2
+        mb-3
+    "
+            >
 
                 {messages.length === 0 ? (
 
@@ -374,24 +397,25 @@ function Chat({adId, senderId, receiverId,}) {
                     📎
                 </button>
 
-                <input
+                <textarea
+                    ref={textareaRef}
                     value={message}
-                    onChange={(e) =>
-                        setMessage(e.target.value)
-                    }
+                    onChange={handleMessageChange}
+                    rows={1}
                     maxLength={400}
                     placeholder="Nachricht..."
                     className="
-            min-w-0
-            flex-1
-            bg-black/40
-            text-white
-            p-3
-            rounded-xl
-            border
-            border-white/10
-            outline-none
-        "
+        flex-1
+        bg-black/40
+        text-white
+        p-3
+        rounded-xl
+        border
+        border-white/10
+        outline-none
+        resize-none
+        overflow-y-auto
+    "
                 />
 
                 <button
@@ -446,7 +470,7 @@ function Chat({adId, senderId, receiverId,}) {
                 w-6
                 h-6
                 rounded-full
-                bg-red-500
+                bg-gray-500
                 text-white
                 text-xs
                 flex
