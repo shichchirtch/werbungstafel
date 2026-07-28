@@ -302,6 +302,7 @@ function Chat({adId, senderId, receiverId,}) {
         overflow-y-auto
         custom-scrollbar
         max-h-[70vh]
+        min-h-[220px]
         resize-y
         flex
         flex-col
