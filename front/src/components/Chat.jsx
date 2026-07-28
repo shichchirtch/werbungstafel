@@ -7,8 +7,59 @@ function Chat({adId, senderId, receiverId,}) {
     const [selectedPhotos, setSelectedPhotos] = useState([])
     const fileInputRef = useRef(null)
     const [isSending, setIsSending] = useState(false)
-    const [openedPhoto, setOpenedPhoto] = useState(null)
     const textareaRef = useRef(null)
+    const [openedPhotoIndex, setOpenedPhotoIndex] = useState(null)
+    const chatPhotos = messages.flatMap(msg =>
+        (msg.attachments || []).filter(a => a.type === "photo")
+    )
+
+    const touchStartX = useRef(0)
+
+    const handleTouchStart = (e) => {
+
+        touchStartX.current = e.touches[0].clientX
+
+    }
+
+    const handleTouchEnd = (e) => {
+
+        const delta =
+            e.changedTouches[0].clientX -
+            touchStartX.current
+
+        if (delta > 60) {
+
+            handlePrevPhoto()
+
+        }
+
+        if (delta < -60) {
+
+            handleNextPhoto()
+
+        }
+
+    }
+
+    const handlePrevPhoto = () => {
+
+        if (openedPhotoIndex > 0) {
+
+            setOpenedPhotoIndex(prev => prev - 1)
+
+        }
+
+    }
+
+    const handleNextPhoto = () => {
+
+        if (openedPhotoIndex < chatPhotos.length - 1) {
+
+            setOpenedPhotoIndex(prev => prev + 1)
+
+        }
+
+    }
 
     const handleMessageChange = (e) => {
 
@@ -199,6 +250,14 @@ function Chat({adId, senderId, receiverId,}) {
             ])
 
             setMessage("")
+
+            requestAnimationFrame(() => {
+
+                if (textareaRef.current) {
+                    textareaRef.current.style.height = "auto"
+                }
+
+            })
             selectedPhotos.forEach(photo => {
 
                 URL.revokeObjectURL(photo.preview)
@@ -301,8 +360,10 @@ function Chat({adId, senderId, receiverId,}) {
                                                     src={attachment.file_url}
                                                     alt="attachment"
                                                     onClick={() =>
-                                                        setOpenedPhoto(
-                                                            attachment.file_url
+                                                        setOpenedPhotoIndex(
+                                                            chatPhotos.findIndex(
+                                                                p => p.file_url === attachment.file_url
+                                                            )
                                                         )
                                                     }
                                                     className="
@@ -496,12 +557,10 @@ function Chat({adId, senderId, receiverId,}) {
                 {message.length}/400
             </div>
 
-            {openedPhoto && (
+            {openedPhotoIndex !== null && (
 
                 <div
-                    onClick={() =>
-                        setOpenedPhoto(null)
-                    }
+                    onClick={() => setOpenedPhotoIndex(null)}
                     className="
             fixed
             inset-0
@@ -514,18 +573,122 @@ function Chat({adId, senderId, receiverId,}) {
         "
                 >
 
+                    {/* Закрыть */}
+
+                    <button
+                        onClick={() => setOpenedPhotoIndex(null)}
+                        className="
+                absolute
+                top-4
+                right-4
+                w-10
+                h-10
+                rounded-full
+                bg-black/40
+                backdrop-blur-sm
+                text-white
+                text-2xl
+                z-50
+            "
+                    >
+                        ✕
+                    </button>
+
+                    {/* Предыдущая */}
+
+                    {openedPhotoIndex > 0 && (
+
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                handlePrevPhoto()
+                            }}
+                            className="
+                    absolute
+                    left-3
+                    top-1/2
+                    -translate-y-1/2
+                    w-10
+                    h-10
+                    rounded-full
+                    bg-black/40
+                    backdrop-blur-sm
+                    text-white
+                    text-3xl
+                    hover:bg-black/70
+                    transition
+                    z-50
+                "
+                        >
+                            ‹
+                        </button>
+
+                    )}
+
+                    {/* Следующая */}
+
+                    {openedPhotoIndex < chatPhotos.length - 1 && (
+
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                handleNextPhoto()
+                            }}
+                            className="
+                    absolute
+                    right-3
+                    top-1/2
+                    -translate-y-1/2
+                    w-10
+                    h-10
+                    rounded-full
+                    bg-black/40
+                    backdrop-blur-sm
+                    text-white
+                    text-3xl
+                    hover:bg-black/70
+                    transition
+                    z-50
+                "
+                        >
+                            ›
+                        </button>
+
+                    )}
+
+                    {/* Фото */}
+
                     <img
-                        src={openedPhoto}
+                        src={chatPhotos[openedPhotoIndex]?.file_url}
                         alt=""
-                        onClick={(e) =>
-                            e.stopPropagation()
-                        }
+                        onClick={(e) => e.stopPropagation()}
+                        onTouchStart={handleTouchStart}
+                        onTouchEnd={handleTouchEnd}
                         className="
                 max-w-full
                 max-h-full
                 rounded-2xl
             "
                     />
+
+                    {/* Индикатор */}
+
+                    <div
+                        className="
+                absolute
+                bottom-5
+                left-1/2
+                -translate-x-1/2
+                text-white
+                text-sm
+                bg-black/40
+                px-3
+                py-1
+                rounded-full
+            "
+                    >
+                        {openedPhotoIndex + 1} / {chatPhotos.length}
+                    </div>
 
                 </div>
 
