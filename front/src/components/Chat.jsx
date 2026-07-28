@@ -240,9 +240,10 @@ function Chat({adId, senderId, receiverId,}) {
             <div
                 className="
         h-60
+        overflow-y-auto
+        custom-scrollbar
         max-h-[70vh]
         resize-y
-        overflow-auto
         flex
         flex-col
         gap-2
@@ -323,7 +324,9 @@ function Chat({adId, senderId, receiverId,}) {
 
                                 {msg.text && (
 
-                                    <div className="break-words">
+                                    <div className="break-words
+                                    whitespace-pre-wrap
+                                    ">
                                         {msg.text}
                                     </div>
 
@@ -414,7 +417,7 @@ function Chat({adId, senderId, receiverId,}) {
         border-white/10
         outline-none
         resize-none
-        overflow-y-auto
+        overflow-y-auto custom-scrollbar
     "
                 />
 

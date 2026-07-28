@@ -1,0 +1,27 @@
+/* Chrome, Edge, Opera */
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(34,211,238,.28);
+    border-radius: 999px;
+    transition: background .2s;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(34,211,238,.7);
+}
+
+/* Firefox */
+
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,.18) transparent;
+}
