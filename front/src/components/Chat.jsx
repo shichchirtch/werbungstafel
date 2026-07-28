@@ -311,6 +311,7 @@ function Chat({adId, senderId, receiverId,}) {
     "
             >
 
+
                 {messages.length === 0 ? (
 
                     <p className="text-gray-400 text-sm">
