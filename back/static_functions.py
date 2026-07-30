@@ -1,5 +1,5 @@
 import translators
-
+from datetime import datetime, UTC, timedelta
 from bot_instance import ROOT_WIND, bot
 from aiogram_dialog.widgets.kbd import Button
 from user_repo import *
@@ -309,3 +309,31 @@ async def notify_user_ban_changed(
     except Exception as e:
 
         print(e)
+
+
+async def get_users_count():
+    async with session_marker() as session:
+        users =  await session.scalar(select(func.count()).select_from(User))
+        return users
+
+
+
+
+
+async def get_ads_today_count():
+    async with session_marker() as session:
+        now = datetime.now(UTC)
+        start = now.replace(hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+        )
+        end = start + timedelta(days=1)
+        return await session.scalar(
+            select(func.count())
+            .select_from(Ad)
+            .where(
+                Ad.created_at >= start,
+                Ad.created_at < end,
+            )
+        )

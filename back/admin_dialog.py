@@ -14,7 +14,7 @@ from lexicon import *
 from pathlib import Path
 from aiogram.types import FSInputFile
 import os
-
+from static_functions import get_users_count, get_ads_today_count
 admin_id = 6685637602
 
 
@@ -28,7 +28,7 @@ async def message_text_acc(message: Message, widget: MessageInput, dialog_manage
     await bot.send_message(admin_id, note)
     await asyncio.sleep(1)
     lan = dialog_manager.dialog_data['lan']
-    await message.answer(text=wurde_gesendet[lan])
+    await message.answer(text='test')  # wurde_gesendet[lan])
     await asyncio.sleep(1)
     dialog_manager.show_mode = ShowMode.DELETE_AND_SEND
     await dialog_manager.done()
@@ -44,18 +44,18 @@ async def get_users(redis) -> list[int]:
     return [int(uid) for uid in user_ids]
 
 
-async def wie_viel_schon_gestarted(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args,
-                                   **kwargs):
-    count = 1  # await redis_db.scard("users:all")
-    msg = f'Количество запустивших бота {count}'
-    await callback.message.answer(text=msg)
+async def wie_viel_schon_gestarted(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
+    count = await get_users_count()
+    count_werbungs = await get_ads_today_count()
+    await callback.message.answer(
+        f"📦 Сегодня опубликовано объявлений: {count_werbungs}\n\n"
+        f"👥 Пользователей в базе: {count}")
     await dialog_manager.done()
 
 
 
 
-async def downloads_users_db( callback, button,  manager):
-
+async def downloads_users_db(callback, button, manager):
     file_path = Path("data/telegram_users.json")
 
     print("PWD =", os.getcwd())
@@ -63,7 +63,6 @@ async def downloads_users_db( callback, button,  manager):
     # print("EXISTS =", USERS_FILE.exists())
     print('file_path = ', file_path.exists())
     if not file_path.exists():
-
         await callback.message.answer(
             "❌ Файл telegram_users.json не найден."
         )
@@ -114,8 +113,8 @@ admin_dialog = Dialog(
         Button(Const('Сколько'),
                id='wieviele',
                on_click=wie_viel_schon_gestarted,
-
                ),
+
         Next(
             text=Const('Отправить сообщение юзерам'),
             id='send_msg'),
