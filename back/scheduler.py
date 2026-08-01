@@ -1,4 +1,5 @@
-import apscheduler.schedulers.asyncio
+# import apscheduler.schedulers.asyncio
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from static_functions import (get_users_for_daily_report,
                               get_new_ads_global, get_new_ads_in_radius,
                               build_daily_report_text
@@ -7,7 +8,7 @@ from bot_instance import bot
 from datetime import datetime
 print("scheduler.py imported")
 
-scheduler = apscheduler.schedulers.asyncio.AsyncIOScheduler()
+scheduler = AsyncIOScheduler()
 
 
 

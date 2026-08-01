@@ -25,7 +25,7 @@ async def main():
     print("INIT DONE")
     # инициализация FSM-хранилища
     await dp.storage.set_data(key=bot_storage_key, data={})
-
+    print("TEST LAST PRINT")
     # роутеры
     dp.include_router(ch_router)
     dp.include_router(cb_router)
