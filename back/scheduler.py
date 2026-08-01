@@ -4,12 +4,18 @@ from static_functions import (get_users_for_daily_report,
                               build_daily_report_text
                               )
 from bot_instance import bot
+from datetime import datetime
+print("scheduler.py imported")
 
 scheduler = apscheduler.schedulers.asyncio.AsyncIOScheduler()
 
 
+
+
+print("Jobs after create:", scheduler.get_jobs())
+
 async def test_job():
-    print("Scheduler works!")
+    print(datetime.now(), "Scheduler works!")
 
 
 scheduler.add_job(
@@ -18,6 +24,7 @@ scheduler.add_job(
     seconds=30,
 )
 
+print("Jobs after add:", scheduler.get_jobs())
 
 async def send_daily_report():
     users = await get_users_for_daily_report()
@@ -50,5 +57,5 @@ scheduler.add_job(
     send_daily_report,
     trigger="cron",
     hour=1,
-    minute=15,
+    minute=40,
 )

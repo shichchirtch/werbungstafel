@@ -17,7 +17,14 @@ async def main():
     await init_models()
 
     dp.startup.register(set_main_menu)
+
+    print("Before scheduler.start()")
+
     scheduler.start()
+
+    print("After scheduler.start()")
+
+    print("Jobs =", scheduler.get_jobs())
     # инициализация FSM-хранилища
     await dp.storage.set_data(key=bot_storage_key, data={})
 
