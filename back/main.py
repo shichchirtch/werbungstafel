@@ -14,17 +14,15 @@ from scheduler import scheduler
 async def main():
     # стартовые действия
 
-    await init_models()
-
-    dp.startup.register(set_main_menu)
-
-    print("Before scheduler.start()")
+    print("START MAIN")
 
     scheduler.start()
 
-    print("After scheduler.start()")
+    print("SCHEDULER STARTED")
 
-    print("Jobs =", scheduler.get_jobs())
+    await init_models()
+
+    print("INIT DONE")
     # инициализация FSM-хранилища
     await dp.storage.set_data(key=bot_storage_key, data={})
 
@@ -38,6 +36,8 @@ async def main():
 
     # dialogs
     setup_dialogs(dp)
+
+    dp.startup.register(set_main_menu)
 
     # старт бота
     await bot.delete_webhook(drop_pending_updates=True)
