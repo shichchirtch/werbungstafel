@@ -310,19 +310,12 @@ const categoryNames = {
             ) : (
 
                 <div className="max-w-xl mx-auto flex flex-col gap-4">
-
                     {werbungen.map((item) => (
-
                         <div
-
                             key={item.id}
-
                             className="
-
                             rounded-3xl border border-white/10
-
                             bg-white/5 backdrop-blur-md
-
                             p-4 shadow-xl
                             "
                         >

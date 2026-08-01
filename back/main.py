@@ -7,7 +7,7 @@ from aiogram_dialog import setup_dialogs
 from admin_dialog import admin_dialog # about_dialog
 from dialogs import root_dialog  #, create_dialog
 from postgres_table import init_models
-
+from scheduler import scheduler
 
 
 
@@ -15,8 +15,9 @@ async def main():
     # стартовые действия
 
     await init_models()
-    dp.startup.register(set_main_menu)
 
+    dp.startup.register(set_main_menu)
+    scheduler.start()
     # инициализация FSM-хранилища
     await dp.storage.set_data(key=bot_storage_key, data={})
 

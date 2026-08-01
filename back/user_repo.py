@@ -929,10 +929,12 @@ async def mark_messages_read_db(ad_id: int, sender_id: int, receiver_id: int):
 
 
 async def get_ads_by_radius_db(
-    category: str,
-    center_lat: float,
-    center_lon: float,
-    radius: int,
+        center_lat: float,
+        center_lon: float,
+        radius: int,
+        category: str | None = None,
+        created_after: datetime | None = None,
+
 ):
     async with session_marker() as session:
 
@@ -963,27 +965,16 @@ async def get_ads_by_radius_db(
                 continue
 
             filtered_ads.append({
-
                 "id": ad.id,
-
                 "ownerId": ad.owner_id,
-
                 "category": ad.category,
-
                 "title": ad.title,
-
                 "plz": ad.plz,
-
                 "description": ad.description,
-
                 "price": ad.price,
-
                 "photos": [],
-
                 "createdAt": ad.created_at.isoformat(),
-
                 "anbieter": ad.anbieter,
-
                 "distance": round(distance, 1),
 
             })
@@ -1061,17 +1052,14 @@ async def get_map_data_db():
 async def get_ads_by_place_db(place: str):
     async with session_marker() as session:
         result = await session.execute(
-
             select(Ad)
-
             .where(
                 Ad.plz == place,
                 Ad.anbieter == True,
             )
             .order_by(
                 Ad.created_at.desc()
-            )
-        )
+            ))
         return result.scalars().all()
 
 ############################# B A N #################################

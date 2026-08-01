@@ -457,17 +457,6 @@ async def upload_photos(
 
         file_path = f"{folder}/{filename}"
 
-        # Проверяем скорость чтения файла
-        # t = time.perf_counter()
-        #
-        # photo.file.read()
-        #
-        # print(f"READ FILE     : {time.perf_counter() - t:.3f} sec")
-
-        # photo.file.seek(0)
-
-        # Открытие изображения
-        # t = time.perf_counter()
 
         img = ImageOps.exif_transpose(
             Image.open(photo.file)
@@ -481,23 +470,10 @@ async def upload_photos(
                 "error": "Bild ist zu groß"
             }
 
-        # RGB
-        # t = time.perf_counter()
-
         if img.mode != "RGB":
             img = img.convert("RGB")
 
-        # print(f"RGB CONVERT   : {time.perf_counter() - t:.3f} sec")
-
-        # Уменьшение
-        # t = time.perf_counter()
-
         img.thumbnail((1600, 1600))
-
-        # print(f"THUMBNAIL     : {time.perf_counter() - t:.3f} sec")
-
-        # Сохранение JPEG
-        # t = time.perf_counter()
 
         img.save(
             file_path,
@@ -519,87 +495,14 @@ async def upload_photos(
             photo_url=photo_url,
         )
 
-        # print(f"DB INSERT     : {time.perf_counter() - t:.3f} sec")
 
         urls.append(photo_url)
 
-    # print(f"\nTOTAL UPLOAD  : {time.perf_counter() - total:.3f} sec")
-    # print("UPLOAD END", time.strftime("%H:%M:%S"))
-    # print("=" * 70)
 
     return {
         "ok": True,
         "photos": urls,
     }
-
-
-# @f_api.post("/api/upload-photo")
-# async def upload_photos(
-#     ad_id: int = Form(...),
-#     photos: list[UploadFile] = File(...)
-# ):
-#     folder = f"uploads/{ad_id}"
-#
-#     os.makedirs(folder, exist_ok=True)
-#
-#     urls = []
-#     print("=" * 50)
-#     print("UPLOAD START", time.strftime("%H:%M:%S"))
-#     print("FILES =", len(photos))
-#     for photo in photos:
-#
-#         # Имя файла без расширения
-#         filename = (
-#             os.path.splitext(photo.filename)[0]
-#             + ".jpg"
-#         )
-#
-#         file_path = f"{folder}/{filename}"
-#
-#         # Открываем изображение и учитываем EXIF (автоповорот)
-#         img = ImageOps.exif_transpose(
-#             Image.open(photo.file)
-#         )
-#
-#         # Защита от гигантских изображений
-#         if img.width > 10000 or img.height > 10000:
-#             return {
-#                 "ok": False,
-#                 "error": "Bild ist zu groß"
-#             }
-#
-#         # JPEG не поддерживает прозрачность
-#         if img.mode != "RGB":
-#             img = img.convert("RGB")
-#
-#         # Максимальный размер 1600 px
-#         img.thumbnail((1600, 1600))
-#
-#         # Сохраняем как JPEG
-#         img.save(
-#             file_path,
-#             format="JPEG",
-#             quality=70,
-#             # optimize=True,
-#             # progressive=True
-#         )
-#
-#         photo_url = f"/uploads/{ad_id}/{filename}"
-#
-#         await create_ad_photo(
-#             ad_id=ad_id,
-#             photo_url=photo_url,
-#         )
-#
-#         urls.append(photo_url)
-#
-#     return {
-#         "ok": True,
-#         "photos": urls,
-#     }
-#
-
-################################## DELETE WERBUNG ###################################
 
 ############################### Удаление объявления ##############################
 @f_api.delete("/api/ad/{ad_id}")
@@ -805,44 +708,6 @@ async def create_nachricht(ad_id: int = Form(...), sender_id: int = Form(...),re
             "attachments": attachments,
         }
     }
-
-
-# @f_api.post("/api/messages")
-# async def create_nachricht(data: CreateNachricht):
-#     sender = await get_user_by_id(data.sender_id)
-#
-#     if not sender:
-#         return {
-#             "ok": False,
-#             "error": "Benutzer wurde nicht gefunden."
-#         }
-#
-#     if sender.is_banned:
-#         return {
-#             "ok": False,
-#             "error": "Ihr Konto wurde gesperrt."
-#         }
-#     nachricht = await create_nachricht_db(
-#         ad_id=data.ad_id,
-#         sender_id=data.sender_id,
-#         receiver_id=data.receiver_id,
-#         text=data.text,
-#     )
-#     print('received ID = ', data.receiver_id)
-#     await notify_receiver(data.receiver_id)
-#
-#     return {
-#         "ok": True,
-#         "nachricht": {
-#             "id": nachricht.id,
-#             "ad_id": nachricht.ad_id,
-#             "sender_id": nachricht.sender_id,
-#             "receiver_id": nachricht.receiver_id,
-#             "text": nachricht.text,
-#             "created_at": nachricht.created_at.isoformat(),
-#             "is_read": nachricht.is_read,
-#         }
-#     }
 
 
 @f_api.get("/api/messages/{ad_id}/{sender_id}/{receiver_id}")

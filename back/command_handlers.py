@@ -3,18 +3,21 @@ from filters import KODE_FILTER, IS_ADMIN
 from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.filters import CommandStart, Command, CommandObject, StateFilter
 from aiogram.fsm.context import FSMContext
-from bot_instance import FSM_ST, ADMIN
+from bot_instance import FSM_ST, ADMIN, ROOT_WIND, ABOUT
 from aiogram_dialog import  DialogManager, StartMode
 import os
 from lexicon import *
 from user_repo import *
 from static_functions import load_user_avatar
 
+
 ch_router = Router()
 
 
 @ch_router.message(CommandStart(deep_link=True))
-async def command_start_process(message: Message, command: CommandObject):
+async def command_start_process(message: Message, command: CommandObject,
+                                dialog_manager: DialogManager, state: FSMContext
+):
     os.makedirs("uploads/avatar", exist_ok=True)
     user_id = message.from_user.id
     first_name = message.from_user.first_name
@@ -29,10 +32,12 @@ async def command_start_process(message: Message, command: CommandObject):
         lan=user_lan,
         username=user_name,
     )
-
+    await dialog_manager.start(
+        state=ROOT_WIND.lan_select,
+        mode=StartMode.RESET_STACK
+    )
 
     await load_user_avatar(message)
-
 
     login_button = InlineKeyboardButton(
         text="🔑 Login",
@@ -48,10 +53,15 @@ async def command_start_process(message: Message, command: CommandObject):
 
 
 @ch_router.message(CommandStart(), F.text == "/start")
-async def start_common(message: Message):
+async def start_common(message: Message, dialog_manager: DialogManager, state: FSMContext):
     await load_user_avatar(message)
     lan = message.from_user.language_code
+    await dialog_manager.start(
+        state=ROOT_WIND.lan_select,
+        mode=StartMode.RESET_STACK
+    )
     await message.answer(start_drei[lan])
+
 
 
 @ch_router.message(Command('login'))

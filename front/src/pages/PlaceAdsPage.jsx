@@ -112,27 +112,17 @@ function PlaceAdsPage() {
         </h2>
 
         <div className="text-cyan-300 mb-2">
-
             {item.price} €
-
         </div>
-
         <p className="text-gray-300">
 
             {item.description}
-
         </p>
-
     </div>
-
 ))
-
             }
-
         </div>
-
     )
-
 }
 
 export default PlaceAdsPage
