@@ -29,6 +29,7 @@ async def main():
     dp.include_router(root_dialog)
     dp.include_router(admin_dialog)
     # dialogs
+
     setup_dialogs(dp)
 
     dp.startup.register(set_main_menu)
