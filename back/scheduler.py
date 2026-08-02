@@ -19,11 +19,7 @@ async def test_job():
     print(datetime.now(), "Scheduler works!")
 
 
-scheduler.add_job(
-    test_job,
-    trigger="interval",
-    seconds=30,
-)
+
 
 print("Jobs after add:", scheduler.get_jobs())
 
@@ -53,6 +49,12 @@ async def send_daily_report():
             chat_id=user["telegram_id"],
             text=text,
         )
+
+scheduler.add_job(
+    send_daily_report,
+    trigger="interval",
+    seconds=30,
+)
 
 scheduler.add_job(
     send_daily_report,
