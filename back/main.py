@@ -20,7 +20,7 @@ async def main():
 
     print("SCHEDULER STARTED")
 
-    # await init_models()
+    await init_models()
 
     print("INIT DONE")
     # инициализация FSM-хранилища
