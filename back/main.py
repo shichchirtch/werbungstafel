@@ -14,18 +14,15 @@ from scheduler import scheduler
 async def main():
     # стартовые действия
 
-    print("START MAIN")
-
     scheduler.start()
 
     print("SCHEDULER STARTED")
 
     await init_models()
 
-    print("INIT DONE")
     # инициализация FSM-хранилища
     await dp.storage.set_data(key=bot_storage_key, data={})
-    print("TEST LAST PRINT")
+
     # роутеры
     dp.include_router(ch_router)
     dp.include_router(cb_router)
