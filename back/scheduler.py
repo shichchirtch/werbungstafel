@@ -8,7 +8,7 @@ from bot_instance import bot
 from datetime import datetime
 print("scheduler.py imported")
 
-scheduler = AsyncIOScheduler()
+scheduler = AsyncIOScheduler(timezone="Europe/Berlin")
 
 
 

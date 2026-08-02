@@ -20,7 +20,7 @@ async def main():
 
     print("SCHEDULER STARTED")
 
-    await init_models()
+    # await init_models()
 
     print("INIT DONE")
     # инициализация FSM-хранилища
@@ -31,8 +31,6 @@ async def main():
     dp.include_router(cb_router)
     dp.include_router(root_dialog)
     dp.include_router(admin_dialog)
-
-
 
     # dialogs
     setup_dialogs(dp)
