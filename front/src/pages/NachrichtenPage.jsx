@@ -10,8 +10,9 @@ function NachrichtenPage() {
 
     const [chats, setChats] = useState([])
     const selectedChat = useSelector(
-    state => state.messages.selectedChat
-)
+    state => state.messages.selectedChat)
+    const [page, setPage] = useState(1)
+    const [totalPages, setTotalPages] = useState(1)
 
     const dispatch = useDispatch()
 
@@ -36,6 +37,7 @@ function NachrichtenPage() {
         }
 
         setChats(data.chats)
+        setTotalPages(data.total_pages)
 
     }
 
@@ -44,7 +46,7 @@ function NachrichtenPage() {
 
         loadChats()
 
-    }, [loadChats])
+    }, [page,  user.dbId])
 
 
     useEffect(() => {
@@ -257,6 +259,67 @@ function NachrichtenPage() {
                     )}
 
                 </div>
+                {totalPages > 1 && (
+
+    <div
+        className="
+            flex
+            items-center
+            justify-center
+            gap-4
+            mt-8
+        "
+    >
+
+        <button
+            disabled={page === 1}
+            onClick={() => setPage(page - 1)}
+            className="
+                w-10
+                h-10
+                rounded-full
+                bg-white/10
+                text-white
+                disabled:opacity-30
+                hover:bg-white/20
+                transition
+            "
+        >
+            ←
+        </button>
+
+        <div
+            className="
+                text-gray-300
+                text-sm
+                font-medium
+                min-w-24
+                text-center
+            "
+        >
+             {page} / {totalPages}
+        </div>
+
+        <button
+            disabled={page === totalPages}
+            onClick={() => setPage(page + 1)}
+            className="
+                w-10
+                h-10
+                rounded-full
+                bg-white/10
+                text-white
+                disabled:opacity-30
+                hover:bg-white/20
+                transition
+            "
+        >
+            →
+        </button>
+
+    </div>
+
+)}
 
             </div>
 

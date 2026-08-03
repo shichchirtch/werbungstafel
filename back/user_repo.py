@@ -3,11 +3,9 @@ from postgres_table import (User, LoginRequest, Ad, Favorite, AdPhoto,
                             Nachricht, MessageAttachment)
 from postgres_table import session_marker
 from datetime import datetime, timedelta, UTC
-import shutil
-import os
 from geopy.geocoders import Nominatim
 from geopy.distance import geodesic
-import json
+import json, math, os, shutil
 from pathlib import Path
 
 
@@ -794,7 +792,12 @@ async def get_nachrichten_db(
 
         ]
 
-async def get_chats_db(user_id: int):
+async def get_chats_db(user_id: int, page: int):
+    limit = 20
+
+    offset = (page - 1) * limit
+
+
     async with session_marker() as session:
 
         stmt = (
@@ -842,7 +845,7 @@ async def get_chats_db(user_id: int):
                 unread[key] = unread.get(key, 0) + 1
 
         if not other_ids:
-            return []
+            return [], 0
 
         # Одним запросом загружаем всех пользователей
         result = await session.execute(
@@ -901,7 +904,18 @@ async def get_chats_db(user_id: int):
 
             }
 
-        return list(chats.values())
+        chat_list = list(chats.values())
+        total_pages = math.ceil(len(chat_list) / limit)
+
+        start = (page - 1) * 20
+        end = start + 20
+
+        return (
+            chat_list[start:end],
+            total_pages,
+        )
+
+        # return list(chats.values())
 
 
 async def mark_messages_read_db(ad_id: int, sender_id: int, receiver_id: int):

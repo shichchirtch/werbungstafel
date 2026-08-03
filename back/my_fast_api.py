@@ -711,11 +711,7 @@ async def create_nachricht(ad_id: int = Form(...), sender_id: int = Form(...),re
 
 
 @f_api.get("/api/messages/{ad_id}/{sender_id}/{receiver_id}")
-async def get_nachrichten(
-        ad_id: int,
-        sender_id: int,
-        receiver_id: int,
-):
+async def get_nachrichten(ad_id: int, sender_id: int, receiver_id: int):
     nachrichten = await get_nachrichten_db(
         ad_id=ad_id,
         sender_id=sender_id,
@@ -729,12 +725,14 @@ async def get_nachrichten(
 
 
 @f_api.get("/api/chats/{user_id}")
-async def get_chats(user_id: int):
-    chats = await get_chats_db(user_id)
+async def get_chats(user_id: int, page: int = 1):
+    chats, total_pages = await get_chats_db(user_id=user_id, page=page)
 
     return {
         "ok": True,
         "chats": chats,
+        "page": page,
+        "total_pages": total_pages,
     }
 
 

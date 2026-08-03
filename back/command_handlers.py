@@ -88,7 +88,6 @@ async def accept_login(message: Message, state: FSMContext):
         lan=us_lan
     )
 
-
     success = await confirm_login(
         token=token.upper(),
         telegram_id=user_id
