@@ -905,17 +905,17 @@ async def get_chats_db(user_id: int, page: int):
             }
 
         chat_list = list(chats.values())
+
         total_pages = math.ceil(len(chat_list) / limit)
 
-        start = (page - 1) * 20
-        end = start + 20
+        start = offset
+        end = offset + limit
 
         return (
             chat_list[start:end],
             total_pages,
         )
 
-        # return list(chats.values())
 
 
 async def mark_messages_read_db(ad_id: int, sender_id: int, receiver_id: int):
