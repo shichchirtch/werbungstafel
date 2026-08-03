@@ -180,12 +180,16 @@ function NachrichtenPage() {
 
                                         <div className="flex justify-between items-center">
 
-                                            <div className="text-white font-semibold">
-                                                {chat.title}
-                                            </div>
+                                            <div className="flex items-center gap-2 min-w-0">
 
-                                            <div className="text-gray-400 text-xs">
-                                                {chat.name}
+                                                <div className="text-white font-semibold truncate">
+                                                    {chat.title}
+                                                </div>
+
+                                                <div className="text-gray-500 text-xs shrink-0 italic">
+                                                    {chat.name}
+                                                </div>
+
                                             </div>
 
                                             <div className="text-xs text-gray-500">
