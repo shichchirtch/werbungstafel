@@ -342,11 +342,24 @@ function CreateAdPage() {
 
                 <input
                     type="text"
-                    placeholder={t('TitelDerAnzeige')}
+                    placeholder={t("TitelDerAnzeige")}
                     value={title}
+                    maxLength={60}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="bg-black/40 text-gray-400 p-4 rounded-2xl outline-none border border-white/10"
+                    className="
+        bg-black/40
+        text-gray-400
+        p-4
+        rounded-2xl
+        outline-none
+        border
+        border-white/10
+    "
                 />
+
+                <div className="text-right text-xs text-gray-500 -mt-1 mb-2">
+                    {title.length}/60
+                </div>
 
                 <div className="flex gap-6 mb-2">
 
