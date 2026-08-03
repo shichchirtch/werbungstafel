@@ -181,6 +181,10 @@ function NachrichtenPage() {
                                         <div className="flex justify-between items-center">
 
                                             <div className="text-white font-semibold">
+                                                {chat.title}
+                                            </div>
+
+                                            <div className="text-gray-400 text-xs">
                                                 {chat.name}
                                             </div>
 

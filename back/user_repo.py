@@ -797,7 +797,6 @@ async def get_chats_db(user_id: int, page: int):
 
     offset = (page - 1) * limit
 
-
     async with session_marker() as session:
 
         stmt = (
@@ -847,6 +846,20 @@ async def get_chats_db(user_id: int, page: int):
         if not other_ids:
             return [], 0
 
+        ad_ids = {msg.ad_id for msg in nachrichten}
+        result = await session.execute(
+
+            select(Ad).where(
+                Ad.id.in_(ad_ids)
+            )
+
+        )
+
+        ads = {
+            ad.id: ad
+            for ad in result.scalars()
+        }
+
         # Одним запросом загружаем всех пользователей
         result = await session.execute(
 
@@ -880,11 +893,17 @@ async def get_chats_db(user_id: int, page: int):
             if key in chats:
                 continue
 
-            other_user = users[other_id]
+            other_user = users.get(other_id)
+            ad = ads.get(msg.ad_id)
+
+            if other_user is None or ad is None:
+                continue
 
             chats[key] = {
 
                 "ad_id": msg.ad_id,
+
+                "title": ad.title,
 
                 "user_id": other_user.id,
 
@@ -906,7 +925,10 @@ async def get_chats_db(user_id: int, page: int):
 
         chat_list = list(chats.values())
 
-        total_pages = math.ceil(len(chat_list) / limit)
+        total_pages = max(
+            1,
+            math.ceil(len(chat_list) / limit),
+        )
 
         start = offset
         end = offset + limit
