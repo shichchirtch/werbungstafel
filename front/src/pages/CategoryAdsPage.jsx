@@ -11,26 +11,26 @@ function CategoryAdsPage() {
     const {t} = useTranslation()
 
 
-const categoryNames = {
-    "altenpflege": "Altenpflege",
-    "autoservice": "Autoservice",
-    "handwerk": "Handwerk",
-    "cleaning": "Cleaning",
-    "events-training": "Events / Training",
-    "studio": "Studio",
-    "umzug-transport": "Umzug / Transport",
-    "makeup-friseur": "MakeUp / Friseur",
-    "babysitting": "Babysitting",
-    "foto-video-kunst": "Foto / Video / Kunst",
-    "it-computer-electronics": "IT / Computer / Electronics",
-    "translators": "Translators",
-    "rechtsdienstleistungen": "Rechtsdienstleistungen",
-    "physio-spa": "Physio / Spa",
-    "haustiere": "Haustiere",
-    'immobilie':'Immobilie',
-    'garten':'Garten',
-    "weitere": "Weitere",
-}
+    const categoryNames = {
+        "altenpflege": "Altenpflege",
+        "autoservice": "Autoservice",
+        "handwerk": "Handwerk",
+        "cleaning": "Cleaning",
+        "events-training": "Events / Training",
+        "studio": "Studio",
+        "umzug-transport": "Umzug / Transport",
+        "makeup-friseur": "MakeUp / Friseur",
+        "babysitting": "Babysitting",
+        "foto-video-kunst": "Foto / Video / Kunst",
+        "it-computer-electronics": "IT / Computer / Electronics",
+        "translators": "Translators",
+        "rechtsdienstleistungen": "Rechtsdienstleistungen",
+        "physio-spa": "Physio / Spa",
+        "haustiere": "Haustiere",
+        'immobilie': 'Immobilie',
+        'garten': 'Garten',
+        "weitere": "Weitere",
+    }
 
     const title = categoryNames[slug] || 'Kategorie'
 
@@ -195,9 +195,9 @@ const categoryNames = {
                         />
 
                         <select
-    value={radius}
-    onChange={(e) => setRadius(e.target.value)}
-    className="
+                            value={radius}
+                            onChange={(e) => setRadius(e.target.value)}
+                            className="
         w-24
 
         bg-white/5
@@ -210,7 +210,7 @@ const categoryNames = {
         text-gray-300
         outline-none
     "
->
+                        >
                             <option>{t('Alle')}</option>
                             <option>5 km</option>
                             <option>10 km</option>
@@ -311,50 +311,99 @@ const categoryNames = {
 
                 <div className="max-w-xl mx-auto flex flex-col gap-4">
                     {werbungen.map((item) => (
+
                         <div
                             key={item.id}
                             className="
-                            rounded-3xl border border-white/10
-                            bg-white/5 backdrop-blur-md
-                            p-4 shadow-xl
+                                rounded-3xl
+                                border
+                                border-white/10
+                                bg-white/5
+                                backdrop-blur-md
+                                p-4
+                                shadow-xl
                             "
                         >
-                            {item.photos?.length > 0 && (
+
+                            <div className="flex gap-4">
+
                                 <img
-                                    src={item.photos[0].url}
+                                    src={item.preview || "/images/no-photo.webp"}
                                     alt="preview"
-                                    className="w-full h-48 object-cover rounded-2xl mb-4"
+                                    className="
+                                        w-36
+                                        h-36
+                                        rounded-2xl
+                                        object-cover
+                                        shrink-0
+                                    "
                                 />
 
-                            )}
-                            <h2 className="text-xl font-bold text-white mb-2">
-                                {item.title}
-                            </h2>
-                            <p className="text-gray-400 text-sm mb-2">
-                                {t('PLZ')}: {item.plz}
-                            </p>
-                            {item.price && (
-                                <p className="text-cyan-300 font-semibold mb-2">
-                                    {item.price}
-                                </p>
-                            )}
-                            <p className="text-gray-300 line-clamp-3 mb-4">
-                                {item.description}
-                            </p>
-                            <button
-                                onClick={() => navigate(`/ad/${item.id}`)}
-                                className="
-                                w-full py-3 rounded-2xl
-                                font-bold text-black
-                                bg-gradient-to-br from-cyan-300 to-blue-500
-                                shadow-lg shadow-cyan-400/30
-                                active:scale-95 transition
-                                "
-                            >
-                                {t('Oeffnen')}
-                            </button>
+                                <div className="flex-1 flex flex-col min-w-0">
+
+                                    <h2
+                                        className="
+    text-xl
+    font-bold
+    text-white
+    line-clamp-2
+    mb-2
+"
+                                    >
+                                        {item.title}
+                                    </h2>
+
+                                    <p className="text-gray-400 text-sm mb-2">
+                                        {t("PLZ")}: {item.plz}
+                                    </p>
+
+                                    {item.price && (
+
+                                        <p className="text-cyan-300 font-semibold mb-2">
+                                            {item.price}
+                                        </p>
+
+                                    )}
+
+                                    <p
+                                        className="
+                                            text-gray-300
+                                            text-sm
+                                            line-clamp-3
+                                            flex-1
+                                        "
+                                    >
+                                        {item.description}
+                                    </p>
+
+                                    <button
+                                        onClick={() => navigate(`/ad/${item.id}`)}
+                                        className="
+                                            mt-4
+                                            py-3
+                                            rounded-2xl
+                                            font-bold
+                                            text-black
+                                            bg-gradient-to-br
+                                            from-cyan-300
+                                            to-blue-500
+                                            shadow-lg
+                                            shadow-cyan-400/30
+                                            active:scale-95
+                                            transition
+                                        "
+                                    >
+                                        {t("Oeffnen")}
+                                    </button>
+
+                                </div>
+
+                            </div>
+
                         </div>
+
                     ))}
+
                 </div>
             )}
         </div>
@@ -362,5 +411,6 @@ const categoryNames = {
 }
 
 export default CategoryAdsPage
+
 
 // Bremen 28195

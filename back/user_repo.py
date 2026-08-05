@@ -256,6 +256,29 @@ async def get_ads_by_category(category: str):
 
         ads = result.scalars().all()
 
+        ad_ids = [ad.id for ad in ads]
+
+        if not ad_ids:
+            return []
+
+        result_foto = await session.execute(
+
+            select(AdPhoto)
+            .where(
+                AdPhoto.ad_id.in_(ad_ids)
+            )
+
+        )
+
+        preview_photos = {}
+
+        for photo in result_foto.scalars():
+
+            if photo.ad_id not in preview_photos:
+                preview_photos[photo.ad_id] = photo.photo_url
+
+
+
         return [
             {
                 "id": ad.id,
@@ -267,7 +290,8 @@ async def get_ads_by_category(category: str):
                 "price": ad.price,
                 "photos": [],
                 "createdAt": ad.created_at.isoformat(),
-                "anbieter": ad.anbieter
+                "anbieter": ad.anbieter,
+                "preview": preview_photos.get(ad.id),
             }
             for ad in ads
         ]
