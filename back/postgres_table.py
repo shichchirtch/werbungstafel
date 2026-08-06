@@ -29,7 +29,7 @@ class User(Base):
     role: Mapped[str] = mapped_column(String(20), default="user")
     paid: Mapped[bool] = mapped_column(default=False)
     lan: Mapped[str] = mapped_column(String(20), default="de")
-    first_start: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
+    first_start: Mapped[datetime] = mapped_column(DateTime(timezone=False), default=lambda: datetime.now())
     latitude: Mapped[float | None] = mapped_column(Float, nullable=True )
     longitude: Mapped[float | None] = mapped_column( Float, nullable=True )
     is_banned: Mapped[bool] = mapped_column(default=False)
@@ -60,7 +60,7 @@ class LoginRequest(Base):
     token: Mapped[str] = mapped_column(String(100), unique=True, index=True)
     telegram_id: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
     confirmed: Mapped[bool] = mapped_column(default=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=False), default=lambda: datetime.now())
 
 
 class AdPhoto(Base):
@@ -89,7 +89,7 @@ class Nachricht(Base):
     receiver_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     text: Mapped[str] = mapped_column(String(3900))
     is_read: Mapped[bool] = mapped_column(default=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=False), default=lambda: datetime.now())
 
 
 class MessageAttachment(Base):
