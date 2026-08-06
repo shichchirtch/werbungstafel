@@ -13,9 +13,10 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        create_nachricht_db, get_nachrichten_db, get_ads_count_by_category,
                        get_chats_db, mark_messages_read_db, update_profile_and_get_user_db,
                        get_map_data_db, get_ads_by_place_db, toggle_user_ban,
-                       get_user_profile_by_id, get_user_by_id, create_message_attachment)
+                       get_user_profile_by_id, get_user_by_id, create_message_attachment,
+                       get_last_user_ad)
 import secrets
-import string
+import string, math
 from fastapi.staticfiles import StaticFiles
 import os
 from PIL import Image, ImageOps
@@ -23,7 +24,7 @@ from static_functions import (notify_receiver, notify_ad_changed, notify_ad_crea
                               notify_ad_deleted, notify_user_ban_changed)
 
 from geopy.geocoders import Nominatim
-
+from datetime import datetime, timedelta
 from bot_instance import bot
 
 geolocator = Nominatim(
@@ -188,7 +189,6 @@ async def auth_telegram(data: dict):
 @f_api.post("/api/ads")
 async def create_ad(data: AdCreate):
     user = await get_user_by_tg_id(data.telegram_id)
-
     if not user:
         return {
             "ok": False,
@@ -199,6 +199,22 @@ async def create_ad(data: AdCreate):
             "ok": False,
             "error": "Ihr Konto wurde gesperrt."
         }
+
+    last_ad = await get_last_user_ad(user.id)
+
+    if last_ad:
+
+        delta = datetime.now() - last_ad.created_at
+
+        if delta < timedelta(minutes=30):
+            remaining = timedelta(minutes=30) - delta
+
+            minutes = math.ceil(remaining.total_seconds() / 60)
+
+            return {
+                "ok": False,
+                "error": f"Du kannst erst in {minutes} Minuten eine neue Anzeige veröffentlichen."
+            }
 
     try:
         location = geolocator.geocode(

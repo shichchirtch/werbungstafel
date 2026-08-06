@@ -1196,3 +1196,22 @@ async def create_message_attachment(message_id: int, type: str, file_url: str, )
         session.add(attachment)
         await session.commit()
         return attachment
+
+
+############################Cold Down Werbung
+
+async def get_last_user_ad(owner_id: int):
+    async with session_marker() as session:
+        result = await session.execute(
+            select(Ad)
+            .where(
+                Ad.owner_id == owner_id
+            )
+            .order_by(
+                Ad.created_at.desc()
+            )
+            .limit(1)
+
+        )
+
+    return result.scalar_one_or_none()

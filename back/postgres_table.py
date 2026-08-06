@@ -46,7 +46,7 @@ class Ad(Base):
     price: Mapped[str] = mapped_column(String(100), default="")
     plz: Mapped[str] = mapped_column(String(100))
     osm_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(),)
     anbieter: Mapped[bool] = mapped_column(default=True)
     latitude: Mapped[float] = mapped_column(Float)
     longitude: Mapped[float] = mapped_column(Float)
