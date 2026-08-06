@@ -339,13 +339,41 @@ async def delete_ad_db(ad_id: int):
 
 async def get_ads_by_owner(owner_id: int):
     async with session_marker() as session:
+
         result = await session.execute(
+
             select(Ad)
-            .where(Ad.owner_id == owner_id)
-            .order_by(Ad.id.desc())
+            .where(
+                Ad.owner_id == owner_id
+            )
+            .order_by(
+                Ad.id.desc()
+            )
+
         )
 
-        return result.scalars().all()
+        ads = result.scalars().all()
+
+        preview_photos = await get_preview_photos(
+            session,
+            [ad.id for ad in ads],
+        )
+
+        return [
+            {
+                "id": ad.id,
+                "ownerId": ad.owner_id,
+                "category": ad.category,
+                "title": ad.title,
+                "plz": ad.plz,
+                "description": ad.description,
+                "price": ad.price,
+                "createdAt": ad.created_at.isoformat(),
+                "anbieter": ad.anbieter,
+                "preview": preview_photos.get(ad.id),
+            }
+            for ad in ads
+        ]
 
 async def get_user_favorites(user_id: int):
     async with session_marker() as session:

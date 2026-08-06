@@ -13,17 +13,6 @@ scheduler = AsyncIOScheduler(timezone="Europe/Berlin")
 message_queue = asyncio.Queue()
 
 
-
-# print("Jobs after create:", scheduler.get_jobs())
-#
-# async def test_job():
-#     print(datetime.now(), "Scheduler works!")
-#
-#
-#
-#
-# print("Jobs after add:", scheduler.get_jobs())
-
 async def queue_sender_message(
     chat_id: int,
     text: str,
@@ -86,15 +75,10 @@ async def send_daily_report():
             text=text,
         )
 
-# scheduler.add_job(
-#     send_daily_report,
-#     trigger="interval",
-#     seconds=30,
-# )
 
 scheduler.add_job(
     send_daily_report,
     trigger="cron",
-    hour=18,
+    hour=20,
     minute=18,
 )

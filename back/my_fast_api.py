@@ -325,19 +325,7 @@ async def get_my_ads(telegram_id: int):
     if not user:
         return []
 
-    ads = await get_ads_by_owner(user.id)
-
-    return [
-        {
-            "id": ad.id,
-            "ownerId": ad.owner_id,
-            "category": ad.category,
-            "title": ad.title,
-            "plz": ad.plz,
-            'anbieter': ad.anbieter
-        }
-        for ad in ads
-    ]
+    return await get_ads_by_owner(user.id)
 
 
 ########################## MerkList ####################################
