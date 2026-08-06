@@ -458,14 +458,14 @@ transition
                             {werbung.ownerName}
                         </button>
 
-                        <div className="ml-auto flex items-center gap-4 text-gray-400">
+                        <div className="ml-auto mr-12 flex items-center gap-4 text-gray-400">
 
                             <div className="flex items-center gap-1">
-                                👁 {werbung.views}
+                                👀 {werbung.views}
                             </div>
 
                             <div className="flex items-center gap-1">
-                                ⭐ {werbung.favorites}
+                                🩷 {werbung.favorites}
                             </div>
 
                         </div>
