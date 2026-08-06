@@ -143,7 +143,6 @@ function CreateAdPage() {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-
                     body: JSON.stringify({
                         telegram_id: user.id,
                         category: slug,
@@ -155,9 +154,7 @@ function CreateAdPage() {
                     }),
                 }
             )
-
             const data = await response.json()
-
             console.log('CREATE AD = ', data)
 
             if (!data.ok) {

@@ -100,8 +100,17 @@ class MessageAttachment(Base):
     type: Mapped[str] = mapped_column(String(100))
     file_url: Mapped[str] = mapped_column(String)
 
+class AdActivity(Base):
+    __tablename__ = "ad_activity"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    ad_id: Mapped[int] = mapped_column(ForeignKey("ads.id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    viewed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    favorite_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
 
 async def init_models():
     async with engine.begin() as conn:
-        # await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
