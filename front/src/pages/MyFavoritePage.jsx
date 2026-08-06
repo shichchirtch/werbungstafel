@@ -1,6 +1,6 @@
 import {useSelector} from 'react-redux'
 import {useNavigate} from 'react-router-dom'
-import { useState, useEffect} from "react";
+import {useState, useEffect} from "react";
 
 
 function MyFavoritesPage() {
@@ -55,40 +55,93 @@ function MyFavoritesPage() {
                         <div
                             key={item.id}
                             className="
-                                bg-white/5
-                                border border-white/10
-                                rounded-3xl
-                                p-4
-                                backdrop-blur-md
-                            "
+                            rounded-3xl
+                            border
+                            border-white/10
+                            bg-white/5
+                            backdrop-blur-md
+                            p-4
+                            shadow-xl
+                        "
                         >
 
-                            <h2 className="text-gray-300 font-bold text-lg mb-2">
-                                {item.title}
-                            </h2>
+                            <div className="flex gap-4">
 
-                            <p className="text-gray-400 text-sm mb-2">
-                                PLZ: {item.plz}
-                            </p>
-
-                            <button
-                                onClick={() =>
-                                    navigate(`/ad/${item.id}`)
-                                }
-                                className="
-                                    w-full py-3 rounded-2xl
-                                    font-bold text-black
-                                    bg-gradient-to-br
-                                    from-cyan-300
-                                    to-blue-500
-                                    shadow-lg
-                                    shadow-cyan-400/30
-                                    active:scale-95
-                                    transition
+                                <img
+                                    src={item.preview || "/images/no-photo.png"}
+                                    alt="preview"
+                                    onError={(e) => {
+                                        e.currentTarget.src = "/images/no-photo.png"
+                                    }}
+                                    className="
+                                    w-36
+                                    h-36
+                                    rounded-2xl
+                                    object-cover
+                                    shrink-0
                                 "
-                            >
-                                Öffnen
-                            </button>
+                                />
+
+                                <div className="flex-1 flex flex-col min-w-0">
+
+                                    <h2
+                                        className="
+                                        text-xl
+                                        font-bold
+                                        text-white
+                                        line-clamp-2
+                                        mb-2
+                                    "
+                                    >
+                                        {item.title}
+                                    </h2>
+
+                                    <p className="text-gray-400 text-sm mb-2">
+                                        PLZ: {item.plz}
+                                    </p>
+
+                                    {item.price && (
+
+                                        <p className="text-cyan-300 font-semibold mb-2">
+                                            {item.price}
+                                        </p>
+
+                                    )}
+
+                                    <p
+                                        className="
+                                        text-gray-300
+                                        text-sm
+                                        line-clamp-3
+                                        flex-1
+                                    "
+                                    >
+                                        {item.description}
+                                    </p>
+
+                                    <button
+                                        onClick={() => navigate(`/ad/${item.id}`)}
+                                        className="
+                                        mt-4
+                                        py-3
+                                        rounded-2xl
+                                        font-bold
+                                        text-black
+                                        bg-gradient-to-br
+                                        from-cyan-300
+                                        to-blue-500
+                                        shadow-lg
+                                        shadow-cyan-400/30
+                                        active:scale-95
+                                        transition
+                                    "
+                                    >
+                                        Öffnen
+                                    </button>
+
+                                </div>
+
+                            </div>
 
                         </div>
 
@@ -99,7 +152,6 @@ function MyFavoritesPage() {
             )}
 
         </div>
-
     )
 }
 

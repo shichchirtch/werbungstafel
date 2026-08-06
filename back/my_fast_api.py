@@ -373,18 +373,7 @@ async def get_favorites(telegram_id: int):
     if not user:
         return []
 
-    favorites = await get_user_favorites(user.id)
-
-    return [
-        {
-            "id": ad.id,
-            "ownerId": ad.owner_id,
-            "category": ad.category,
-            "title": ad.title,
-            "plz": ad.plz,
-        }
-        for ad in favorites
-    ]
+    return await get_user_favorites(user.id)
 
 
 @f_api.delete("/api/favorites")

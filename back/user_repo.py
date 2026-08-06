@@ -347,7 +347,6 @@ async def get_ads_by_owner(owner_id: int):
 
         return result.scalars().all()
 
-
 async def get_user_favorites(user_id: int):
     async with session_marker() as session:
         result = await session.execute(
@@ -366,7 +365,28 @@ async def get_user_favorites(user_id: int):
 
         )
 
-        return result.scalars().all()
+        ads = result.scalars().all()
+
+        preview_photos = await get_preview_photos(
+            session,
+            [ad.id for ad in ads],
+        )
+
+        return [
+            {
+                "id": ad.id,
+                "ownerId": ad.owner_id,
+                "category": ad.category,
+                "title": ad.title,
+                "plz": ad.plz,
+                "description": ad.description,
+                "price": ad.price,
+                "createdAt": ad.created_at.isoformat(),
+                "anbieter": ad.anbieter,
+                "preview": preview_photos.get(ad.id),
+            }
+            for ad in ads
+        ]
 
 
 async def create_favorite(user_id: int, ad_id: int, ):
