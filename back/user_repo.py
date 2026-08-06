@@ -1214,4 +1214,4 @@ async def get_last_user_ad(owner_id: int):
 
         )
 
-    return result.scalar_one_or_none()
+        return result.scalar_one_or_none()
