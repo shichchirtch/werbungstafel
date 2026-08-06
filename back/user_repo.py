@@ -8,9 +8,6 @@ from geopy.distance import geodesic
 import json, math, os, shutil
 from pathlib import Path
 
-
-
-
 geolocator = Nominatim(
     user_agent="werbungstafel"
 )
@@ -72,9 +69,7 @@ def save_user_to_json(tg_id: int, first_name: str, username: str | None):
         json.dump(users, f, ensure_ascii=False, indent=4)
 
 
-
 async def create_user_if_not_exists(tg_id: int, first_name: str, lan: str, username) -> User | dict:
-
     user = await get_user_by_tg_id(tg_id)
 
     if user:
@@ -219,8 +214,8 @@ async def delete_login_request(token: str):
 
 
 async def create_ad_db(owner_id: int, category: str, title: str,
-                       description: str, price: str, plz: str, osm_id:int, anbieter: bool, latitude: float,
-    longitude: float,):
+                       description: str, price: str, plz: str, osm_id: int, anbieter: bool, latitude: float,
+                       longitude: float, ):
     async with session_marker() as session:
         ad = Ad(
             owner_id=owner_id,
@@ -256,28 +251,7 @@ async def get_ads_by_category(category: str):
 
         ads = result.scalars().all()
 
-        ad_ids = [ad.id for ad in ads]
-
-        if not ad_ids:
-            return []
-
-        result_foto = await session.execute(
-
-            select(AdPhoto)
-            .where(
-                AdPhoto.ad_id.in_(ad_ids)
-            )
-
-        )
-
-        preview_photos = {}
-
-        for photo in result_foto.scalars():
-
-            if photo.ad_id not in preview_photos:
-                preview_photos[photo.ad_id] = photo.photo_url
-
-
+        preview_photos = await get_preview_photos(session, [ad.id for ad in ads])
 
         return [
             {
@@ -299,7 +273,6 @@ async def get_ads_by_category(category: str):
 
 async def get_ad_by_id(ad_id: int):
     async with session_marker() as session:
-
         stmt = (
             select(
                 Ad,
@@ -324,6 +297,7 @@ async def get_ad_by_id(ad_id: int):
         ad, owner_name = row
 
         return ad, owner_name
+
 
 async def delete_ad_favorites(session, ad_id: int, ):
     await session.execute(
@@ -466,18 +440,14 @@ async def check_favorite(
         return favorite is not None
 
 
-async def create_ad_photo(
-        ad_id: int,
-        photo_url: str,
-):
+async def create_ad_photo(ad_id: int, photo_url: str, thumb_url: str):
     async with session_marker() as session:
         photo = AdPhoto(
             ad_id=ad_id,
             photo_url=photo_url,
+            thumb_url=thumb_url
         )
-
         session.add(photo)
-
         await session.commit()
 
 
@@ -581,55 +551,7 @@ async def get_profile_db(telegram_id: int):
         }
 
 
-async def update_profile_db(
-    telegram_id: int,
-    bio: str,
-    location: str,
-) -> bool:
-
-    async with session_marker() as session:
-
-        result = await session.execute(
-            select(User).where(
-                User.telegram_id == telegram_id
-            )
-        )
-
-        user = result.scalar_one_or_none()
-
-        if not user:
-            return False
-
-        location_data = geolocator.geocode(
-            f"{location}, Germany"
-        )
-
-        if location_data is None:
-            return False
-
-        user.description = bio
-        user.city = location
-
-        user.latitude = round(
-            location_data.latitude,
-            6,
-        )
-
-        user.longitude = round(
-            location_data.longitude,
-            6,
-        )
-
-        await session.commit()
-
-        return True
-
-async def update_profile_and_get_user_db(
-    telegram_id: int,
-    bio: str,
-    location: str,
-):
-
+async def update_profile_and_get_user_db(telegram_id: int, bio: str, location: str, ):
     async with session_marker() as session:
 
         result = await session.execute(
@@ -667,6 +589,8 @@ async def update_profile_and_get_user_db(
         await session.refresh(user)
 
         return user
+
+
 ########################## Сообщения ###############################
 
 async def create_nachricht_db(ad_id: int, sender_id: int, receiver_id: int, text: str):
@@ -783,7 +707,6 @@ async def get_nachrichten_db(
             )
 
             for attachment in result.scalars():
-
                 attachments_by_message.setdefault(
                     attachment.message_id,
                     []
@@ -815,6 +738,7 @@ async def get_nachrichten_db(
             for n in nachrichten
 
         ]
+
 
 async def get_chats_db(user_id: int, page: int):
     limit = 20
@@ -963,7 +887,6 @@ async def get_chats_db(user_id: int, page: int):
         )
 
 
-
 async def mark_messages_read_db(ad_id: int, sender_id: int, receiver_id: int):
     async with session_marker() as session:
         stmt = (
@@ -988,16 +911,38 @@ async def mark_messages_read_db(ad_id: int, sender_id: int, receiver_id: int):
         return result.rowcount
 
 
-async def get_ads_by_radius_db(
-        center_lat: float,
-        center_lon: float,
-        radius: int,
-        category: str | None = None,
-        created_after: datetime | None = None,
+async def get_preview_photos(
+    session,
+    ad_ids: list[int],
+) -> dict[int, str]:
 
-):
+    if not ad_ids:
+        return {}
+
+    result = await session.execute(
+
+        select(AdPhoto)
+        .where(
+            AdPhoto.ad_id.in_(ad_ids)
+        )
+        .order_by(
+            AdPhoto.ad_id,
+            AdPhoto.id,
+        )
+
+    )
+
+    preview_photos = {}
+
+    for photo in result.scalars():
+
+        if photo.ad_id not in preview_photos:
+            preview_photos[photo.ad_id] = photo.thumb_url
+
+    return preview_photos
+
+async def get_ads_by_radius_db(center_lat: float, center_lon: float, radius: int, category: str | None = None, created_after: datetime | None = None,):
     async with session_marker() as session:
-
         stmt = (
             select(Ad)
             .where(
@@ -1011,7 +956,7 @@ async def get_ads_by_radius_db(
         result = await session.execute(stmt)
 
         ads = result.scalars().all()
-
+        preview_photos = await get_preview_photos(session, [ad.id for ad in ads])
         filtered_ads = []
 
         for ad in ads:
@@ -1036,15 +981,13 @@ async def get_ads_by_radius_db(
                 "createdAt": ad.created_at.isoformat(),
                 "anbieter": ad.anbieter,
                 "distance": round(distance, 1),
-
+                "preview": preview_photos.get(ad.id)
             })
-
         return filtered_ads
 
 
 async def get_ads_count_by_category(category: str):
     async with session_marker() as session:
-
         return await session.scalar(
 
             select(func.count())
@@ -1059,11 +1002,8 @@ async def get_ads_count_by_category(category: str):
         )
 
 
-
 async def get_map_data_db():
-
     async with session_marker() as session:
-
         result = await session.execute(
 
             select(
@@ -1108,7 +1048,6 @@ async def get_map_data_db():
         ]
 
 
-
 async def get_ads_by_place_db(place: str):
     async with session_marker() as session:
         result = await session.execute(
@@ -1122,12 +1061,11 @@ async def get_ads_by_place_db(place: str):
             ))
         return result.scalars().all()
 
+
 ############################# B A N #################################
 
 async def toggle_user_ban(user_id: int):
-
     async with session_marker() as session:
-
         result = await session.execute(
             select(User).where(User.id == user_id)
         )
@@ -1145,9 +1083,7 @@ async def toggle_user_ban(user_id: int):
 
 
 async def get_ads_count(user_id: int):
-
     async with session_marker() as session:
-
         return await session.scalar(
 
             select(func.count())
@@ -1160,10 +1096,9 @@ async def get_ads_count(user_id: int):
 
         )
 
+
 async def get_favorites_count(user_id: int):
-
     async with session_marker() as session:
-
         return await session.scalar(
 
             select(func.count())
@@ -1176,8 +1111,8 @@ async def get_favorites_count(user_id: int):
 
         )
 
-async def get_user_profile_by_id(user_id: int):
 
+async def get_user_profile_by_id(user_id: int):
     user = await get_user_by_id(user_id)
 
     if not user:
@@ -1199,9 +1134,11 @@ async def get_user_profile_by_id(user_id: int):
         "favorites_count": favorites_count,
         "is_banned": user.is_banned,
     }
+
+
 ############################Фото в сообщении ##################################
 
-async def create_message_attachment(message_id: int, type: str, file_url: str,):
+async def create_message_attachment(message_id: int, type: str, file_url: str, ):
     async with session_marker() as session:
         attachment = MessageAttachment(
             message_id=message_id,
@@ -1211,4 +1148,3 @@ async def create_message_attachment(message_id: int, type: str, file_url: str,):
         session.add(attachment)
         await session.commit()
         return attachment
-

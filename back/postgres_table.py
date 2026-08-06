@@ -69,6 +69,7 @@ class AdPhoto(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     ad_id: Mapped[int] = mapped_column(ForeignKey("ads.id"))
     photo_url: Mapped[str] = mapped_column(String(500))
+    thumb_url: Mapped[str] = mapped_column(String(500), default="")
 
 
 class Favorite(Base):
@@ -102,5 +103,5 @@ class MessageAttachment(Base):
 
 async def init_models():
     async with engine.begin() as conn:
-        # await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)

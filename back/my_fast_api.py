@@ -3,23 +3,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware import Middleware
 import logging
 from pydantic import BaseModel
-import time
-from typing import Optional
-from datetime import datetime, timezone
 from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_confirmed_login, create_login_token,
                        delete_login_request, create_ad_db, get_ads_by_category,
                        get_ad_by_id, delete_ad_db, get_ads_by_owner,
                        get_user_favorites, create_favorite, delete_favorite_db, check_favorite,
                        get_ad_photos, create_ad_photo, update_ad_db, delete_photo_db,
-                       get_profile_db, update_profile_db, get_ads_by_radius_db,
+                       get_profile_db,  get_ads_by_radius_db,
                        create_nachricht_db, get_nachrichten_db, get_ads_count_by_category,
                        get_chats_db, mark_messages_read_db, update_profile_and_get_user_db,
                        get_map_data_db, get_ads_by_place_db, toggle_user_ban,
                        get_user_profile_by_id, get_user_by_id, create_message_attachment)
 import secrets
 import string
-from lexicon import *
 from fastapi.staticfiles import StaticFiles
 import os
 from PIL import Image, ImageOps
@@ -427,28 +423,12 @@ async def is_favorite(telegram_id: int, ad_id: int):
 
 
 ######################### Загрузка фото ##############################
-
-
 @f_api.post("/api/upload-photo")
-async def upload_photos(
-        ad_id: int = Form(...),
-        photos: list[UploadFile] = File(...)
-):
-    # total = time.perf_counter()
-
+async def upload_photos(ad_id: int = Form(...), photos: list[UploadFile] = File(...)):
     folder = f"uploads/{ad_id}"
-
     os.makedirs(folder, exist_ok=True)
-
     urls = []
-
-    # print("=" * 70)
-    # print("UPLOAD START", time.strftime("%H:%M:%S"))
-    # print("FILES =", len(photos))
-
     for i, photo in enumerate(photos, 1):
-
-        # print(f"\n----- PHOTO {i}: {photo.filename} -----")
 
         filename = (
                 os.path.splitext(photo.filename)[0]
@@ -456,13 +436,9 @@ async def upload_photos(
         )
 
         file_path = f"{folder}/{filename}"
-
-
         img = ImageOps.exif_transpose(
             Image.open(photo.file)
         )
-
-        # print(f"IMAGE OPEN    : {time.perf_counter() - t:.3f} sec")
 
         if img.width > 10000 or img.height > 10000:
             return {
@@ -483,22 +459,34 @@ async def upload_photos(
             progressive=True
         )
 
-        # print(f"JPEG SAVE     : {time.perf_counter() - t:.3f} sec")
+        thumb = img.copy()
+
+        thumb.thumbnail((300, 300))
+
+        thumb_filename = (
+                os.path.splitext(photo.filename)[0]
+                + "_thumb.jpg"
+        )
+
+        thumb_path = f"{folder}/{thumb_filename}"
+
+        thumb.save(
+            thumb_path,
+            format="JPEG",
+            quality=65,
+            optimize=True,
+            progressive=True
+        )
 
         photo_url = f"/uploads/{ad_id}/{filename}"
-
-        # База
-        # t = time.perf_counter()
+        thumb_url = f"/uploads/{ad_id}/{thumb_filename}"
 
         await create_ad_photo(
             ad_id=ad_id,
             photo_url=photo_url,
+            thumb_url=thumb_url,
         )
-
-
         urls.append(photo_url)
-
-
     return {
         "ok": True,
         "photos": urls,

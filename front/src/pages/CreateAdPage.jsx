@@ -56,7 +56,7 @@ function CreateAdPage() {
                 let width = img.width
                 let height = img.height
 
-                const maxSize = 1600
+                const maxSize = 900
 
                 if (width > height) {
 
