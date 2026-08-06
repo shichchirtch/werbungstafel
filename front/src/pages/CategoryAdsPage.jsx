@@ -328,8 +328,10 @@ function CategoryAdsPage() {
                             <div className="flex gap-4">
 
                                 <img
-                                    src={item.preview || "/images/no-photo.webp"}
+                                    src={item.preview || "/images/no-photo.png"}
                                     alt="preview"
+                                     onError={(e) => {
+        e.currentTarget.src = "/images/no-photo.png"}}
                                     className="
                                         w-36
                                         h-36
