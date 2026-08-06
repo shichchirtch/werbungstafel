@@ -2,7 +2,7 @@ from sqlalchemy import Integer, BigInteger, String, ARRAY, ForeignKey, DateTime,
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from config import settings
-from datetime import datetime, UTC
+from datetime import datetime
 
 engine = create_async_engine(settings.DATABASE_URL, echo=True)
 
@@ -112,5 +112,5 @@ class AdActivity(Base):
 
 async def init_models():
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
+        # await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)

@@ -322,7 +322,7 @@ async def get_users_count():
 
 async def get_ads_today_count():
     async with session_marker() as session:
-        now = datetime.now(UTC)
+        now = datetime.now()
         start = now.replace(hour=0,
             minute=0,
             second=0,
@@ -378,26 +378,17 @@ async def get_new_ads_global():
 
 
 async def get_new_ads_in_radius(center_lat: float,center_lon: float,radius: int):
-
-    since = datetime.now(UTC) - timedelta(days=1)
-
+    since = datetime.now() - timedelta(days=1)
     async with session_marker() as session:
-
         result = await session.execute(
-
             select(Ad)
             .where(
                 Ad.created_at >= since
             )
-
         )
-
         ads = result.scalars().all()
-
         filtered_ads = []
-
         for ad in ads:
-
             distance = geodesic(
                 (center_lat, center_lon),
                 (ad.latitude, ad.longitude),
@@ -474,3 +465,5 @@ def build_daily_report_text(
     msg.append(t["more"])
 
     return "\n".join(msg)
+
+

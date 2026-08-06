@@ -37,6 +37,16 @@ function AdDetailsPage() {
 
             setWerbung(data)
 
+            await fetch(`/api/ad-view/${id}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    telegram_id: user.id,
+                }),
+            })
+
             if (user.isAuth) {
 
                 const responseMerkList = await fetch(
@@ -401,56 +411,65 @@ transition
                         ✕
                     </button>
 
-                    <h1 className="text-2xl font-bold text-gray-300 mb-2">
-                        {werbung.title}
-                    </h1>
+                    <div className="flex items-center gap-3 mt-2 text-sm">
 
-                    <div className="mb-4">
+                        {werbung.anbieter ? (
 
-                        <div className="flex items-center gap-2 mt-2">
-
-                            {werbung.anbieter ? (
-                                <span className="
-            inline-block
-            px-3 py-1
-            rounded-full
-            bg-cyan-500/20
-            text-cyan-300
-            text-xs
-            font-bold
-        ">
-            {t('BIETE')}
-        </span>
-                            ) : (
-                                <span className="
-            inline-block
-            px-3 py-1
-            rounded-full
-            bg-pink-500/20
-            text-pink-300
-            text-xs
-            font-bold
-        ">
-            {t('SUCHE')}
-        </span>
-                            )}
-
-                            <button
-                                onClick={() => navigate(`/profile/${werbung.ownerId}`)}
+                            <span
                                 className="
+                px-3
+                py-1
+                rounded-full
+                bg-cyan-500/20
+                text-cyan-300
+                text-xs
+                font-bold
+            "
+                            >
+            {t("BIETE")}
+        </span>
+
+                        ) : (
+
+                            <span
+                                className="
+                px-3
+                py-1
+                rounded-full
+                bg-pink-500/20
+                text-pink-300
+                text-xs
+                font-bold
+            "
+                            >
+            {t("SUCHE")}
+        </span>
+
+                        )}
+
+                        <button
+                            onClick={() => navigate(`/profile/${werbung.ownerId}`)}
+                            className="
             text-cyan-300
             hover:text-cyan-200
             transition
-            text-sm
         "
-                            >
-                                {t('von')}{" "}
-                                <span className="font-semibold">
-                                {werbung.ownerName}
-                                </span>
-                            </button>
+                        >
+                            {werbung.ownerName}
+                        </button>
+
+                        <div className="ml-auto flex items-center gap-4 text-gray-400">
+
+                            <div className="flex items-center gap-1">
+                                👁 {werbung.views}
+                            </div>
+
+                            <div className="flex items-center gap-1">
+                                ⭐ {werbung.favorites}
+                            </div>
 
                         </div>
+
                     </div>
 
 

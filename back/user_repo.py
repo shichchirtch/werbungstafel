@@ -1,12 +1,13 @@
 from sqlalchemy import select, delete, func, and_, or_, update
 from postgres_table import (User, LoginRequest, Ad, Favorite, AdPhoto,
-                            Nachricht, MessageAttachment)
+                            Nachricht, MessageAttachment, AdActivity)
 from postgres_table import session_marker
-from datetime import datetime, timedelta, UTC
+from datetime import datetime, timedelta #UTC
 from geopy.geocoders import Nominatim
 from geopy.distance import geodesic
 import json, math, os, shutil
 from pathlib import Path
+
 
 geolocator = Nominatim(
     user_agent="werbungstafel"
@@ -158,7 +159,7 @@ async def confirm_login(token: str, telegram_id: int):
         # Если токен не найден —
         if not login_request:
             return False
-        if datetime.now(UTC) - login_request.created_at > timedelta(minutes=2):
+        if datetime.now() - login_request.created_at > timedelta(minutes=2):
             await session.delete(login_request)
             await session.commit()
             return False
@@ -1215,3 +1216,123 @@ async def get_last_user_ad(owner_id: int):
         )
 
         return result.scalar_one_or_none()
+
+async def get_ad_statistics(ad_id: int):
+    async with session_marker() as session:
+        views = await session.scalar(
+            select(func.count())
+            .select_from(AdActivity)
+            .where(
+                AdActivity.ad_id == ad_id,
+                AdActivity.viewed_at.is_not(None),
+            )
+        )
+
+        favorites = await session.scalar(
+            select(func.count())
+            .select_from(AdActivity)
+            .where(
+                AdActivity.ad_id == ad_id,
+                AdActivity.favorite_at.is_not(None),
+            )
+        )
+
+        return {
+            "views": views or 0,
+            "favorites": favorites or 0,
+        }
+
+async def register_ad_view_db(
+        ad_id: int,
+        user_id: int,
+):
+    async with session_marker() as session:
+
+        result = await session.execute(
+
+            select(AdActivity)
+            .where(
+                AdActivity.ad_id == ad_id,
+                AdActivity.user_id == user_id,
+            )
+
+        )
+
+        activity = result.scalar_one_or_none()
+
+        now = datetime.now()
+
+        # Пользователь впервые открыл объявление
+        if activity is None:
+
+            session.add(
+
+                AdActivity(
+                    ad_id=ad_id,
+                    user_id=user_id,
+                    viewed_at=now,
+                )
+
+            )
+
+            await session.commit()
+            return
+
+        # Последний просмотр был больше 30 минут назад
+        if (
+                activity.viewed_at is None
+                or now - activity.viewed_at >= timedelta(minutes=30)
+        ):
+
+            activity.viewed_at = now
+
+            await session.commit()
+
+async def register_ad_favorite_db(
+        ad_id: int,
+        user_id: int,
+        is_favorite: bool,
+):
+    async with session_marker() as session:
+
+        result = await session.execute(
+
+            select(AdActivity)
+            .where(
+                AdActivity.ad_id == ad_id,
+                AdActivity.user_id == user_id,
+            )
+
+        )
+
+        activity = result.scalar_one_or_none()
+
+        now = datetime.now()
+
+        # Если записи ещё нет
+        if activity is None:
+
+            session.add(
+
+                AdActivity(
+                    ad_id=ad_id,
+                    user_id=user_id,
+                    favorite_at=now if is_favorite else None,
+                )
+
+            )
+
+            await session.commit()
+            return
+
+        # Добавили в избранное
+        if is_favorite:
+
+            activity.favorite_at = now
+
+        # Удалили из избранного
+        else:
+
+            activity.favorite_at = None
+
+        await session.commit()

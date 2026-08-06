@@ -14,7 +14,8 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_chats_db, mark_messages_read_db, update_profile_and_get_user_db,
                        get_map_data_db, get_ads_by_place_db, toggle_user_ban,
                        get_user_profile_by_id, get_user_by_id, create_message_attachment,
-                       get_last_user_ad)
+                       get_last_user_ad, get_ad_statistics, register_ad_view_db,
+                       register_ad_favorite_db)
 import secrets
 import string, math
 from fastapi.staticfiles import StaticFiles
@@ -39,6 +40,8 @@ class ReportAd(BaseModel):
     reporter_id: int
     reason: str
 
+class AdView(BaseModel):
+    telegram_id: int
 
 class AdCreate(BaseModel):
     telegram_id: int
@@ -309,6 +312,8 @@ async def get_ad(ad_id: int):
 
     photos = await get_ad_photos(ad.id)
 
+    stats = await get_ad_statistics(ad.id)
+
     return {
         "id": ad.id,
         "ownerId": ad.owner_id,
@@ -319,6 +324,8 @@ async def get_ad(ad_id: int):
         "plz": ad.plz,
         "anbieter": ad.anbieter,
         "ownerName": owner_name,
+        "views": stats["views"],
+        "favorites": stats["favorites"],
         "photos": [
             {
                 "id": photo.id,
@@ -362,6 +369,12 @@ async def add_favorite(data: Favorite):
         user_id=user.id,
         ad_id=data.ad_id)
 
+    await register_ad_favorite_db(
+        ad_id=data.ad_id,
+        user_id=user.id,
+        is_favorite=True,
+    )
+
     if not success:
         return {
             "ok": False,
@@ -396,7 +409,11 @@ async def delete_favorite(data: Favorite):
         user_id=user.id,
         ad_id=data.ad_id,
     )
-
+    await register_ad_favorite_db(
+        ad_id=data.ad_id,
+        user_id=user.id,
+        is_favorite=False,
+    )
     if not success:
         return {
             "ok": False,
@@ -848,3 +865,27 @@ async def report_ad(data: ReportAd):
     return {
         "ok": True
     }
+
+################################### Каунтер просмотров ####################################
+class AdView(BaseModel):
+    telegram_id: int
+
+
+@f_api.post("/api/ad-view/{ad_id}")
+async def register_ad_view(
+        ad_id: int,
+        data: AdView,
+):
+    user = await get_user_by_tg_id(
+        data.telegram_id
+    )
+
+    if not user:
+        return {"ok": False}
+
+    await register_ad_view_db(
+        ad_id=ad_id,
+        user_id=user.id,
+    )
+
+    return {"ok": True}
