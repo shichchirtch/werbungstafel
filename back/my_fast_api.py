@@ -162,7 +162,7 @@ async def login_status(token: str):
 
 @f_api.post("/api/auth/telegram")
 async def auth_telegram(data: dict):
-    """Авторизация через телефон"""
+    """Авторизация через телефон или десктоп"""
     tg_id = data["telegram_id"]
     first_name = data["first_name"]
     username = data.get("username")

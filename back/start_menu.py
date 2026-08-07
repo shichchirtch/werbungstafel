@@ -10,7 +10,11 @@ async def set_main_menu(bot):
                    description='about bot'),
 
         BotCommand(command='/login',
-                   description='login through Smartfpne')
+                   description='login through Smartfpne'),
+
+        BotCommand(command='/send_message',
+                   description='Contact the developer')
 
     ]
+
     await bot.set_my_commands(main_menu_commands)

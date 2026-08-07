@@ -56,11 +56,12 @@ async def command_start_process(message: Message, command: CommandObject,
 async def start_common(message: Message, dialog_manager: DialogManager, state: FSMContext):
     await load_user_avatar(message)
     lan = message.from_user.language_code
+    await message.answer(start_drei[lan])
     await dialog_manager.start(
         state=ROOT_WIND.lan_select,
         mode=StartMode.RESET_STACK
     )
-    await message.answer(start_drei[lan])
+
 
 
 

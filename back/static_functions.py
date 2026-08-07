@@ -1,5 +1,4 @@
 import translators
-from datetime import datetime, UTC, timedelta
 from bot_instance import ROOT_WIND, bot
 from aiogram_dialog.widgets.kbd import Button
 from user_repo import *
@@ -361,20 +360,15 @@ async def get_users_for_daily_report():
 
 
 async def get_new_ads_global():
-    since = datetime.now(UTC) - timedelta(days=1)
+    since = datetime.now() - timedelta(days=1)
     async with session_marker() as session:
-
         result = await session.execute(
-
             select(Ad)
             .where(
                 Ad.created_at >= since
             )
-
         )
-
         return result.scalars().all()
-
 
 
 async def get_new_ads_in_radius(center_lat: float,center_lon: float,radius: int):
