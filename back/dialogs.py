@@ -71,6 +71,7 @@ async def message_not_text_handler(message: Message, widget: MessageInput,
 async def send_dialog_first_window_getter(dialog_manager: DialogManager, event_from_user: User, **kwargs):
     user_id = event_from_user.id
     user = await get_user(user_id)
+    print('USER = ', user)
     lan = user['lan']
     dialog_manager.dialog_data['lan'] = lan
     text_foto_dict  = {
