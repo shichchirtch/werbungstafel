@@ -3,7 +3,7 @@ from filters import KODE_FILTER, IS_ADMIN
 from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.filters import CommandStart, Command, CommandObject, StateFilter
 from aiogram.fsm.context import FSMContext
-from bot_instance import FSM_ST, ADMIN, ROOT_WIND, ABOUT
+from bot_instance import FSM_ST, ADMIN, ROOT_WIND, SEND
 from aiogram_dialog import  DialogManager, StartMode
 import os
 from lexicon import *
@@ -63,8 +63,6 @@ async def start_common(message: Message, dialog_manager: DialogManager, state: F
     )
 
 
-
-
 @ch_router.message(Command('login'))
 async def command_login(message: Message, state: FSMContext):
     print("ENTER /LOGIN")
@@ -118,7 +116,7 @@ async def command_help(message: Message, dialog_manager: DialogManager):
     await message.answer(text=help_msg[lan])
     await dialog_manager.reset_stack()
     await dialog_manager.start(state=ROOT_WIND.do_nothing)
-#
+
 @ch_router.message(Command('send_message'))
 async def swyz_with_dev(message: Message, dialog_manager: DialogManager):
     user = await get_user(message.from_user.id)
@@ -127,15 +125,11 @@ async def swyz_with_dev(message: Message, dialog_manager: DialogManager):
     await dialog_manager.reset_stack()
     await dialog_manager.start(state=SEND.send_first)
 
-#
+
 
 
 @ch_router.message(Command('admin'), IS_ADMIN())
 async def admin_enter(message: Message, dialog_manager: DialogManager):
     await dialog_manager.start(state=ADMIN.first)
-#
-#
-# @ch_router.message(Command('about_project'))
-# async def aboutProject(message: Message, dialog_manager: DialogManager):
-#     await dialog_manager.start(state=ABOUT.one, mode=StartMode.NORMAL)
+
 

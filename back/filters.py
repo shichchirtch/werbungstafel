@@ -8,7 +8,7 @@ class KODE_FILTER(BaseFilter):
     async def __call__(self, message: Message):
         if not message.text:
             return False
-        if message.text == '/admin':
+        if message.text in ['/admin', '/send_message', '/help']:
             return False
         token = message.text.strip().upper()
 
