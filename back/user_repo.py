@@ -1336,3 +1336,14 @@ async def register_ad_favorite_db(
             activity.favorite_at = None
 
         await session.commit()
+
+
+async def get_all_users():
+    async with session_marker() as session:
+
+        result = await session.execute(
+            select(User)
+            .where(User.is_banned == False)
+        )
+
+        return result.scalars().all()

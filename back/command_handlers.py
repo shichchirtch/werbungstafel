@@ -111,19 +111,22 @@ async def accept_login(message: Message, state: FSMContext):
 
 
 
-# @ch_router.message(Command('help'))
-# async def command_help(message: Message, dialog_manager: DialogManager):
-#     user = await get_user(message.from_user.id)
-#     lan =user['lan']
-#     await message.answer(text=help_msg[lan])
-#     await dialog_manager.reset_stack()
-#     await dialog_manager.start(state=ROOT_WIND.do_nothing)
+@ch_router.message(Command('help'))
+async def command_help(message: Message, dialog_manager: DialogManager):
+    user = await get_user(message.from_user.id)
+    lan =user['lan']
+    await message.answer(text=help_msg[lan])
+    await dialog_manager.reset_stack()
+    await dialog_manager.start(state=ROOT_WIND.do_nothing)
 #
-# @ch_router.message(Command('basic_menu'))
-# async def basic_menu_start(message: Message, dialog_manager: DialogManager):
-#     await message.answer('basic menu')
-#     await dialog_manager.reset_stack()
-#     await dialog_manager.start(state=ROOT_WIND.do_nothing)
+@ch_router.message(Command('send_message'))
+async def swyz_with_dev(message: Message, dialog_manager: DialogManager):
+    user = await get_user(message.from_user.id)
+    lan = user['lan']
+    await message.answer(senden[lan])
+    await dialog_manager.reset_stack()
+    await dialog_manager.start(state=SEND.send_first)
+
 #
 
 

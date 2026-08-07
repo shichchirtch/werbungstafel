@@ -1,5 +1,5 @@
 from aiogram_dialog import Dialog, Window, ShowMode
-from bot_instance import ROOT_WIND
+from bot_instance import ROOT_WIND, SEND
 from aiogram.types import User, ContentType, Message, CallbackQuery
 from aiogram_dialog.widgets.kbd import Button, Row, Cancel, Radio, Next, Start
 from aiogram_dialog.widgets.input import MessageInput
@@ -71,36 +71,19 @@ root_dialog = Dialog(
         getter=do_nothing_getter
     )
 )
-#
-#
-# async def message_text_handler(message: Message, widget: MessageInput, dialog_manager: DialogManager) -> None:
-#     print('we into message_text_handler')
-#     user_id = str(message.from_user.id)
-#     note = check_len_note(message.text)
-#     heute = datetime.datetime.now().strftime('%d.%m.%Y')
-#     note = f'{note}\n\n {heute}'
-#     lan = dialog_manager.dialog_data['lan']
-#     dialog_manager.dialog_data['note'] = note
-#     dialog_manager.dialog_data['foto_id'] = ''
-#
-#     notiz_key = form_key_note(note)
-#
-#     await redis_db.hset(
-#         f"user:{user_id}:notes",
-#         notiz_key,
-#         json.dumps({
-#             "text": note,
-#             "foto_id": ''
-#         })
-#     )
-#
-#     await asyncio.sleep(1)
-#
-#     await message.answer(text=notiz_wurde_beifugen[lan])
-#     await asyncio.sleep(1)
-#     dialog_manager.show_mode = ShowMode.DELETE_AND_SEND
-#     await message.delete()
-#     await dialog_manager.switch_to(CREATE.finish)
+
+
+async def message_text_handler_for_send_first(message: Message, widget: MessageInput,
+                                        dialog_manager: DialogManager, *args, **kwargs) -> None:
+
+    lan = message.from_user.language_code
+    user_id = str(message.from_user.id)
+    user_name = message.from_user.first_name
+    join_text = f'User_id {user_id},\n\n user_name  {user_name} \n\nsend MESSAGE {message.text}'
+    await message.bot.send_message(chat_id=-5568231732, text=join_text)
+    await message.answer(danke[lan])
+    await dialog_manager.done()
+
 #
 #
 # async def accepting_foto(message: Message, widget: MessageInput, dialog_manager: DialogManager):
@@ -122,7 +105,7 @@ root_dialog = Dialog(
 #     await dialog_manager.next()
 
 
-async def message_not_foto_handler(message: Message, widget: MessageInput,
+async def message_not_text_handler(message: Message, widget: MessageInput,
                                    dialog_manager: DialogManager) -> None:
     lan = dialog_manager.dialog_data['lan']
     dialog_manager.show_mode = ShowMode.NO_UPDATE
@@ -203,75 +186,33 @@ async def third_window_create_dialog_getter(dialog_manager: DialogManager, event
 #     dialog_manager.dialog_data.clear()
 #
 #
-async def crate_dialog_first_window_getter(dialog_manager: DialogManager, event_from_user: User, **kwargs):
+async def send_dialog_first_window_getter(dialog_manager: DialogManager, event_from_user: User, **kwargs):
     user_id = event_from_user.id
     user = await get_user(user_id)
     lan = user['lan']
     dialog_manager.dialog_data['lan'] = lan
     text_foto_dict  = {
-        'ru':'Отправьте мне текст или фотографию',
-        'uk':'Надішліть мені текст або фотографію',
-        'de':'Typen hier oder schick mir eine Foto',
-        'tr':'Bana mesaj veya fotoğraf gönder.'
+        'ru':'Отправьте мне текст сообщения',
+        'uk':'Надішліть мені текст повідомлення',
+        'de':'Schick mir eine Nachrichten',
+        'tr':'Bana bir kısa mesaj gönder'
     }
-    return { 'TextFoto': text_foto_dict[lan] }
+    return { 'TextMessage': text_foto_dict[lan] }
 
 
-# create_dialog = Dialog(
-#     Window(
-#         Format('{TextFoto}'),
-#         MessageInput(
-#             func=message_text_handler,
-#             content_types=ContentType.TEXT,
-#         ),
-#         MessageInput(
-#             func=accepting_foto,
-#             content_types=ContentType.PHOTO,
-#         ),
-#         MessageInput(
-#             func=message_not_foto_handler,
-#             content_types=ContentType.ANY,
-#         ),
-#         Cancel(Const('◀️'),
-#                id='Cancel_for_uniq_day'),
-#         state=CREATE.einstellen,
-#         getter=crate_dialog_first_window_getter
-#     ),
-#     Window(  # Окно предлагающее ввести capture
-#         Format('{EingebenCaptura}'),  # Хотите сделать подпись по фотографией ?
-#         Button(Const('◀️'),
-#                id='return_to_basic',
-#                on_click=peredumal_func),
-#         Row(Next(Const('😃'),
-#                  id='yes_capture'),
-#             Button(Const('❌'),
-#                    id='no_capture',
-#                    on_click=set_foto_notiz_ohne_capture)),
-#
-#         state=CREATE.ask_capture,
-#         getter=second_window_create_dialog_getter
-#     ),
-#
-#     Window(  # Окно принимающее capture
-#         Format('{Schiken_mir_Capture}'),  # Отправьте capture
-#         MessageInput(
-#             func=message_capture_handler,
-#             content_types=ContentType.TEXT,
-#         ),
-#         MessageInput(
-#             func=message_not_text_handler_in_capture,
-#             content_types=ContentType.ANY,
-#         ),
-#         Cancel(Const('◀️'),
-#                id='Cancel_for_accepting_capture'),
-#         state=CREATE.enter_capture,
-#         getter=third_window_create_dialog_getter
-#     ),
-#     Window(  # окно возвращаюшее в предыдущий диалог
-#         Format(text='{NotizAczeptiert}'),  # Напоминание принято
-#         Cancel(text=Format(text='▶️'),  #
-#                id='see_stelle_button',
-#                on_click=reset_funk),
-#         state=CREATE.finish,
-#         getter=last_wind_create_dialog_getter
-#     ))
+send_dialog = Dialog(
+    Window(
+        Format('{TextMessage}'),
+        MessageInput(
+            func=message_text_handler_for_send_first,
+            content_types=ContentType.TEXT,
+        ),
+        MessageInput(
+            func=message_not_text_handler,
+            content_types=ContentType.ANY,
+        ),
+        Cancel(Const('◀️'),
+               id='Cancel_for_uniq_day'),
+        state=SEND.send_first,
+        getter=send_dialog_first_window_getter
+    ))

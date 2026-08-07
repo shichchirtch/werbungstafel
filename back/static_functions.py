@@ -94,7 +94,7 @@ async def get_translate(slovo:str, lan:str, temp_dict:dict)->str:
     if lan != 'ru':
         try:
             if lan not in temp_dict:
-                res = translators.translate_text(query_text=slovo, from_language='ru', to_language=lan, translator='alibaba')
+                res = translators.translate_text(query_text=slovo, from_language='ru', to_language=lan, translator='google')
                 temp_dict[lan]=res
             else:
                 res = temp_dict[lan]
@@ -461,3 +461,12 @@ def build_daily_report_text(
     return "\n".join(msg)
 
 
+async def get_all_users():
+    async with session_marker() as session:
+
+        result = await session.execute(
+            select(User)
+            .where(User.is_banned == False)
+        )
+
+        return result.scalars().all()

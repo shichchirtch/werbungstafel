@@ -47,5 +47,9 @@ class ROOT_WIND(StatesGroup):
     lan_select = State()
     do_nothing = State()
 
+class SEND(StatesGroup):
+    send_first = State()
+    send_second = State()
+
 
 

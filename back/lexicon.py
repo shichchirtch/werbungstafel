@@ -134,11 +134,21 @@ about = {
           'Geliştiriciyle iletişime geçmek için mesaj gönderin.'
 }
 
-senden = {
-    'ru': 'Отправьте сообщение разработчику',
-    'uk': 'Надіслати повідомлення розробнику',
-    'de': 'Senden Sie eine Nachricht an den Entwickler',
-    'tr': 'Geliştiriciye bir mesaj gönderin'
+
+
+danke = {
+    'ru':'Сообщение отправлено разработчику, спасибо',
+    'uk':'Повідомлення надіслано розробнику, дякую',
+    'de':'Nachricht an den Entwickler gesendet, danke',
+    'tr':'Geliştiriciye mesaj gönderildi, teşekkürler'
+}
+
+error_enter_type = {
+    'ru':'Я могу принять только текст',
+    'uk':'Я можу прийняти лише текст',
+    'de':'Ich kann nur Textnachrichten akzeptieren.',
+    'tr':'Sadece metin kabul edebilirim.'
+
 }
 
 help_msg = {
@@ -172,7 +182,7 @@ help_msg = {
 
 
 
-send_to_dev = {
+senden = {
     'ru': 'Отправьте следующее сообщение разработчику или нажмите на ◀️',
     'uk': 'Надішліть наступне повідомлення розробнику або натисніть ◀️',
     'de': 'Senden Sie die folgende Nachricht an den Entwickler oder klicken Sie auf ◀️',
