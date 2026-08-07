@@ -1,10 +1,10 @@
 from aiogram_dialog import Dialog, Window, ShowMode
 from aiogram_dialog.widgets.text import Const, Format
-from aiogram_dialog.widgets.kbd import Button, Row, Next, Cancel
+from aiogram_dialog.widgets.kbd import Button, Row, Next, Cancel, Start
 from aiogram_dialog.widgets.input import MessageInput
 from aiogram.types import CallbackQuery, Message, User
 from aiogram_dialog import DialogManager
-from bot_instance import ADMIN, bot, ABOUT
+from bot_instance import ADMIN, bot, BANNER
 from aiogram.types import ContentType
 from aiogram.exceptions import TelegramForbiddenError
 from static_functions import check_len_note, get_translate
@@ -173,6 +173,12 @@ admin_dialog = Dialog(
             text=Const('Загрузить файл БД юзеров'),
             id='zagruz_db',
             on_click=downloads_users_db,
+        ),
+
+        Start(
+            text=Const('Установить Баннер'),
+            id='zagruz_db',
+        state=BANNER.banner_first
         ),
 
         state=ADMIN.first

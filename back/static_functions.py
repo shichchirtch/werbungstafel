@@ -24,7 +24,7 @@ async def ru_stellen(callback: CallbackQuery, widget: Button, dialog_manager: Di
     print('user= ', user)
     await callback.message.answer('В качестве языка интерфейса выбран <b>русский</b> язык')
     dialog_manager.show_mode = ShowMode.SEND
-    await dialog_manager.next()
+    await dialog_manager.done()
 
 
 async def uk_stellen(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
@@ -38,7 +38,7 @@ async def uk_stellen(callback: CallbackQuery, widget: Button, dialog_manager: Di
     # await update_user(redis_db, user_id, user)
     await callback.message.answer('В якості мови інтерфейсу обрано <b>українську</b> мову')
     dialog_manager.show_mode = ShowMode.SEND
-    await dialog_manager.next()
+    await dialog_manager.done()
 
 async def de_stellen(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
     user_id = callback.from_user.id
@@ -51,7 +51,7 @@ async def de_stellen(callback: CallbackQuery, widget: Button, dialog_manager: Di
     # await update_user(redis_db, user_id, user)
     await callback.message.answer('Als Benutzerschnittstellensprache wurde <b>Deutsch</b> ausgewählt.')
     dialog_manager.show_mode = ShowMode.SEND
-    await dialog_manager.next()
+    await dialog_manager.done()
 
 
 async def tr_stellen(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
@@ -65,7 +65,7 @@ async def tr_stellen(callback: CallbackQuery, widget: Button, dialog_manager: Di
     # await update_user(redis_db, user_id, user)
     await callback.message.answer('Arayüz dili olarak <b>Türkçe</b> seçilmiştir.')
     dialog_manager.show_mode = ShowMode.SEND
-    await dialog_manager.next()
+    await dialog_manager.done()
 
 
 async def do_nothing(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):

@@ -114,8 +114,9 @@ async def command_help(message: Message, dialog_manager: DialogManager):
     user = await get_user(message.from_user.id)
     lan =user['lan']
     await message.answer(text=help_msg[lan])
-    await dialog_manager.reset_stack()
-    await dialog_manager.start(state=ROOT_WIND.do_nothing)
+    # await dialog_manager.reset_stack()
+    # await dialog_manager.start(state=ROOT_WIND.do_nothing)
+
 
 @ch_router.message(Command('send_message'))
 async def swyz_with_dev(message: Message, dialog_manager: DialogManager):

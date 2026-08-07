@@ -69,25 +69,6 @@ async def message_text_handler_for_send_first(message: Message, widget: MessageI
     await message.answer(danke[lan])
     await dialog_manager.done()
 
-#
-#
-# async def accepting_foto(message: Message, widget: MessageInput, dialog_manager: DialogManager):
-#     foto_id = message.photo[-1].file_id
-#     dialog_manager.dialog_data['foto_id'] = foto_id
-#     heute = datetime.datetime.now().strftime('%d.%m.%Y %H:%M')
-#     capture = f'Foto {heute}'
-#     dialog_manager.dialog_data['capture'] = capture
-#
-#     await redis_db.hset(
-#         f"user:{message.from_user.id}:notes",
-#         capture,
-#         json.dumps({
-#             "text": capture,
-#             "foto_id": foto_id
-#         })
-#     )
-#     dialog_manager.show_mode = ShowMode.SEND
-#     await dialog_manager.next()
 
 
 async def message_not_text_handler(message: Message, widget: MessageInput,

@@ -39,9 +39,9 @@ class ADMIN(StatesGroup):
     admin_send_msg = State()
 
 
-class ABOUT(StatesGroup):
-    one = State()
-    accepting = State()
+class BANNER(StatesGroup):
+    banner_first = State()
+    banner_second = State()
 
 class ROOT_WIND(StatesGroup):
     lan_select = State()
