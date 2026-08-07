@@ -5,21 +5,12 @@ from aiogram_dialog.widgets.kbd import Button, Row, Cancel, Radio, Next, Start
 from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.text import Const, Format
 from aiogram_dialog import DialogManager
-from static_functions import ( ru_stellen, de_stellen, tr_stellen, form_capture, form_key_note,
-                              uk_stellen, do_nothing, check_len_note)
+from static_functions import ( ru_stellen, de_stellen, tr_stellen,
+                              uk_stellen,  check_len_note)
 from user_repo import *
 
 from lexicon import *
-import datetime
-import asyncio
 
-async def do_nothing_getter(dialog_manager: DialogManager, event_from_user: User, **kwargs):
-    user_id = event_from_user.id
-    user = await get_user( user_id)
-    lan = user['lan']
-    notiz = second_window_text[lan]
-    return { 'notiz':notiz , 'Neue_Notiz_erstellen':Neue_Notiz_erstellen[lan],
-             'Kuck_meine_Notizen':Kuck_meine_Notizen[lan]}
 
 async def start_window_getter(dialog_manager: DialogManager, event_from_user: User, **kwargs):
     lan = event_from_user.language_code

@@ -9,6 +9,7 @@ class KODE_FILTER(BaseFilter):
         if not message.text:
             return False
         if message.text in ['/admin', '/send_message', '/help']:
+            print('WE ARE IN THREE')
             return False
         token = message.text.strip().upper()
 
