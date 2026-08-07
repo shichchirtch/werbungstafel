@@ -43,6 +43,7 @@ async def uk_stellen(callback: CallbackQuery, widget: Button, dialog_manager: Di
 async def de_stellen(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
     user_id = callback.from_user.id
     user = await get_user(user_id)
+    print('\n\n\nuser= ', user,'\n\n\n')
     if not user:
         await callback.message.answer("Ошибка: пользователь не найден")
         return
