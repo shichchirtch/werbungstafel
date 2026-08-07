@@ -53,23 +53,8 @@ root_dialog = Dialog(
         ),
         state=ROOT_WIND.lan_select,
         getter=start_window_getter,
-    ),
-
-    Window(Format('{notiz}'),
-        Button(Const('◀️'),
-        id='second_window_root_dialog',
-        on_click=do_nothing),
-            # Start(
-            #     text=Format('{Neue_Notiz_erstellen}'),
-            #     id='kuck_start',
-            #     state=CREATE.einstellen),
-            # Start(
-            #     text=Format('{Kuck_meine_Notizen}'),
-            #     id='save_bd',
-            #     state=ZEIGEN.clava),
-        state=ROOT_WIND.do_nothing,
-        getter=do_nothing_getter
     )
+
 )
 
 
@@ -111,81 +96,6 @@ async def message_not_text_handler(message: Message, widget: MessageInput,
     dialog_manager.show_mode = ShowMode.NO_UPDATE
     await message.answer(error_enter_type[lan])
 
-async def second_window_create_dialog_getter(dialog_manager: DialogManager, event_from_user: User, **kwargs):
-    lan = dialog_manager.dialog_data['lan']
-    return {'EingebenCaptura':EingebenCaptura[lan]}
-
-async def third_window_create_dialog_getter(dialog_manager: DialogManager, event_from_user: User, **kwargs):
-    lan = dialog_manager.dialog_data['lan']
-    return {'Schiken_mir_Capture':Schiken_mir_Capture[lan]}
-
-
-# async def peredumal_func(callback: CallbackQuery, widget: Button,
-#                             dialog_manager: DialogManager, *args, **kwargs):
-#     print('peredumal_funk works')
-#     user_id = str(callback.from_user.id)
-#     capture = dialog_manager.dialog_data['capture']
-#     redis_key = f"user:{user_id}:notes"
-#     await redis_db.hdel(redis_key, capture)
-#     dialog_manager.show_mode = ShowMode.DELETE_AND_SEND
-#     dialog_manager.dialog_data.clear()
-#     await dialog_manager.done()
-#
-# async def set_foto_notiz_ohne_capture(cb: CallbackQuery, widget: Button, dialog_manager: DialogManager) -> None:
-#     """Хэндлер формирует словарь с фото без подписи"""
-#     lan = dialog_manager.dialog_data['lan']
-#     await cb.message.answer(text=eingegeben[lan])
-#     dialog_manager.show_mode = ShowMode.SEND
-#     await dialog_manager.done()
-#
-# async def message_capture_handler(message: Message, widget: MessageInput, dialog_manager: DialogManager) -> None:
-#     """Хэндлер устанавливает capture"""
-#     user_id = str(message.from_user.id)
-#     lan = dialog_manager.dialog_data['lan']
-#     capture = form_capture(message.text)
-#     foto_id = dialog_manager.dialog_data['foto_id']
-#     old_capture = dialog_manager.dialog_data['capture']
-#     redis_key = f"user:{user_id}:notes"
-#     await redis_db.hdel(redis_key, old_capture)
-#
-#     heute = datetime.datetime.now().strftime('%d.%m.%Y')
-#     capture = f'{capture}\n\n {heute}'
-#     notiz_key = form_capture(capture)
-#     print('nitiz_key =', notiz_key)
-#     await redis_db.hset(
-#         f"user:{user_id}:notes",
-#         notiz_key,
-#         json.dumps({
-#             "text": notiz_key,
-#             "foto_id": foto_id
-#         })
-#     )
-#     notes_keys = await redis_db.hkeys(f"user:{user_id}:notes")
-#     print("2 notes_keys =", notes_keys)
-#
-#     await message.answer(text=capture_wurde_instlliert[lan])
-#     dialog_manager.show_mode = ShowMode.SEND
-#     await message.delete()
-#     await dialog_manager.next()
-#
-# async def message_not_text_handler_in_capture(message: Message, widget: MessageInput,
-#                                               dialog_manager: DialogManager) -> None:
-#     lan = dialog_manager.dialog_data['lan']
-#     dialog_manager.show_mode = ShowMode.NO_UPDATE
-#     await message.answer(captura_type_error[lan])
-#
-# async def last_wind_create_dialog_getter(dialog_manager: DialogManager, event_from_user: User, **kwargs):
-#     lan = dialog_manager.dialog_data['lan']
-#     return {'NotizAczeptiert': NotizAczeptiert[lan]}
-#
-#
-# async def reset_funk(callback: CallbackQuery, widget: Button,
-#                      dialog_manager: DialogManager, *args, **kwargs):
-#     print('reset funk works')
-#     dialog_manager.show_mode = ShowMode.DELETE_AND_SEND
-#     dialog_manager.dialog_data.clear()
-#
-#
 async def send_dialog_first_window_getter(dialog_manager: DialogManager, event_from_user: User, **kwargs):
     user_id = event_from_user.id
     user = await get_user(user_id)
