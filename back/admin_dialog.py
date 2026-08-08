@@ -12,8 +12,9 @@ from pathlib import Path
 from aiogram.types import FSInputFile
 import os
 from static_functions import get_users_count, get_ads_today_count, get_all_users
-
+from postgres_table import session_marker, Banner
 import asyncio
+from sqlalchemy import select
 
 message_queue = asyncio.Queue()
 
@@ -209,3 +210,171 @@ admin_dialog = Dialog(
         state=ADMIN.admin_send_msg)
 )
 
+
+
+async def banner_top(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
+    dialog_manager.dialog_data["position"] = "top"
+    await dialog_manager.next()
+async def banner_bottom(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
+    dialog_manager.dialog_data["position"] = "bottom"
+    await dialog_manager.next()
+async def accept_banner_photo(message: Message, widget: MessageInput, dialog_manager: DialogManager, *args, **kwargs):
+    photo = message.photo[-1]
+    file = await message.bot.get_file(photo.file_id)
+    filename = f"banner_{message.from_user.id}_{photo.file_id}.jpg"
+    folder = "uploads/banners"
+    os.makedirs(folder, exist_ok=True)
+
+    file_path = f"{folder}/{filename}"
+
+    await message.bot.download_file(file.file_path,destination=file_path)
+
+    photo_url = f"/uploads/banners/{filename}"
+
+    dialog_manager.dialog_data["image_url"] = photo_url
+
+    await dialog_manager.next()
+
+async def accept_banner_link(message: Message, widget: MessageInput, dialog_manager: DialogManager, *args, **kwargs,):
+    link = message.text.strip()
+    if not link.startswith(("http://", "https://")):
+        await message.answer(
+            "❌ Bitte senden Sie eine gültige URL."
+        )
+        return
+    dialog_manager.dialog_data["target_url"] = link
+    await dialog_manager.next()
+
+
+async def save_banner(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
+    position = dialog_manager.dialog_data["position"]
+    image_url = dialog_manager.dialog_data["image_url"]
+    target_url = dialog_manager.dialog_data["target_url"]
+    async with session_marker() as session:
+        result = await session.execute(
+            select(Banner)
+            .where(
+                Banner.position == position,
+                Banner.active == True,
+            )
+        )
+
+        old_banner = result.scalars().all()
+
+        for banner in old_banner:
+            banner.active = False
+
+        banner = Banner(
+            position=position,
+            image_url=image_url,
+            target_url=target_url,
+            active=True,
+        )
+
+        session.add(banner)
+
+        await session.commit()
+
+    await callback.message.answer(
+        "✅ Banner erfolgreich installiert."
+    )
+
+    await dialog_manager.done()
+
+
+
+
+banner_dialog = Dialog(
+
+    # =========================
+    # 1. Выбор позиции
+    # =========================
+
+    Window(
+        Const('Куда установить баннер?'),
+
+        Row(
+            Button(
+                Const('Верхний'),
+                id='banner_top',
+                on_click=banner_top,
+            ),
+
+            Button(
+                Const('Нижний'),
+                id='banner_bottom',
+                on_click=banner_bottom,
+            ),
+        ),
+
+        Cancel(
+            Const('◀️'),
+            id='banner_cancel_1',
+        ),
+
+        state=BANNER.banner_first,
+    ),
+
+    # =========================
+    # 2. Получаем фотографию
+    # =========================
+
+    Window(
+        Const('Отправьте фотографию баннера'),
+
+        MessageInput(
+            func=accept_banner_photo,
+            content_types=ContentType.PHOTO,
+        ),
+
+        Cancel(
+            Const('◀️'),
+            id='banner_cancel_2',
+        ),
+
+        state=BANNER.banner_photo,
+    ),
+
+    # =========================
+    # 3. Получаем ссылку
+    # =========================
+
+    Window(
+        Const('Теперь отправьте ссылку, куда должен вести баннер.'),
+
+        MessageInput(
+            func=accept_banner_link,
+            content_types=ContentType.TEXT,
+        ),
+
+        Cancel(
+            Const('◀️'),
+            id='banner_cancel_3',
+        ),
+
+        state=BANNER.banner_link,
+    ),
+
+    # =========================
+    # 4. Подтверждение
+    # =========================
+
+    Window(
+        Const('Баннер готов к публикации.'),
+
+        Row(
+            Button(
+                Const('✅ Установить'),
+                id='banner_save',
+                on_click=save_banner,
+            ),
+
+            Cancel(
+                Const('❌ Отмена'),
+                id='banner_cancel_4',
+            ),
+        ),
+
+        state=BANNER.banner_confirm,
+    ),
+)

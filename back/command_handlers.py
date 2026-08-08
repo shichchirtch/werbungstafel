@@ -72,7 +72,7 @@ async def command_login(message: Message, state: FSMContext):
     await message.answer(captura_code[lan])
 
 
-@ch_router.message(StateFilter(FSM_ST.accept_login), KODE_FILTER)
+@ch_router.message(StateFilter(FSM_ST.accept_login), KODE_FILTER())
 async def accept_login(message: Message, state: FSMContext):
     print("ACCEPT LOGIN")
     print("TEXT =", message.text)

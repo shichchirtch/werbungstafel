@@ -1,6 +1,6 @@
 from sqlalchemy import select, delete, func, and_, or_, update
 from postgres_table import (User, LoginRequest, Ad, Favorite, AdPhoto,
-                            Nachricht, MessageAttachment, AdActivity)
+                            Nachricht, MessageAttachment, AdActivity, Banner)
 from postgres_table import session_marker
 from datetime import datetime, timedelta #UTC
 from geopy.geocoders import Nominatim
@@ -1372,3 +1372,4 @@ async def update_user_language(
         await session.commit()
 
         return True
+

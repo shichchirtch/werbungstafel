@@ -41,7 +41,9 @@ class ADMIN(StatesGroup):
 
 class BANNER(StatesGroup):
     banner_first = State()
-    banner_second = State()
+    banner_photo = State()
+    banner_link = State()
+    banner_confirm = State()
 
 class ROOT_WIND(StatesGroup):
     lan_select = State()

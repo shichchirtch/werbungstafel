@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, BigInteger, String, ARRAY, ForeignKey, DateTime, Float
+from sqlalchemy import Integer, BigInteger, String, Boolean, ForeignKey, DateTime, Float
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from config import settings
@@ -109,6 +109,15 @@ class AdActivity(Base):
     viewed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     favorite_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
+class Banner(Base):
+    __tablename__ = "banners"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True,)
+    position: Mapped[str] = mapped_column(String(20), nullable=False)
+    image_url: Mapped[str] = mapped_column(String(500),nullable=False)
+    target_url: Mapped[str] = mapped_column(String(1000), nullable=False)
+    active: Mapped[bool] = mapped_column(Boolean, default=True,)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=False),default=lambda: datetime.now(),)
 
 async def init_models():
     async with engine.begin() as conn:
