@@ -86,6 +86,7 @@ async def message_text_handler_for_send_first(message: Message, widget: MessageI
                                         dialog_manager: DialogManager, *args, **kwargs) -> None:
 
     lan = message.from_user.language_code
+    print('SEND FUNC 1')
     user_id = str(message.from_user.id)
     user_name = message.from_user.first_name
     join_text = f'User_id {user_id},\n\n user_name  {user_name} \n\nsend MESSAGE {message.text}'

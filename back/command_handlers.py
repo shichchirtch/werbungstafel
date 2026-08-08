@@ -72,13 +72,21 @@ async def command_login(message: Message, state: FSMContext):
     await message.answer(captura_code[lan])
 
 
-@ch_router.message(StateFilter(FSM_ST.accept_login), KODE_FILTER())
+@ch_router.message(StateFilter(FSM_ST.accept_login))
 async def accept_login(message: Message, state: FSMContext):
     print("ACCEPT LOGIN")
     print("TEXT =", message.text)
     user_id = int(message.from_user.id)
-    token = message.text
     us_lan = message.from_user.language_code
+
+    token = message.text.strip().upper()
+
+    if len(token) != 6 or not token.isalnum():
+        await message.answer(
+            "❌ Wrong Code\n\n/login again"
+        )
+
+        return
 
     await create_user_if_not_exists(
         tg_id=message.from_user.id,
