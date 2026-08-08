@@ -179,7 +179,7 @@ admin_dialog = Dialog(
 
         Start(
             text=Const('Установить Баннер'),
-            id='zagruz_db',
+            id='ustanovit_banner',
         state=BANNER.banner_first
         ),
 
