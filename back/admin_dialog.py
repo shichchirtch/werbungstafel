@@ -143,6 +143,7 @@ async def sending_msg(cb: CallbackQuery, widget: Button, dialog_manager: DialogM
         users_list = await  get_all_users()
         temp_dict = {}
         for user in users_list:
+            print("\n\n\n146 User = ", user)
             lan = user['lan']
             try:
                 translated_text = await get_translate(text_from_admin, lan, temp_dict)
