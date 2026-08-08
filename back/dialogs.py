@@ -76,7 +76,7 @@ login_dialog = Dialog(
             content_types=ContentType.ANY,
         ),
         Cancel(Const('◀️'),
-               id='Cancel_for_uniq_day'),
+               id='Cancel'),
         state=FSM_ST.accept_login,
     ))
 
@@ -105,7 +105,7 @@ async def send_dialog_first_window_getter(dialog_manager: DialogManager, event_f
     user_id = event_from_user.id
     user = await get_user(user_id)
     print('USER = ', user)
-    lan = user['lan']
+    lan = event_from_user.language_code
     dialog_manager.dialog_data['lan'] = lan
     text_foto_dict  = {
         'ru':'Отправьте мне текст сообщения',
