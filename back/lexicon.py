@@ -98,6 +98,13 @@ Klicken_zu_sehen = {
     'tr': 'Görüntülemek için tıklayın'
 }
 
+trasher= {
+    'ru':'Я не могу принять произвольное сообщение',
+    'uk':'Я не можу прийняти довільне повідомлення',
+    'de':'Ich kann keine benutzerdefinierten Nachrichten annehmen.',
+    'tr':'Özel mesajları kabul edemiyorum.'
+}
+
 
 
 about = {
@@ -134,7 +141,12 @@ about = {
           'Geliştiriciyle iletişime geçmek için mesaj gönderin.'
 }
 
-
+wrong_code = {
+    'ru':'❌ Неверный код.\n\nДля повторного ввода отправьте сначала команду /login',
+    'uk':'❌ Неправильний код.\n\nДля повторного введення надішліть спочатку команду',
+    'de':'❌ Falscher Code.\n\nUm erneut einzugeben, senden Sie bitte zuerst den Befehl.',
+    'tr':'❌ Yanlış kod.\n\nTekrar girmek için lütfen önce komutu gönderin.'
+}
 
 danke = {
     'ru':'Сообщение отправлено разработчику, спасибо',

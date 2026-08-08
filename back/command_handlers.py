@@ -5,7 +5,7 @@ from aiogram.filters import CommandStart, Command, CommandObject, StateFilter
 from aiogram.fsm.context import FSMContext
 from bot_instance import FSM_ST, ADMIN, ROOT_WIND, SEND
 from aiogram_dialog import  DialogManager, StartMode
-import os
+import asyncio
 from lexicon import *
 from user_repo import *
 from static_functions import load_user_avatar
@@ -72,7 +72,7 @@ async def command_login(message: Message, state: FSMContext):
     await message.answer(captura_code[lan])
 
 
-@ch_router.message(StateFilter(FSM_ST.accept_login), F.text)
+@ch_router.message(StateFilter(FSM_ST.accept_login), KODE_FILTER)
 async def accept_login(message: Message, state: FSMContext):
     print("ACCEPT LOGIN")
     print("TEXT =", message.text)
@@ -82,10 +82,8 @@ async def accept_login(message: Message, state: FSMContext):
     token = message.text.strip().upper()
 
     if len(token) != 6 or not token.isalnum():
-        await message.answer(
-            "❌ Wrong Code\n\n/login again"
-        )
-
+        await message.answer(wrong_code[us_lan])
+        await state.clear()
         return
 
     await create_user_if_not_exists(
@@ -141,4 +139,8 @@ async def admin_enter(message: Message, dialog_manager: DialogManager):
 
 @ch_router.message()
 async def message_trasher(message: Message, dialog_manager: DialogManager):
-    await message.answer('Хочется пообзаться, да ? 😉')
+    lan = message.from_user.language_code
+    otwet = await message.answer(trasher[lan])
+    await asyncio.sleep(2)
+    await message.delete()
+    await otwet.delete()

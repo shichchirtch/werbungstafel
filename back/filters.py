@@ -9,14 +9,8 @@ class KODE_FILTER(BaseFilter):
         if not message.text:
             return False
         if message.text in ['/admin', '/send_message', '/help']:
-            print('WE ARE IN THREE')
             return False
-        token = message.text.strip().upper()
-
-        if len(token) == 6 and token.isalnum():
-            return True
-        await message.answer('❌ Wrong Code\n\n/login again')
-        return False
+        return True
 
 class TEXT_FILTER(BaseFilter):
     async def __call__(self, message: Message):
