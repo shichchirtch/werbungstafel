@@ -143,7 +143,6 @@ async def sending_msg(cb: CallbackQuery, widget: Button, dialog_manager: DialogM
         users_list = await  get_all_users()
         temp_dict = {}
         for user in users_list:
-            print("\n\n\n146 User = ", user)
             lan = user.lan
             try:
                 translated_text = await get_translate(text_from_admin, lan, temp_dict)
@@ -248,11 +247,20 @@ async def accept_banner_link(message: Message, widget: MessageInput, dialog_mana
     await dialog_manager.next()
 
 
-async def save_banner(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
+async def save_banner(
+    callback: CallbackQuery,
+    widget: Button,
+    dialog_manager: DialogManager,
+    *args,
+    **kwargs,
+):
     position = dialog_manager.dialog_data["position"]
     image_url = dialog_manager.dialog_data["image_url"]
     target_url = dialog_manager.dialog_data["target_url"]
+
     async with session_marker() as session:
+
+        # Деактивируем старый баннер этой позиции
         result = await session.execute(
             select(Banner)
             .where(
@@ -261,11 +269,12 @@ async def save_banner(callback: CallbackQuery, widget: Button, dialog_manager: D
             )
         )
 
-        old_banner = result.scalars().all()
+        old_banners = result.scalars().all()
 
-        for banner in old_banner:
-            banner.active = False
+        for old_banner in old_banners:
+            old_banner.active = False
 
+        # Создаём новый
         banner = Banner(
             position=position,
             image_url=image_url,
