@@ -1,5 +1,5 @@
 from aiogram_dialog import Dialog, Window, ShowMode
-from bot_instance import ROOT_WIND, SEND
+from bot_instance import ROOT_WIND, SEND, FSM_ST
 from aiogram.types import User, ContentType, Message, CallbackQuery
 from aiogram_dialog.widgets.kbd import Button, Row, Cancel, Radio, Next, Start
 from aiogram_dialog.widgets.input import MessageInput
@@ -47,6 +47,39 @@ root_dialog = Dialog(
     )
 
 )
+
+
+async def message_not_text_handler_login(message: Message, widget: MessageInput,
+                                   dialog_manager: DialogManager) -> None:
+    lan = message.from_user.language_code
+    dialog_manager.show_mode = ShowMode.NO_UPDATE
+    await message.answer("error")
+
+async def message_text_handler_for_login_first(message: Message, widget: MessageInput,
+                                        dialog_manager: DialogManager, *args, **kwargs) -> None:
+
+    lan = message.from_user.language_code
+    user_id = str(message.from_user.id)
+    user_name = message.from_user.first_name
+    await message.answer('ACCEPTED')
+    await dialog_manager.done()
+
+login_dialog = Dialog(
+    Window(
+        Const('Enter Login'),
+        MessageInput(
+            func=message_text_handler_for_login_first,
+            content_types=ContentType.TEXT,
+        ),
+        MessageInput(
+            func=message_not_text_handler_login,
+            content_types=ContentType.ANY,
+        ),
+        Cancel(Const('◀️'),
+               id='Cancel_for_uniq_day'),
+        state=FSM_ST.accept_login,
+    ))
+
 
 
 async def message_text_handler_for_send_first(message: Message, widget: MessageInput,
