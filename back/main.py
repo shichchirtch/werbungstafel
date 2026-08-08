@@ -4,7 +4,7 @@ from command_handlers import ch_router
 from callback_handlers import cb_router
 from start_menu import set_main_menu
 from aiogram_dialog import setup_dialogs
-from admin_dialog import admin_dialog , message_sender_worker
+from admin_dialog import admin_dialog , message_sender_worker, banner_dialog
 from dialogs import root_dialog, send_dialog, login_dialog
 from postgres_table import init_models
 from scheduler import scheduler, background_worker
@@ -30,7 +30,7 @@ async def main():
     dp.include_router(login_dialog)
     dp.include_router(send_dialog)
     dp.include_router(admin_dialog)
-    # dialogs
+    dp.include_router(banner_dialog)
 
     setup_dialogs(dp)
 

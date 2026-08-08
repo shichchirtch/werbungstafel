@@ -117,11 +117,8 @@ async def accept_login(message: Message, state: FSMContext):
 
 @ch_router.message(Command('help'))
 async def command_help(message: Message, dialog_manager: DialogManager):
-    user = await get_user(message.from_user.id)
-    lan =user['lan']
+    lan =message.from_user.language_code
     await message.answer(text=help_msg[lan])
-    # await dialog_manager.reset_stack()
-    # await dialog_manager.start(state=ROOT_WIND.do_nothing)
 
 
 @ch_router.message(Command('send_message'))
@@ -137,7 +134,7 @@ async def admin_enter(message: Message, dialog_manager: DialogManager):
     await dialog_manager.start(state=ADMIN.first)
 
 
-@ch_router.message()
+@ch_router.message(~StateFilter(ADMIN.accept_msg))
 async def message_trasher(message: Message, dialog_manager: DialogManager):
     lan = message.from_user.language_code
     otwet = await message.answer(trasher[lan])
