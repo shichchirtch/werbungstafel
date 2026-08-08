@@ -1373,3 +1373,36 @@ async def update_user_language(
 
         return True
 
+async def get_new_banners():
+    async with session_marker() as session:
+
+        result = await session.execute(
+            select(Banner)
+            .where(Banner.active == True)
+        )
+
+        banners = result.scalars().all()
+
+        return banners
+
+async def deactivate_banner(position: str):
+    async with session_marker() as session:
+
+        result = await session.execute(
+            select(Banner)
+            .where(
+                Banner.position == position,
+                Banner.active == True,
+            )
+        )
+
+        banner = result.scalar_one_or_none()
+
+        if not banner:
+            return False
+
+        banner.active = False
+
+        await session.commit()
+
+        return True

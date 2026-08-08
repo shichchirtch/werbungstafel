@@ -133,8 +133,8 @@ async def swyz_with_dev(message: Message, dialog_manager: DialogManager):
 async def admin_enter(message: Message, dialog_manager: DialogManager):
     await dialog_manager.start(state=ADMIN.first)
 
-
-@ch_router.message(~StateFilter(ADMIN.accept_msg))
+trash_router = Router()
+@trash_router.message()
 async def message_trasher(message: Message, dialog_manager: DialogManager):
     lan = message.from_user.language_code
     otwet = await message.answer(trasher[lan])

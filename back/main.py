@@ -1,6 +1,6 @@
 import asyncio
 from bot_instance import bot, dp, bot_storage_key
-from command_handlers import ch_router
+from command_handlers import ch_router, trash_router
 from callback_handlers import cb_router
 from start_menu import set_main_menu
 from aiogram_dialog import setup_dialogs
@@ -31,6 +31,7 @@ async def main():
     dp.include_router(send_dialog)
     dp.include_router(admin_dialog)
     dp.include_router(banner_dialog)
+    dp.include_router(trash_router)
 
     setup_dialogs(dp)
 

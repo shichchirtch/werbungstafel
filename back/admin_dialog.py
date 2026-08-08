@@ -15,6 +15,7 @@ from static_functions import get_users_count, get_ads_today_count, get_all_users
 from postgres_table import session_marker, Banner
 import asyncio
 from sqlalchemy import select
+from user_repo import deactivate_banner
 
 message_queue = asyncio.Queue()
 
@@ -283,6 +284,49 @@ async def save_banner(callback: CallbackQuery, widget: Button, dialog_manager: D
 
 
 
+async def delete_banner_top(
+    cb: CallbackQuery,
+    widget: Button,
+    dialog_manager: DialogManager,
+    *args,
+    **kwargs,
+):
+    deleted = await deactivate_banner("top")
+
+    if deleted:
+        await cb.message.answer("Oberer Banner wurde entfernt.")
+    else:
+        await cb.message.answer("Kein aktiver oberer Banner vorhanden.")
+
+    await dialog_manager.switch_to(BANNER.banner_first)
+
+async def delete_banner_bottom(
+    cb: CallbackQuery,
+    widget: Button,
+    dialog_manager: DialogManager,
+    *args,
+    **kwargs,
+):
+    deleted = await deactivate_banner("bottom")
+
+    if deleted:
+        await cb.message.answer("Unterer Banner wurde entfernt.")
+    else:
+        await cb.message.answer("Kein aktiver unterer Banner vorhanden.")
+
+    await dialog_manager.switch_to(BANNER.banner_first)
+
+async def wrong_banner_message(
+    message: Message,
+    widget: MessageInput,
+    dialog_manager: DialogManager,
+    *args,
+    **kwargs,
+):
+    await message.answer(
+        "❌ Bitte senden Sie ein Bild."
+    )
+
 
 banner_dialog = Dialog(
 
@@ -291,27 +335,35 @@ banner_dialog = Dialog(
     # =========================
 
     Window(
-        Const('Куда установить баннер?'),
+        Const('Управление баннерами'),
 
         Row(
             Button(
-                Const('Верхний'),
+                Const('📤 Верхний'),
                 id='banner_top',
                 on_click=banner_top,
             ),
-
             Button(
-                Const('Нижний'),
+                Const('📤 Нижний'),
                 id='banner_bottom',
                 on_click=banner_bottom,
             ),
         ),
 
-        Cancel(
-            Const('◀️'),
-            id='banner_cancel_1',
+        Row(
+            Button(
+                Const('🗑 Удалить верхний'),
+                id='delete_banner_top',
+                on_click=delete_banner_top,
+            ),
+            Button(
+                Const('🗑 Удалить нижний'),
+                id='delete_banner_bottom',
+                on_click=delete_banner_bottom,
+            ),
         ),
 
+        Cancel(Const('◀️'), id='banner_cancel'),
         state=BANNER.banner_first,
     ),
 
@@ -325,6 +377,11 @@ banner_dialog = Dialog(
         MessageInput(
             func=accept_banner_photo,
             content_types=ContentType.PHOTO,
+        ),
+
+        MessageInput(
+            func=wrong_banner_message,
+            content_types=ContentType.ANY,
         ),
 
         Cancel(
