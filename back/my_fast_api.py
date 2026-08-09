@@ -3,8 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware import Middleware
 import logging
 from pydantic import BaseModel
-
-from back.user_repo import werbung_top
 from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_confirmed_login, create_login_token,
                        delete_login_request, create_ad_db, get_ads_by_category,
@@ -17,7 +15,7 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_map_data_db, get_ads_by_place_db, toggle_user_ban,
                        get_user_profile_by_id, get_user_by_id, create_message_attachment,
                        get_last_user_ad, get_ad_statistics, register_ad_view_db,
-                       register_ad_favorite_db, get_new_banners)
+                       register_ad_favorite_db, get_new_banners, werbung_top)
 import secrets
 import string, math
 from fastapi.staticfiles import StaticFiles
