@@ -53,48 +53,71 @@ function HomePage() {
     }, [])
 
     return (
-        <div className="w-full px-4 py-4">
+        <div className="w-full px-4">
+
+            {/* TOP BANNER */}
             {banners
                 .filter((banner) => banner.position === 'top')
                 .map((banner) => (
-
                     <a
                         key={banner.id}
                         href={banner.targetUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="
-                block
-                w-full
-                h-24
-                mb-4
-                rounded-2xl
-                overflow-hidden
-                border
-                border-white/10
-                shadow-lg
-            "
+                        block
+                        w-full
+                        max-w-2xl
+                        mx-auto
+                        aspect-[4/1]
+                        mb-2
+                        rounded-2xl
+                        overflow-hidden
+                        border
+                        border-white/10
+                        shadow-lg
+                    "
                     >
                         <img
                             src={banner.imageUrl}
                             alt="Werbung"
                             className="
-                    w-full
-                    h-full
-                    object-cover
-                "
+                            w-full
+                            h-full
+                            object-cover
+                        "
                         />
                     </a>
-
                 ))
             }
 
-            <div className="flex items-center justify-center py-6">
-                <div
-                    className="w-full max-w-md rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-8 shadow-2xl">
+
+            {/* MAIN BLOCK */}
+            <div className="
+            flex
+            items-center
+            justify-center
+        ">
+
+                <div className="
+                w-full
+                max-w-md
+                rounded-3xl
+                border border-white/10
+                bg-white/5
+                backdrop-blur-xl
+                p-8
+                shadow-2xl
+            ">
 
                     <h1
-                        className="text-4xl font-black text-center mb-4 text-black"
+                        className="
+                        text-4xl
+                        font-black
+                        text-center
+                        mb-4
+                        text-black
+                    "
                         style={{
                             WebkitTextStroke: '0.5px white',
                             textShadow: '0 0 10px rgba(255,255,255,0.6)',
@@ -115,10 +138,20 @@ function HomePage() {
                         <button
                             onClick={() => setShowModal(true)}
                             className="
-                        py-4 rounded-2xl font-bold text-black text-lg
-                        bg-gradient-to-br from-cyan-300 via-cyan-400 to-blue-500
-                        transition duration-200
-                        shadow-lg shadow-cyan-400/40 active:scale-95
+                            py-4
+                            rounded-2xl
+                            font-bold
+                            text-black
+                            text-lg
+                            bg-gradient-to-br
+                            from-cyan-300
+                            via-cyan-400
+                            to-blue-500
+                            transition
+                            duration-200
+                            shadow-lg
+                            shadow-cyan-400/40
+                            active:scale-95
                         "
                         >
                             {t('AnzeigeAufgeben')}
@@ -127,10 +160,20 @@ function HomePage() {
                         <button
                             onClick={() => navigate('/categories')}
                             className="
-                        py-4 rounded-2xl font-bold text-white text-lg
-                        bg-gradient-to-br from-pink-500 via-fuchsia-500 to-violet-600
-                        transition duration-200
-                        shadow-lg shadow-pink-500/40 active:scale-95
+                            py-4
+                            rounded-2xl
+                            font-bold
+                            text-white
+                            text-lg
+                            bg-gradient-to-br
+                            from-pink-500
+                            via-fuchsia-500
+                            to-violet-600
+                            transition
+                            duration-200
+                            shadow-lg
+                            shadow-pink-500/40
+                            active:scale-95
                         "
                         >
                             {t('SuchAnzeigen')}
@@ -140,94 +183,148 @@ function HomePage() {
 
                 </div>
 
-                {showModal && (
-                    <div
-                        className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center px-4 z-50">
-
-                        <div
-                            className="w-full max-w-lg rounded-3xl border border-white/10 bg-zinc-900 p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-
-                            <div className="relative mb-5">
-
-                                <h2
-                                    className="text-3xl font-black text-black text-center"
-                                    style={{
-                                        WebkitTextStroke: '0.4px white',
-                                        textShadow: '0 0 8px rgba(255,255,255,0.6)',
-                                    }}
-                                >
-                                    {t('KategorieWaehlen')}
-                                </h2>
-
-                                <button
-                                    onClick={() => setShowModal(false)}
-                                    className="absolute right-0 top-0 text-gray-600 text-2xl font-bold"
-                                >
-                                    ×
-                                </button>
-
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-3">
-
-                                {categories.map((item) => (
-                                    <button
-                                        key={item.slug}
-                                        onClick={() => handleCategoryClick(item.slug)}
-                                        className="
-                                    min-h-[80px] rounded-2xl px-3 py-3
-                                    text-gray-300 font-semibold text-base md:text-lg leading-tight
-                                    bg-gradient-to-br from-cyan-400 via-cyan-600 to-blue-800
-                                    shadow-lg shadow-cyan-400/30
-                                    active:scale-95 transition
-                                    "
-                                    >
-                                        {item.title}
-                                    </button>
-                                ))}
-
-                            </div>
-
-                        </div>
-
-                    </div>
-                )}
-
             </div>
+
+
+            {/* BOTTOM BANNER */}
             {banners
                 .filter((banner) => banner.position === 'bottom')
                 .map((banner) => (
-
                     <a
                         key={banner.id}
                         href={banner.targetUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="
-                block
-                w-full
-                h-24
-                mt-6
-                rounded-2xl
-                overflow-hidden
-                border
-                border-white/10
-                shadow-lg
-            "
+                        block
+                        w-full
+                        max-w-2xl
+                        mx-auto
+                        aspect-[4/1]
+                        mt-2
+                        rounded-2xl
+                        overflow-hidden
+                        border
+                        border-white/10
+                        shadow-lg
+                    "
                     >
                         <img
                             src={banner.imageUrl}
                             alt="Werbung"
                             className="
-                    w-full
-                    h-full
-                    object-cover
-                "
+                            w-full
+                            h-full
+                            object-cover
+                        "
                         />
                     </a>
-
                 ))
             }
+
+
+            {/* MODAL */}
+            {showModal && (
+                <div
+                    className="
+                    fixed
+                    inset-0
+                    bg-black/70
+                    backdrop-blur-sm
+                    flex
+                    items-center
+                    justify-center
+                    px-4
+                    z-50
+                "
+                >
+
+                    <div
+                        className="
+                        w-full
+                        max-w-lg
+                        rounded-3xl
+                        border
+                        border-white/10
+                        bg-zinc-900
+                        p-6
+                        shadow-2xl
+                        max-h-[90vh]
+                        overflow-y-auto
+                    "
+                    >
+
+                        <div className="relative mb-5">
+
+                            <h2
+                                className="
+                                text-3xl
+                                font-black
+                                text-black
+                                text-center
+                            "
+                                style={{
+                                    WebkitTextStroke: '0.4px white',
+                                    textShadow: '0 0 8px rgba(255,255,255,0.6)',
+                                }}
+                            >
+                                {t('KategorieWaehlen')}
+                            </h2>
+
+                            <button
+                                onClick={() => setShowModal(false)}
+                                className="
+                                absolute
+                                right-0
+                                top-0
+                                text-gray-600
+                                text-2xl
+                                font-bold
+                            "
+                            >
+                                ×
+                            </button>
+
+                        </div>
+
+
+                        <div className="grid grid-cols-2 gap-3">
+
+                            {categories.map((item) => (
+                                <button
+                                    key={item.slug}
+                                    onClick={() => handleCategoryClick(item.slug)}
+                                    className="
+                                    min-h-[80px]
+                                    rounded-2xl
+                                    px-3
+                                    py-3
+                                    text-gray-300
+                                    font-semibold
+                                    text-base
+                                    md:text-lg
+                                    leading-tight
+                                    bg-gradient-to-br
+                                    from-cyan-400
+                                    via-cyan-600
+                                    to-blue-800
+                                    shadow-lg
+                                    shadow-cyan-400/30
+                                    active:scale-95
+                                    transition
+                                "
+                                >
+                                    {item.title}
+                                </button>
+                            ))}
+
+                        </div>
+
+                    </div>
+
+                </div>
+            )}
+
         </div>
     )
 }

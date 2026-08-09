@@ -291,6 +291,7 @@ async def save_banner(
     )
 
     await dialog_manager.done()
+    dialog_manager.show_mode = ShowMode.SEND
 
 
 
