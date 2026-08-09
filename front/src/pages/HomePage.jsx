@@ -215,7 +215,7 @@ function HomePage() {
                             className="
                             w-full
                             h-full
-                            object-contain
+                            object-cover
                         "
                         />
                     </a>
