@@ -1100,12 +1100,11 @@ async def get_map_data_db():
 
 async def get_ads_by_place_db(place: str):
     async with session_marker() as session:
-
         result = await session.execute(
             select(Ad)
             .where(
                 Ad.plz == place,
-                Ad.anbieter == True,
+                # Ad.anbieter == True,// потом раскомментируем, когда будет много предложений
             )
             .order_by(
                 Ad.created_at.desc()
