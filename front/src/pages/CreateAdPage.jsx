@@ -38,7 +38,7 @@ function CreateAdPage() {
         'physio-spa': 'Physio / Spa',
         haustiere: 'Haustiere',
         sport:'Sport',
-        'reisen':'Reisen / Exkursion',
+        reisen:'Reisen / Exkursion',
         weitere: 'Weitere',
     }
 
