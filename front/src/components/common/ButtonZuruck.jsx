@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom'
+import {useTranslation} from "../../features/customHoock.js";
 
 function BackButton() {
     const navigate = useNavigate()
-
+    const {t} = useTranslation()
     const goBack = () => {
         if (window.history.length > 1) {
             navigate(-1)
@@ -29,7 +30,7 @@ shadow-lg shadow-cyan-400/30
 active:scale-95 transition
             "
         >
-            ← Zurück
+            {t('Zuruck')}
         </button>
     )
 }

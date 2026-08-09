@@ -1,11 +1,13 @@
 import {useEffect, useState} from "react"
 import {useNavigate, useParams} from "react-router-dom"
 import {useSelector} from "react-redux"
+import {useTranslation} from "../features/customHoock.js";
+
 
 function UserProfilePage() {
 
     const {userId} = useParams()
-
+    const {t} = useTranslation()
     const user = useSelector((state) => state.user)
 
     const navigate = useNavigate()
@@ -65,7 +67,7 @@ function UserProfilePage() {
 
         return (
             <div className="px-4 py-6 text-center text-white">
-                Profil wird geladen...
+                {t('ProfilWirdGeladen')}
             </div>
         )
 
@@ -139,15 +141,15 @@ function UserProfilePage() {
                     </h1>
 
                     <p className="text-gray-400 mb-3">
-                        {profile.bio || "Noch keine Beschreibung"}
+                        {profile.bio || t("NochKeineBeschreibung")}
                     </p>
 
                     <p className="text-cyan-300 text-sm">
-                        📍 {profile.location || "Deutschland"}
+                        📍 {profile.location || t("Deutschland")}
                     </p>
 
                     <p className="text-gray-500 text-sm mt-2">
-                        🗓 Auf Werbungstafel seit {profile.first_start}
+                        {t('AufWerbungstafelSeit')} {profile.first_start}
                     </p>
 
                 </div>
@@ -172,7 +174,7 @@ function UserProfilePage() {
                         </p>
 
                         <p className="text-gray-400 text-sm">
-                            Anzeigen
+                            {t('Anzeigen')}
                         </p>
 
                     </div>
@@ -184,7 +186,7 @@ function UserProfilePage() {
                         </p>
 
                         <p className="text-gray-400 text-sm">
-                            Favoriten
+                            {t('Favoriten')}
                         </p>
 
                     </div>
@@ -203,7 +205,7 @@ function UserProfilePage() {
                         to-blue-500
                     "
                 >
-                    ← Zurück
+                    {t('Zuruck')}
                 </button>
 
                 {user.role === "admin" && (

@@ -2,12 +2,13 @@ import {useSelector, useDispatch} from 'react-redux'
 import {logout} from '../features/user/userSlice'
 import {useNavigate} from 'react-router-dom'
 import {useState, useEffect} from 'react'
+import {useTranslation} from "../features/customHoock.js";
 
 function ProfilePage() {
 
     const user = useSelector((state) => state.user)
     const [profile, setProfile] = useState(null)
-
+    const {t} = useTranslation()
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
@@ -46,7 +47,7 @@ function ProfilePage() {
 
             <div className="px-4 py-6 text-center text-white">
 
-                Profil wird geladen...
+                {t('ProfilWirdGeladen')}
 
             </div>
 
@@ -118,15 +119,15 @@ function ProfilePage() {
 
                     {/* DESCRIPTION */}
                     <p className="text-gray-400 mb-3">
-                        {profile.bio || 'Noch keine Beschreibung'}
+                        {profile.bio || t('NochKeineBeschreibung')}
                     </p>
 
                     {/* LOCATION */}
                     <p className="text-cyan-300 text-sm">
-                        📍 {profile.location || 'Deutschland'}
+                        📍 {profile.location || t('Deutscland')}
                     </p>
                     <p className="text-gray-500 text-sm mt-2">
-                        🗓 Auf Werbungstafel seit {profile.first_start}
+                        {t('AufWerbungstafelSeit')} {profile.first_start}
                     </p>
 
                 </div>
@@ -143,7 +144,7 @@ function ProfilePage() {
                             {profile.ads_count}
                         </p>
                         <p className="text-gray-400 text-sm">
-                            Anzeigen
+                            {t('Anzeigen')}
                         </p>
                     </div>
 
@@ -152,7 +153,7 @@ function ProfilePage() {
                             {profile.favorites_count}
                         </p>
                         <p className="text-gray-400 text-sm">
-                            Favoriten
+                            {t('Favoriten')}
                         </p>
                     </div>
 
@@ -165,7 +166,7 @@ function ProfilePage() {
                         bg-gradient-to-br from-cyan-300 to-blue-500
                     "
                 >
-                    ✏️ Profil bearbeiten
+                    {t('ProfilBearbeiten')}
                 </button>
 
                 {!user.isTelegram && (
@@ -183,7 +184,7 @@ function ProfilePage() {
             bg-gradient-to-br from-gray-600 to-gray-800
         "
                     >
-                        🚪 Logout
+                        {t('LogoutProfile')}
                     </button>
 
                 )}

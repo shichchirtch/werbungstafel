@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react'
 import {useNavigate, useParams} from 'react-router-dom'
+import {useTranslation} from "../features/customHoock.js";
 
 function PlaceAdsPage() {
 
@@ -8,7 +9,7 @@ function PlaceAdsPage() {
     const navigate = useNavigate()
 
     const [ads, setAds] = useState([])
-
+    const {t} = useTranslation()
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
@@ -47,7 +48,7 @@ function PlaceAdsPage() {
 
             <div className="text-center text-gray-400 py-12">
 
-                Anzeige wird geladen...
+                {t('AnzeigeWirdGeladen')}
 
             </div>
 
@@ -72,7 +73,7 @@ function PlaceAdsPage() {
 
             <p className="text-center text-gray-400 mb-8">
 
-                {ads.length} Anzeigen
+                {ads.length} {t('Anzeigen')}
 
             </p>
 
@@ -132,7 +133,7 @@ function PlaceAdsPage() {
                 </h2>
 
                 <p className="text-gray-400 text-sm mb-2">
-                    PLZ: {item.plz}
+                    {t('PLZ')}: {item.plz}
                 </p>
 
                 {item.price && (

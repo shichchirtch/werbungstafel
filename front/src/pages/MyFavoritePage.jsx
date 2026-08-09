@@ -1,6 +1,7 @@
 import {useSelector} from 'react-redux'
 import {useNavigate} from 'react-router-dom'
 import {useState, useEffect} from "react";
+import {useTranslation} from "../features/customHoock.js";
 
 
 function MyFavoritesPage() {
@@ -8,7 +9,7 @@ function MyFavoritesPage() {
     const navigate = useNavigate()
 
     const user = useSelector((state) => state.user)
-
+    const {t} = useTranslation()
     const [favorites, setFavorites] = useState([])
 
     useEffect(() => {
@@ -37,13 +38,13 @@ function MyFavoritesPage() {
         <div className="px-4 py-6">
 
             <h1 className="text-3xl text-white font-bold text-center mb-6">
-                Merkliste
+                {t('Merkliste')}
             </h1>
 
             {favorites.length === 0 ? (
 
                 <p className="text-center text-gray-400">
-                    Deine Merkliste ist leer
+                    {t('DeineMerklisteIstLeer')}
                 </p>
 
             ) : (
@@ -97,7 +98,7 @@ function MyFavoritesPage() {
                                     </h2>
 
                                     <p className="text-gray-400 text-sm mb-2">
-                                        PLZ: {item.plz}
+                                        {t('PLZ')}: {item.plz}
                                     </p>
 
                                     {item.price && (
@@ -136,7 +137,7 @@ function MyFavoritesPage() {
                                         transition
                                     "
                                     >
-                                        Öffnen
+                                         {t('Oeffnen')}
                                     </button>
 
                                 </div>

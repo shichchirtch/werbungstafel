@@ -1,4 +1,5 @@
 import {useEffect, useState, useRef} from 'react'
+import {useTranslation} from "../features/customHoock.js";
 
 function Chat({adId, senderId, receiverId,}) {
 
@@ -14,7 +15,7 @@ function Chat({adId, senderId, receiverId,}) {
     )
 
     const touchStartX = useRef(0)
-
+    const {t} = useTranslation()
     const handleTouchStart = (e) => {
 
         touchStartX.current = e.touches[0].clientX
@@ -315,7 +316,7 @@ function Chat({adId, senderId, receiverId,}) {
                 {messages.length === 0 ? (
 
                     <p className="text-gray-400 text-sm">
-                        Noch keine Nachrichten
+                        {t('NochKeineNachrichten')}
                     </p>
 
                 ) : (
@@ -469,7 +470,7 @@ function Chat({adId, senderId, receiverId,}) {
                     onChange={handleMessageChange}
                     rows={1}
                     maxLength={400}
-                    placeholder="Nachricht..."
+                    placeholder={t("Nachricht")}
                     className="
         flex-1
         bg-black/40

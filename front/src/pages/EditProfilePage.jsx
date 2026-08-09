@@ -2,6 +2,7 @@ import {useState, useEffect} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import {useNavigate} from 'react-router-dom'
 import {updateProfile} from "../features/user/userSlice.js";
+import {useTranslation} from "../features/customHoock.js";
 
 function EditProfilePage() {
 
@@ -13,6 +14,7 @@ function EditProfilePage() {
     const [bio, setBio] = useState(user.bio || '')
     const [location, setLocation] = useState(user.location || '')
     const dispatch = useDispatch()
+    const {t} = useTranslation()
 
     useEffect(() => {
 
@@ -39,7 +41,7 @@ function EditProfilePage() {
     if (!profile) {
         return (
             <div className="text-white text-center py-6">
-                Profil wird geladen...
+               {t('ProfilWirdGeladen')}
             </div>
         )
     }
@@ -100,7 +102,7 @@ function EditProfilePage() {
             <div className="max-w-xl mx-auto flex flex-col gap-4">
 
                 <h1 className="text-2xl text-gray-500 text-center font-bold">
-                    Profil bearbeiten
+                    {t('ProfilBearbeiten')}
                 </h1>
 
                 {/* AVATAR */}
@@ -136,21 +138,21 @@ function EditProfilePage() {
                         readOnly
                         onChange={(e) => setName(e.target.value)}
                         className="bg-black/40 text-gray-400 p-3 rounded-xl"
-                        placeholder="Name"
+                        placeholder={t("Name")}
                     />
 
                     <textarea
                         value={bio}
                         onChange={(e) => setBio(e.target.value)}
                         className="bg-black/40 text-gray-400 p-3 rounded-xl"
-                        placeholder="Über mich"
+                        placeholder={t("UberMich")}
                     />
 
                     <input
                         value={location}
                         onChange={(e) => setLocation(e.target.value)}
                         className="bg-black/40 text-gray-400 p-3 rounded-xl"
-                        placeholder="Ort"
+                        placeholder={t("Ort")}
                     />
 
                     <button
@@ -160,7 +162,7 @@ function EditProfilePage() {
                             bg-gradient-to-br from-cyan-300 to-blue-500
                         "
                     >
-                        Speichern
+                        {t('Speichern')}
                     </button>
                 </form>
             </div>

@@ -3,13 +3,14 @@ import {MapContainer, TileLayer, Marker} from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import {useNavigate} from 'react-router-dom'
+import {useTranslation} from "../features/customHoock.js";
 
 
 function MapPage() {
 
     const [places, setPlaces] = useState([])
     const navigate = useNavigate()
-
+    const {t} = useTranslation()
     useEffect(() => {
 
         async function loadMap() {
@@ -199,7 +200,7 @@ function MapPage() {
         pointer-events-auto
         select-none opacity-75
     "
-                >Deutschland</p>
+                >{t('Deutschland')}</p>
 
                 <button
 

@@ -2,7 +2,7 @@ import {useEffect, useState} from "react"
 import {useSelector, useDispatch} from "react-redux"
 import Chat from "../components/Chat"
 import {selectChat, clearSelectedChat} from "../features/messages/messagesSlice.js";
-
+import {useTranslation} from "../features/customHoock.js";
 
 function NachrichtenPage() {
 
@@ -13,6 +13,7 @@ function NachrichtenPage() {
         state => state.messages.selectedChat)
     const [page, setPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
+    const {t} = useTranslation()
 
     const dispatch = useDispatch()
 
@@ -111,7 +112,7 @@ function NachrichtenPage() {
             <div className="max-w-5xl mx-auto px-4 py-6">
 
                 <h1 className="text-2xl text-slate-200 font-bold mb-6">
-                    Nachrichten
+                    {t('Nachrichten')}
                 </h1>
 
                 <div className="flex flex-col gap-3">
@@ -119,7 +120,7 @@ function NachrichtenPage() {
                     {chats.length === 0 ? (
 
                         <div className="text-center text-gray-400 mt-20">
-                            Noch keine Nachrichten
+                            {t('NochKeineNachrichten')}
                         </div>
 
                     ) : (
@@ -348,7 +349,7 @@ function NachrichtenPage() {
                     font-semibold
                 "
             >
-                ← Alle Chats
+                {t('AlleChats')}
             </button>
 
             <div

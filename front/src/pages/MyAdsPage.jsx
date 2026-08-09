@@ -1,12 +1,14 @@
 import {useSelector} from 'react-redux'
 import {useNavigate} from 'react-router-dom'
 import { useState, useEffect} from "react";
+import {useTranslation} from "../features/customHoock.js";
 
 function MyAdsPage() {
     const navigate = useNavigate()
 
     const user = useSelector((state) => state.user)
     const [myAds, setMyAds] = useState([])
+    const {t} = useTranslation()
 
     useEffect(() => {
 
@@ -33,13 +35,13 @@ function MyAdsPage() {
     <div className="px-4 py-6">
 
         <h1 className="text-3xl text-white font-bold text-center mb-6">
-            Meine Anzeigen
+            {t('MeineAnzeigen')}
         </h1>
 
         {myAds.length === 0 ? (
 
             <p className="text-center text-gray-400">
-                Du hast noch keine Anzeigen erstellt
+                {t('DuHastNochKeineAnzeigenErstellt')}
             </p>
 
         ) : (
@@ -93,7 +95,7 @@ function MyAdsPage() {
                                 </h2>
 
                                 <p className="text-gray-400 text-sm mb-2">
-                                    PLZ: {item.plz}
+                                    {t('PLZ')}: {item.plz}
                                 </p>
 
                                 {item.price && (
@@ -132,7 +134,7 @@ function MyAdsPage() {
                                         transition
                                     "
                                 >
-                                    Öffnen
+                                    {t('Oeffnen')}
                                 </button>
 
                             </div>

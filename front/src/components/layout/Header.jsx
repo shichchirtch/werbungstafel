@@ -438,7 +438,7 @@ function Header() {
                         font-semibold active:scale-95
                     "
                             >
-                                📲 Telegram öffnen
+                                📲 {t('TelegramEoffnen')}
                             </button>
 
                         </div>

@@ -1,5 +1,6 @@
 import {useNavigate, useParams} from 'react-router-dom'
 import {useEffect, useState} from 'react'
+import {useTranslation} from "../features/customHoock.js";
 
 
 function EditAdPage() {
@@ -15,6 +16,7 @@ function EditAdPage() {
     const [successModal, setSuccessModal] = useState(false)
     const [isCompressing, setIsCompressing] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const {t} = useTranslation()
 
     useEffect(() => {
         async function loadAd() {
@@ -246,7 +248,7 @@ function EditAdPage() {
         const files = Array.from(e.target.files)
 
         if (photos.length + files.length > 5) {
-            alert("Можно загрузить не более 5 фотографий")
+            alert(t("FiveFoto"))
             return
         }
 
@@ -278,7 +280,7 @@ function EditAdPage() {
             )
 
             if (selectedSize + newSize > 20 * 1024 * 1024) {
-                alert("Общий размер фотографий не должен превышать 20 МБ")
+                alert(t("TwentyMB"))
                 return
             }
 
@@ -340,7 +342,7 @@ function EditAdPage() {
                     textShadow: '0 0 8px rgba(255,255,255,0.6)',
                 }}
             >
-                Anzeige bearbeiten
+                {t('AnzeigeBearbeiten')}
             </h1>
 
             <form
@@ -365,7 +367,7 @@ function EditAdPage() {
                             className="w-4 h-4 accent-cyan-400"
                         />
 
-                        <span>Ich biete</span>
+                        <span>{t('Biete')}</span>
 
                     </label>
 
@@ -379,7 +381,7 @@ function EditAdPage() {
                             className="w-4 h-4 accent-pink-500"
                         />
 
-                        <span>Ich suche</span>
+                        <span>{t('Suche')}</span>
 
                     </label>
 
@@ -399,6 +401,7 @@ function EditAdPage() {
                 <input
                     type="text"
                     value={plz}
+                    placeholder={t('PLZ')}
                     onChange={(e) => setPlz(e.target.value)}
                     className="
                         bg-black/40 text-gray-300
@@ -410,6 +413,7 @@ function EditAdPage() {
 
                 <textarea
                     rows="5"
+                    placeholder={t('BeschreibungAnzeige')}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     className="
@@ -422,6 +426,7 @@ function EditAdPage() {
 
                 <input
                     type="text"
+                    placeholder={t('PreisInfo')}
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
                     className="
@@ -504,7 +509,7 @@ function EditAdPage() {
 
                 {isCompressing && (
                     <div className="text-center text-cyan-300 font-semibold animate-pulse">
-                        📷 Bilder werden komprimiert...
+                        {t('BilderWerdenKomprimiert')}
                     </div>
                 )}
 
@@ -521,10 +526,10 @@ function EditAdPage() {
                 >
                     {
                         isCompressing
-                            ? "Fotos werden verarbeitet..."
+                            ? t('FotosWerdenVerarbeitet')
                             : isSubmitting
-                                ? "Speichern..."
-                                : "Speichern"
+                                ? t('ProzessGeht')
+                                : t('AnzeigeVeroffentlichen')
                     }
                 </button>
 
@@ -556,7 +561,7 @@ function EditAdPage() {
                             text-2xl font-bold
                             text-white mb-3
                         ">
-                            Änderungen gespeichert
+                            {t('ErfolgreichVeroeffentlicht')}
                         </h2>
 
                         <button
@@ -570,7 +575,7 @@ function EditAdPage() {
                                 from-cyan-300 to-blue-500
                             "
                         >
-                            Weiter
+                           {t('Weiter')}
                         </button>
 
                     </div>
