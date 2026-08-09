@@ -245,6 +245,7 @@ async def get_ads_by_category(category: str):
                 Ad.category == category
             )
             .order_by(
+                Ad.pinned.desc(),
                 Ad.id.desc()
             )
         )
@@ -999,6 +1000,7 @@ async def get_ads_by_radius_db(center_lat: float, center_lon: float, radius: int
                 Ad.category == category
             )
             .order_by(
+                Ad.pinned.desc(),
                 Ad.id.desc()
             )
         )
@@ -1066,7 +1068,7 @@ async def get_map_data_db():
             .where(
                 Ad.latitude.is_not(None),
                 Ad.longitude.is_not(None),
-                Ad.anbieter == True,
+                # Ad.anbieter == True,
 
             )
 
