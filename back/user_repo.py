@@ -1412,7 +1412,6 @@ async def get_new_banners():
 
 async def deactivate_banner(position: str):
     async with session_marker() as session:
-
         result = await session.execute(
             select(Banner)
             .where(
@@ -1420,14 +1419,31 @@ async def deactivate_banner(position: str):
                 Banner.active == True,
             )
         )
-
         banner = result.scalar_one_or_none()
-
         if not banner:
             return False
-
         banner.active = False
+        await session.commit()
+        return True
+
+async def werbung_top(user_id, ad_id):
+    async with session_marker() as session:
+
+        user = await session.get(User, user_id)
+
+        if not user:
+            return False, "Benutzer nicht gefunden"
+
+        if user.role != "admin":
+            return False, "Keine Berechtigung"
+
+        ad = await session.get(Ad, ad_id)
+
+        if not ad:
+            return False, "Anzeige nicht gefunden"
+
+        ad.pinned = not ad.pinned
 
         await session.commit()
 
-        return True
+        return True, ad.pinned

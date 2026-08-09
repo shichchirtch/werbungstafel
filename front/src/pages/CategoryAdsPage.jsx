@@ -314,16 +314,47 @@ function CategoryAdsPage() {
 
                         <div
                             key={item.id}
-                            className="
-                                rounded-3xl
-                                border
-                                border-white/10
-                                bg-white/5
-                                backdrop-blur-md
-                                p-4
-                                shadow-xl
-                            "
+                            className={`
+        relative
+        rounded-3xl
+        border
+        border-white/10
+        bg-white/5
+        backdrop-blur-md
+        p-4
+        shadow-xl
+        overflow-hidden
+    `}
                         >
+                            {item.pinned && (
+                                <div
+                                    className="
+            absolute
+            top-0
+            right-0
+            w-14
+            h-14
+            bg-gradient-to-br
+            from-fuchsia-500
+            to-violet-700
+        "
+                                    style={{
+                                        clipPath: 'polygon(100% 0, 100% 100%, 0 0)',
+                                    }}
+                                >
+        <span
+            className="
+                absolute
+                top-1
+                right-1
+                text-white
+                text-xs
+            "
+        >
+            📌
+        </span>
+                                </div>
+                            )}
 
 
                             <div className="flex gap-4">
@@ -331,8 +362,9 @@ function CategoryAdsPage() {
                                 <img
                                     src={item.preview || "/images/no-photo.png"}
                                     alt="preview"
-                                     onError={(e) => {
-        e.currentTarget.src = "/images/no-photo.png"}}
+                                    onError={(e) => {
+                                        e.currentTarget.src = "/images/no-photo.png"
+                                    }}
                                     className="
                                         w-36
                                         h-36

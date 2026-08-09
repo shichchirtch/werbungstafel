@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware import Middleware
 import logging
 from pydantic import BaseModel
+
+from back.user_repo import werbung_top
 from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_confirmed_login, create_login_token,
                        delete_login_request, create_ad_db, get_ads_by_category,
@@ -202,9 +204,7 @@ async def create_ad(data: AdCreate):
             "ok": False,
             "error": "Ihr Konto wurde gesperrt."
         }
-
     last_ad = await get_last_user_ad(user.id)
-
     if last_ad:
 
         delta = datetime.now() - last_ad.created_at
@@ -304,16 +304,11 @@ async def get_ads(category: str, place: str = "Deutschland", radius: str = "Alle
 @f_api.get("/api/ad/{ad_id}")
 async def get_ad(ad_id: int):
     """Хэндлер возвращающий данные вербунга на фронт из постгреса"""
-
     ad, owner_name = await get_ad_by_id(ad_id)
-
     if not ad:
         return {"ok": False}
-
     photos = await get_ad_photos(ad.id)
-
     stats = await get_ad_statistics(ad.id)
-
     return {
         "id": ad.id,
         "ownerId": ad.owner_id,
@@ -322,6 +317,7 @@ async def get_ad(ad_id: int):
         "description": ad.description,
         "price": ad.price,
         "plz": ad.plz,
+        "pinned": ad.pinned,
         "anbieter": ad.anbieter,
         "ownerName": owner_name,
         "views": stats["views"],
@@ -625,11 +621,8 @@ async def create_nachricht(ad_id: int = Form(...), sender_id: int = Form(...),re
         receiver_id=receiver_id,
         text=text,
     )
-
     folder = f"uploads/messages/{nachricht.id}"
-
     os.makedirs(folder, exist_ok=True)
-
     attachments = []
 
     for photo in photos:
@@ -757,7 +750,7 @@ async def get_place_ads(place: str):
     return ads
 
 
-################################ B A N #####################################
+################################ B A N & T O P #####################################
 
 @f_api.put("/api/users/{user_id}/ban")
 async def ban_user(user_id: int):
@@ -773,10 +766,31 @@ async def ban_user(user_id: int):
         user_id=user_id,
         is_banned=is_banned,
     )
-
     return {
         "ok": True,
         "is_banned": is_banned,
+    }
+
+@f_api.post("/api/ad/{ad_id}/pin")
+async def toggle_ad_pin(ad_id: int,data: dict):
+    user_id = data.get("user_id")
+
+    if not user_id:
+        return {
+            "ok": False,
+            "error": "Nicht autorisiert",
+        }
+    success, result = await werbung_top(user_id, ad_id)
+
+    if not success:
+        return {
+            "ok": False,
+            "error": result,
+        }
+
+    return {
+        "ok": True,
+        "pinned": result,
     }
 
 
@@ -824,41 +838,26 @@ async def report_ad(data: ReportAd):
     try:
 
         await bot.send_message(
-
             chat_id=-5574985398,
-
             text=(
-
                 "🚨 <b>Neue Meldung</b>\n\n"
-
                 f"<b>Grund:</b> {data.reason}\n\n"
                 f"🆔 Anzeige #{ad.id}\n"
                 f"📌 <b>{ad.title}</b>\n"
                 f"👤 von {owner_name}\n"
                 f"📍 {ad.plz}\n\n"
-
                 f"<b>Gemeldet von:</b> {reporter.first_name}\n\n"
-
                 f"🔗 {link}"
-
             ),
-
             parse_mode="HTML"
-
         )
-
     except Exception as e:
-
         print(e)
-
         return {
             "ok": False,
-            "error": "Telegram Fehler"
-        }
-
+            "error": "Telegram Fehler"}
     return {
-        "ok": True
-    }
+        "ok": True}
 
 ################################### Каунтер просмотров ####################################
 class AdView(BaseModel):
@@ -873,7 +872,6 @@ async def register_ad_view(
     user = await get_user_by_tg_id(
         data.telegram_id
     )
-
     if not user:
         return {"ok": False}
 
@@ -881,7 +879,6 @@ async def register_ad_view(
         ad_id=ad_id,
         user_id=user.id,
     )
-
     return {"ok": True}
 
 

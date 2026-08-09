@@ -22,6 +22,7 @@ function AdDetailsPage() {
     const [messages, setMessages] = useState([])
     const [showReportModal, setShowReportModal] = useState(false)
     const {t} = useTranslation()
+    const [isPinned, setIsPinned] = useState(false)
 
 
     useEffect(() => {
@@ -36,6 +37,7 @@ function AdDetailsPage() {
             console.log("AD =", data)
 
             setWerbung(data)
+            setIsPinned(data.pinned)
 
             await fetch(`/api/ad-view/${id}`, {
                 method: "POST",
@@ -75,6 +77,31 @@ function AdDetailsPage() {
 
         loadAd()
     }, [id, user.id, user.isAuth])
+
+    const handleTogglePinned = async () => {
+
+        const response = await fetch(
+            `/api/ad/${werbung.id}/pin`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: user.dbId,
+                }),
+            }
+        )
+
+        const data = await response.json()
+
+        if (!data.ok) {
+            showToast(data.error || 'Fehler')
+            return
+        }
+
+        setIsPinned(data.pinned)
+    }
 
 
     const isOwner = user.isAuth &&
@@ -550,6 +577,25 @@ transition
                 "
                             >
                                 {t('Loeschen')}
+                            </button>
+                            <button
+                                onClick={handleTogglePinned}
+                                className={`
+                flex-1
+                py-3
+                rounded-2xl
+                font-bold
+                text-white
+                transition
+                active:scale-95
+                ${
+                                    isPinned
+                                        ? 'bg-gradient-to-br from-yellow-400 to-orange-500 shadow-lg shadow-yellow-400/40'
+                                        : 'bg-gradient-to-br from-gray-500 to-gray-700'
+                                }
+            `}
+                            >
+                                {isPinned ? '📌 TOP' : 'TOP'}
                             </button>
 
                             {!showChat && (
