@@ -211,7 +211,7 @@ function CategoryAdsPage() {
         outline-none
     "
                         >
-                            <option>{t('Alle')}</option>
+                            <option value="Alle">{t('Alle')}</option>
                             <option>5 km</option>
                             <option>10 km</option>
                             <option>20 km</option>
