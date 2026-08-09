@@ -22,6 +22,8 @@ function CategoriesPage() {
         {title: 'Haustiere', slug: 'haustiere'},
         {title: 'Immobilie', slug: 'immobilie' },
         {title: 'Garten', slug: 'garten' },
+        {title: 'Sport', slug: 'sport' },
+        {title: 'Reisen / Exkursion', slug: 'reisen' },
         {title: 'Weitere', slug: 'weitere'},
     ]
 
