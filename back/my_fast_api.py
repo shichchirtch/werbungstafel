@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware import Middleware
 import logging
 from pydantic import BaseModel
-
 from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_confirmed_login, create_login_token,
                        delete_login_request, create_ad_db, get_ads_by_category,
