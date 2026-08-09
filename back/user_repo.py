@@ -269,6 +269,7 @@ async def get_ads_by_category(category: str):
                 "createdAt": ad.created_at.isoformat(),
                 "anbieter": ad.anbieter,
                 "preview": preview_photos.get(ad.id),
+                "pinned": ad.pinned,
             }
             for ad in ads
         ]
@@ -1033,7 +1034,8 @@ async def get_ads_by_radius_db(center_lat: float, center_lon: float, radius: int
                 "createdAt": ad.created_at.isoformat(),
                 "anbieter": ad.anbieter,
                 "distance": round(distance, 1),
-                "preview": preview_photos.get(ad.id)
+                "preview": preview_photos.get(ad.id),
+                "pinned": ad.pinned,
             })
         return filtered_ads
 
@@ -1041,16 +1043,11 @@ async def get_ads_by_radius_db(center_lat: float, center_lon: float, radius: int
 async def get_ads_count_by_category(category: str):
     async with session_marker() as session:
         return await session.scalar(
-
             select(func.count())
-
             .select_from(Ad)
-
             .where(
                 Ad.category == category,
-
             )
-
         )
 
 
