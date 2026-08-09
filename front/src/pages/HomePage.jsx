@@ -70,7 +70,7 @@ function HomePage() {
                         max-w-2xl
                         mx-auto
                         aspect-[4/1]
-                        mb-2
+                        mb-3
                         rounded-2xl
                         overflow-hidden
                         border
@@ -201,7 +201,7 @@ function HomePage() {
                         max-w-2xl
                         mx-auto
                         aspect-[4/1]
-                        mt-2
+                        mt-4
                         rounded-2xl
                         overflow-hidden
                         border

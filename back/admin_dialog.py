@@ -289,9 +289,9 @@ async def save_banner(
     await callback.message.answer(
         "✅ Banner erfolgreich installiert."
     )
-
-    await dialog_manager.done()
     dialog_manager.show_mode = ShowMode.SEND
+    await dialog_manager.done()
+
 
 
 
