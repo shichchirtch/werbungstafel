@@ -213,11 +213,13 @@ function AdDetailsPage() {
     if (!werbung) {
         return (
             <div className="px-4 py-6 text-center text-white">
-                Anzeige wird geladen...
+                {t('AnzeigeWirdGeladen')}
             </div>
         )
     }
-
+    console.log("CURRENT USER =", user)
+    console.log("IS OWNER =", isOwner)
+    console.log("ROLE =", user.role)
     return (
         <div className="px-4 py-6">
             <p className="text-cyan-300 text-sm mb-3 font-semibold text-center">

@@ -37,6 +37,8 @@ function CreateAdPage() {
         rechtsdienstleistungen: 'Rechtsdienstleistungen',
         'physio-spa': 'Physio / Spa',
         haustiere: 'Haustiere',
+        sport:'Sport',
+        'ausflug-reisen':'Ausflügen / Reisen',
         weitere: 'Weitere',
     }
 

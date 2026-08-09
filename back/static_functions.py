@@ -7,6 +7,7 @@ from aiogram_dialog import DialogManager
 from aiogram_dialog import ShowMode
 from pathlib import Path
 from geopy.distance import geodesic
+from lexicon import *
 
 
 
@@ -197,98 +198,55 @@ async def notify_receiver(receiver_id: int):
 
             print(e)
 
-async def notify_ad_created(
-    owner_id: int,
-    ad: Ad,
-):
-
+async def notify_ad_created(owner_id: int, ad: Ad, lan:str):
     user = await get_user_by_id(owner_id)
-
     if not user:
         return
-
     try:
-
         await bot.send_message(
-
             chat_id=user.telegram_id,
-
             text=(
-
-                "✅ <b>Ihre Anzeige wurde veröffentlicht!</b>\n\n"
-
+                f"✅ <b>{erfolgreich_veroffentlich_erste[lan]}</b>\n\n"
                 f"📌 <b>{ad.title}</b>\n"
-
                 f"📍 {ad.plz}\n\n"
-
-                "Und ist jetzt für andere Benutzer sichtbar.\n\nVielen Dank für Ihre Nutzung von Werbungstafel!"
-
-            ),
-
-            parse_mode="HTML",
-
+                f"{erfolgreich_veroffentlich_zweite[lan]}"),
+            parse_mode="HTML"
         )
-
     except Exception as e:
-
         print(e)
+
 
 async def notify_ad_deleted(owner_id: int,ad: Ad):
-
     user = await get_user_by_id(owner_id)
-
     if not user:
         return
-
     try:
-
         await bot.send_message(
-
             chat_id=user.telegram_id,
-
             text=(
-
-                "✅ <b>Ihre Anzeige wurde entfernt!</b>\n\n"
-
+                f"✅ <b>Ihre Anzeige wurde entfernt!</b>\n\n"
                 f"📌 <b>{ad.title}</b>\n"
-
                 f"📍 {ad.plz}\n\n"
-
             ),
-
-            parse_mode="HTML",
-
-        )
-
+            parse_mode="HTML" )
     except Exception as e:
-
         print(e)
 
+
 async def notify_ad_changed(owner_id: int, ad: Ad,):
-
     user = await get_user_by_id(owner_id)
-
     if not user:
         return
-
     try:
-
         await bot.send_message(
-
             chat_id=user.telegram_id,
-
             text=(
-
                 "✅ <b>Ihre Anzeige wurde verändert!</b>\n\n"
-
                 f"📌 <b>{ad.title}</b>\n"
-
                 f"📍 {ad.plz}\n\n"
             ),
-
-            parse_mode="HTML",
+            parse_mode="HTML"
         )
-
     except Exception as e:
 
         print(e)
@@ -464,31 +422,35 @@ def build_daily_report_text(
         t["summary"],
         "",
     ]
+    rest_text = {
+        'ru':'других объявлений',
+        'de':'weitere Anzeigen',
+        'uk':'інших оголошень',
+        'tr':'diğer reklamlar'
+    }
 
+    union_soyus = {
+        'ru':'и',
+        'uk':'и',
+        'de':'und',
+        'tr':'ve'
+    }
     for ad in ads[:3]:
 
         line = f"• {ad.title}"
 
         if ad.plz:
             line += f" ({ad.plz})"
-
         msg.append(line)
-
     if count > 3:
         msg.append("")
-        msg.append(f"... und {count - 3} weitere Anzeigen.")
-
+        msg.append(f"... {union_soyus[lan]} {count - 3} {rest_text[lan]}")
     msg.append(t["more"])
-
     return "\n".join(msg)
 
 
 async def get_all_users():
     async with session_marker() as session:
-
-        result = await session.execute(
-            select(User)
-            .where(User.is_banned == False)
-        )
-
+        result = await session.execute(select(User)
+            .where(User.is_banned == False))
         return result.scalars().all()

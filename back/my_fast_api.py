@@ -255,7 +255,7 @@ async def create_ad(data: AdCreate):
         latitude=latitude,
         longitude=longitude,
     )
-    await notify_ad_created(user.id, ad)
+    await notify_ad_created(user.id, ad, user.lan)
 
     return {
         "ok": True,
@@ -506,18 +506,12 @@ async def upload_photos(ad_id: int = Form(...), photos: list[UploadFile] = File(
 @f_api.delete("/api/ad/{ad_id}")
 async def delete_ad(ad_id: int):
     ad = await delete_ad_db(ad_id)
-
     if not ad:
         return {
             "ok": False,
             "error": "Anzeige nicht gefunden"
         }
-
-    await notify_ad_deleted(
-        owner_id=ad.owner_id,
-        ad=ad,
-    )
-
+    await notify_ad_deleted(owner_id=ad.owner_id, ad=ad,)
     return {
         "ok": True
     }

@@ -59,6 +59,7 @@ function Layout() {
                         id: user.telegram_id,
                         name: user.first_name,
                         dbId: user.user_id,
+                        role: user.role,
                         lan: user.lan,
                         isAuth: true,
                         isTelegram: true,

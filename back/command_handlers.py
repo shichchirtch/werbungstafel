@@ -26,11 +26,7 @@ async def command_start_process(message: Message, command: CommandObject,
     token = command.args
     print(first_name, user_id,'\n\ntoken = ', token, 'LAN = ', user_lan)
 
-    await create_user_if_not_exists(
-        tg_id=user_id,
-        first_name=first_name,
-        lan=user_lan,
-        username=user_name,
+    await create_user_if_not_exists(tg_id=user_id,first_name=first_name,lan=user_lan,username=user_name,
     )
     await dialog_manager.start(
         state=ROOT_WIND.lan_select,
@@ -56,6 +52,10 @@ async def command_start_process(message: Message, command: CommandObject,
 async def start_common(message: Message, dialog_manager: DialogManager, state: FSMContext):
     await load_user_avatar(message)
     lan = message.from_user.language_code
+    user_id = message.from_user.id
+    first_name = message.from_user.first_name
+    user_name = message.from_user.username
+    await create_user_if_not_exists(tg_id=user_id,first_name=first_name,lan=lan,username=user_name)
     await message.answer(start_drei[lan])
     await dialog_manager.start(
         state=ROOT_WIND.lan_select,
@@ -112,7 +112,6 @@ async def accept_login(message: Message, state: FSMContext):
     await message.answer(
         autorization_erfolg[us_lan]
     )
-
 
 
 @ch_router.message(Command('help'))

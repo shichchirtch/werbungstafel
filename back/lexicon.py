@@ -158,9 +158,30 @@ danke = {
 error_enter_type = {
     'ru':'Я могу принять только текст',
     'uk':'Я можу прийняти лише текст',
-    'de':'Ich kann nur Textnachrichten akzeptieren.',
-    'tr':'Sadece metin kabul edebilirim.'
+    'de':'Ich kann nur Textnachrichten akzeptieren',
+    'tr':'Sadece metin kabul edebilirim'
+}
 
+erfolgreich_veroffentlich_erste = {
+    'ru':'Объявление успешно опубликовано !',
+    'uk':'Оголошення успішно опубліковано!',
+    'de':'Ihre Anzeige wurde veröffentlicht!',
+    'tr':'İlan başarıyla yayınlandı!'
+}
+erfolgreich_veroffentlich_zweite = {
+    'ru':'И теперь доступно друним пользователям\n\nСпасибо что пользуетесь Werbungstafel!',
+    'uk':'І тепер доступно іншим користувачам\n\nДякую що користуєтеся Werbungstafel !',
+    'de':'Und ist jetzt für andere Benutzer sichtbar.'
+         '\n\nVielen Dank für Ihre Nutzung von Werbungstafel!',
+    'tr':"Ve artık diğer kullanıcılar tarafından da görülebiliyor.\n\n"
+         "Billboard'u kullandığınız için teşekkür ederiz!"
+}
+
+anzeige_entfernen = {
+    'ru':'Ваше объявление было удалено !',
+    'uk':'Ваше оголошення було видалено!',
+    'de':'Ihre Anzeige wurde entfernt!',
+    'tr':'İlanınız kaldırıldı!'
 }
 
 help_msg = {
