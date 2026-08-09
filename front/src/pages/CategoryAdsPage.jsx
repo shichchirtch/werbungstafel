@@ -342,17 +342,7 @@ function CategoryAdsPage() {
                                         clipPath: 'polygon(100% 0, 100% 100%, 0 0)',
                                     }}
                                 >
-        <span
-            className="
-                absolute
-                top-1
-                right-1
-                text-white
-                text-xs
-            "
-        >
-            📌
-        </span>
+
                                 </div>
                             )}
 
