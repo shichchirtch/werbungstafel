@@ -51,8 +51,12 @@ function Layout() {
                 )
 
                 const user = await response.json()
-
                 console.log('USER= ', user)
+                if (user.ok === false) {
+                    console.error(user.error)
+                    return
+                }
+
 
                 dispatch(
                     setUser({
@@ -80,8 +84,8 @@ function Layout() {
 
     return (
 
-    <div
-        className={`
+        <div
+            className={`
             min-h-screen
             bg-gradient-to-b
             from-zinc-900
@@ -89,21 +93,21 @@ function Layout() {
 
             ${hideHeader ? "" : "px-4 py-4"}
         `}
-    >
+        >
 
-        {
+            {
 
-            !hideHeader &&
+                !hideHeader &&
 
-            <Header/>
+                <Header/>
 
-        }
+            }
 
-        <Outlet/>
+            <Outlet/>
 
-    </div>
+        </div>
 
-)
+    )
 }
 
 export default Layout

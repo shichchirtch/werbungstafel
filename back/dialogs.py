@@ -35,10 +35,10 @@ root_dialog = Dialog(
                    id='ua_lan',
                    on_click=uk_stellen)),
         Row(
-            Button(Const('Russish'),
+            Button(Const('Russisch'),
                    id='ru_lan',
                    on_click=ru_stellen),
-            Button(Const('Turkish'),
+            Button(Const('Turkisch'),
                    id='tr_lan',
                    on_click=tr_stellen),
         ),
