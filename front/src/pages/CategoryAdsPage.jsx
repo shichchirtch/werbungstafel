@@ -41,7 +41,7 @@ function CategoryAdsPage() {
 
     const [hasAds, setHasAds] = useState(false)
 
-    const [place, setPlace] = useState("Deutschland")
+    const [place, setPlace] = useState(user.location||"Deutschland")
     const [radius, setRadius] = useState("Alle")
     console.log("CATEGORY USER =", user)
     useEffect(() => {

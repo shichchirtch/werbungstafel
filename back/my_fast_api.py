@@ -233,9 +233,6 @@ async def create_ad(data: AdCreate):
             "ok": False,
             "error": "Ort oder Postleitzahl wurde nicht gefunden"
         }
-
-    print("\n\nLOCATION =", location.raw, "\n\n")
-
     place = location.raw.get("name", data.plz)
     osm_id = location.raw["osm_id"]
 
