@@ -257,16 +257,37 @@ async def create_ad(data: AdCreate):
         # Пользователь ввёл PLZ
         plz = entered_place
 
-        address = location.raw.get("address", {})
+        # Для PLZ делаем reverse geocoding,
+        # потому что результат обычного geocode может быть
+        # объектом почтового индекса без названия города.
 
-        city = (
-            address.get("city")
-            or address.get("town")
-            or address.get("village")
-            or address.get("municipality")
-            or location.raw.get("name", "")
-        )
+        try:
 
+            reverse_location = geolocator.reverse(
+                (location.latitude, location.longitude),
+                exactly_one=True,
+                language="de",
+            )
+
+        except Exception:
+
+            reverse_location = None
+
+        if reverse_location:
+
+            address = reverse_location.raw.get("address", {})
+
+            city = (
+                    address.get("city")
+                    or address.get("town")
+                    or address.get("village")
+                    or address.get("municipality")
+                    or ""
+            )
+
+        else:
+
+            city = ""
     else:
 
         # Пользователь ввёл название города

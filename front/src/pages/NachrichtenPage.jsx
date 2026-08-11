@@ -179,11 +179,11 @@ function NachrichtenPage() {
 
                                     <div className="flex-1">
 
-                                        <div className="flex justify-between items-center">
+                                        <div className="flex justify-between items-center gap-2 min-w-0">
 
-                                            <div className="flex items-center gap-2 min-w-0">
+                                            <div className="flex items-center gap-2 min-w-0 flex-1 overflow-hidden">
 
-                                                <div className="text-white font-semibold truncate">
+                                                <div className="text-white font-semibold truncate min-w-0">
                                                     {chat.title}
                                                 </div>
 
@@ -193,8 +193,7 @@ function NachrichtenPage() {
 
                                             </div>
 
-                                            <div className="text-xs text-gray-500">
-
+                                            <div className="text-xs text-gray-500 shrink-0">
                                                 {(() => {
 
                                                     const date = new Date(chat.created_at)
@@ -218,45 +217,40 @@ function NachrichtenPage() {
                                                         })
 
                                                 })()}
-
                                             </div>
 
                                         </div>
-
                                         <div className="flex justify-between items-center mt-1">
 
-                                            <div className="text-gray-400 text-sm truncate">
+                                            <div className="text-gray-400 text-sm truncate min-w-0 flex-1">
                                                 {chat.last_message}
                                             </div>
 
                                             {chat.unread > 0 && (
-
                                                 <div
                                                     className="
-    ml-3
-    min-w-6
-    h-6
-    px-2
-    rounded-full
-    bg-gradient-to-br
-    from-pink-500
-    to-fuchsia-600
-    text-white
-    text-xs
-    font-bold
-    flex
-    items-center
-    justify-center
-    shrink-0
-"
+                ml-3
+                min-w-6
+                h-6
+                px-2
+                rounded-full
+                bg-gradient-to-br
+                from-pink-500
+                to-fuchsia-600
+                text-white
+                text-xs
+                font-bold
+                flex
+                items-center
+                justify-center
+                shrink-0
+            "
                                                 >
                                                     {chat.unread}
                                                 </div>
-
                                             )}
 
                                         </div>
-
                                     </div>
 
                                 </div>
