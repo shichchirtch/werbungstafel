@@ -378,9 +378,12 @@ function CategoryAdsPage() {
                                         {item.title}
                                     </h2>
 
-                                    <p className="text-gray-400 text-sm mb-2">
-                                        {t("PLZ")}: {item.plz}
-                                    </p>
+                                     <p className="text-gray-400 mb-2">
+                        {item.plz
+                            ? `${t('PLZ')}: ${item.plz} / ${item.city}`
+                            : `${t('PLZ')}: ${item.city}`
+                        }
+                    </p>
 
                                     {item.price && (
 
