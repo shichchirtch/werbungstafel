@@ -10,7 +10,7 @@ async def set_main_menu(bot):
                    description='about bot'),
 
         BotCommand(command='/login',
-                   description='login through Smartfpne'),
+                   description='login through Smartphone'),
 
         BotCommand(command='/send_message',
                    description='Contact the developer')

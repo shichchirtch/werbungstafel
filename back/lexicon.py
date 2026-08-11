@@ -1,23 +1,3 @@
-second_window_text = {
-    'ru': 'Для выбора языка нажмите на кнопку ◀️\n\n'
-          'Чтобы создать новую заметку нажмите 📝\n\n'
-          'Чтобы просмотреть свои заметки нажмите 📚',
-
-    'uk': 'Щоб вибрати мову, натисніть кнопку ◀️\n\n'
-          'Щоб створити нову нотатку, натисніть 📝\n\n'
-          'Щоб переглянути свої замки, натисніть 📚',
-
-    'de': 'Um eine Sprache auszuwählen, klicken Sie auf die Schaltfläche ◀️\n\n'
-          'Um eine neue Notiz zu erstellen, klicken Sie auf 📝\n\n'
-          'Um Ihre Notizen anzuzeigen, klicken Sie auf 📚',
-
-    'tr': 'Dil seçmek için ◀️ düğmesine tıklayın.\n\n'
-          'Yeni bir not oluşturmak için 📝 düğmesine tıklayın.\n\n'
-          'Notlarınızı görüntülemek için 📚 düğmesine tıklayın.'
-}
-
-
-
 start_dict = {
     'ru': 'Приветствую',
     'uk': 'Вітаю',
@@ -33,24 +13,15 @@ start_zwei={
 }
 
 start_drei = {
-    'de':"👋 Willkommen bei WerbungsTafel!\n\n"
-        "Um sich auf der Website\n\n<a>https://werbungstafel.org/</a> \n\n anzumelden, "
-        "klicken Sie dort auf "
-        "\"Mit Telegram anmelden\".",
+    'de':"👋 Willkommen bei WerbungsTafel!\n\n",
 
-    'ru':'👋 Добро пожаловать на WerbungsTafel!\n\n'
-         'Чтобы войти на сайт\n\n<a>https://werbungstafel.org/</a> \n\n,'
-         'нажмите на кнопку "Войти через Telegram\"».',
+    'ru':'👋 Добро пожаловать на WerbungsTafel!\n\n',
 
 
-    'uk':'👋 Ласкаво просимо до WerbungsTafel!\n\n'
-         'Щоб увійти на веб-сайт\n\n<a>https://werbungstafel.org/</a> \n\n,'
-         'натисніть на Увійти за допомогою Telegram\"."',
+    'uk':'👋 Ласкаво просимо до WerbungsTafel!\n\n',
 
 
-    'tr':'👋 WerbungsTafel Hoş Geldiniz!\n\n'
-         'Web sitesine giriş yapmak için\n\n<a>https://werbungstafel.org/</a> \n\n,'
-         'Telegram ile Giriş Yap" seçeneğine tıklayın."',
+    'tr':'👋 WerbungsTafel Hoş Geldiniz!\n\n',
 
 }
 
@@ -90,6 +61,20 @@ captura_code = {
 }
 
 
+ungultig_link = {
+    'ru':'Неверный код, или срок действия кода истёк',
+    'uk':'Невірний код, або термін дії коду минув',
+    'tr':'Geçersiz kod veya kodun süresi dolmuş.',
+    'de':'⚠️ Dieser Login-Link ist ungültig oder wurde bereits verwendet.'
+}
+
+bestatigt={
+    'ru':'✅ Авторизация прошла успешно, можете вернуться на сайт',
+    'uk':'✅ Авторизація пройшла успішно, можете повернутися на сайт',
+    'tr':'✅ Yetkilendirme başarılı oldu, siteye geri dönebilirsiniz.',
+    'de':'✅ Die Anmeldung wurde erfolgreich bestätigt.\n\n'
+         'Sie können jetzt zum Browser auf Seit zurückkehren'
+}
 
 Klicken_zu_sehen = {
     'ru': 'Нажмите чтобы посмотреть',

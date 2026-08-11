@@ -55,6 +55,7 @@ async def start_common(message: Message, dialog_manager: DialogManager, state: F
     user_id = message.from_user.id
     first_name = message.from_user.first_name
     user_name = message.from_user.username
+    print("=== START COMMON ===", repr(message.text))
     await create_user_if_not_exists(tg_id=user_id,first_name=first_name,lan=lan,username=user_name)
     await message.answer(start_drei[lan])
     await dialog_manager.start(
@@ -136,6 +137,7 @@ trash_router = Router()
 @trash_router.message()
 async def message_trasher(message: Message, dialog_manager: DialogManager):
     lan = message.from_user.language_code
+    print("=== TRASH ===", repr(message.text))
     otwet = await message.answer(trasher[lan])
     await asyncio.sleep(2)
     await message.delete()
