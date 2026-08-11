@@ -48,6 +48,7 @@ async def command_start_process(message: Message, command: CommandObject,
                          reply_markup=start_keyboard)
 
 
+
 @ch_router.message(CommandStart(), F.text == "/start")
 async def start_common(message: Message, dialog_manager: DialogManager, state: FSMContext):
     await load_user_avatar(message)
