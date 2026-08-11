@@ -391,6 +391,7 @@ async def get_ad(ad_id: int):
         "description": ad.description,
         "price": ad.price,
         "plz": ad.plz,
+        "city":ad.city,
         "pinned": ad.pinned,
         "anbieter": ad.anbieter,
         "ownerName": owner_name,
