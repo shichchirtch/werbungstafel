@@ -192,35 +192,47 @@ async def auth_telegram(data: dict):
 
 @f_api.post("/api/ads")
 async def create_ad(data: AdCreate):
+
     user = await get_user_by_tg_id(data.telegram_id)
+
     if not user:
         return {
             "ok": False,
             "error": "User not found"
         }
+
     if user.is_banned:
         return {
             "ok": False,
             "error": "Ihr Konto wurde gesperrt."
         }
+
     last_ad = await get_last_user_ad(user.id)
+
     if last_ad:
 
         delta = datetime.now() - last_ad.created_at
 
         if delta < timedelta(minutes=30):
+
             remaining = timedelta(minutes=30) - delta
 
-            minutes = math.ceil(remaining.total_seconds() / 60)
+            minutes = math.ceil(
+                remaining.total_seconds() / 60
+            )
 
             return {
                 "ok": False,
-                "error": f"Du kannst erst in {minutes} Minuten eine neue Anzeige veröffentlichen."
+                "error":
+                    f"Du kannst erst in {minutes} Minuten "
+                    f"eine neue Anzeige veröffentlichen."
             }
 
+    # Ищем место по тому, что ввёл пользователь:
+    # PLZ или название города
     try:
         location = geolocator.geocode(
-            f"{data.plz}, Germany"
+            f"{data.plz.strip()}, Germany"
         )
     except Exception:
         return {
@@ -233,11 +245,51 @@ async def create_ad(data: AdCreate):
             "ok": False,
             "error": "Ort oder Postleitzahl wurde nicht gefunden"
         }
-    place = location.raw.get("name", data.plz)
+
+    # -----------------------------------------
+    # PLZ / CITY
+    # -----------------------------------------
+
+    entered_place = data.plz.strip()
+
+    if entered_place.isdigit() and len(entered_place) == 5:
+
+        # Пользователь ввёл PLZ
+        plz = entered_place
+
+        address = location.raw.get("address", {})
+
+        city = (
+            address.get("city")
+            or address.get("town")
+            or address.get("village")
+            or address.get("municipality")
+            or location.raw.get("name", "")
+        )
+
+    else:
+
+        # Пользователь ввёл название города
+        plz = ""
+
+        address = location.raw.get("address", {})
+
+        city = (
+            address.get("city")
+            or address.get("town")
+            or address.get("village")
+            or address.get("municipality")
+            or location.raw.get("name", entered_place)
+        )
+
     osm_id = location.raw["osm_id"]
 
     latitude = round(location.latitude, 6)
     longitude = round(location.longitude, 6)
+
+    # -----------------------------------------
+    # CREATE AD
+    # -----------------------------------------
 
     ad = await create_ad_db(
         owner_id=user.id,
@@ -245,19 +297,24 @@ async def create_ad(data: AdCreate):
         title=data.title,
         description=data.description,
         price=data.price,
-        plz=place,
+        plz=plz,
+        city=city,
         osm_id=osm_id,
         anbieter=data.anbieter,
         latitude=latitude,
         longitude=longitude,
     )
-    await notify_ad_created(user.id, ad, user.lan)
+
+    await notify_ad_created(
+        user.id,
+        ad,
+        user.lan
+    )
 
     return {
         "ok": True,
         "ad_id": ad.id
     }
-
 
 @f_api.get("/api/ads/{category}")
 async def get_ads(category: str, place: str = "Deutschland", radius: str = "Alle", ):

@@ -500,10 +500,24 @@ transition
                         </div>
 
                     </div>
-
+                    {/* TITLE */}
+                    <h1
+                        className="
+        text-2xl
+        font-black
+        text-white
+        mt-3
+        mb-3
+    "
+                    >
+                        {werbung.title}
+                    </h1>
 
                     <p className="text-gray-400 mb-2">
-                        {t('PLZ')}: {werbung.plz}
+                        {werbung.plz
+                            ? `${t('PLZ')}: ${werbung.plz} / ${werbung.city}`
+                            : `${t('PLZ')}: ${werbung.city}`
+                        }
                     </p>
 
                     {werbung.price && (

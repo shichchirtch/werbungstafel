@@ -214,11 +214,21 @@ async def delete_login_request(token: str):
 
         print("LOGIN REQUEST DELETED =", token)
 
-
-async def create_ad_db(owner_id: int, category: str, title: str,
-                       description: str, price: str, plz: str, osm_id: int, anbieter: bool, latitude: float,
-                       longitude: float, ):
+async def create_ad_db(
+    owner_id: int,
+    category: str,
+    title: str,
+    description: str,
+    price: str,
+    plz: str,
+    city: str,
+    osm_id: int,
+    anbieter: bool,
+    latitude: float,
+    longitude: float,
+):
     async with session_marker() as session:
+
         ad = Ad(
             owner_id=owner_id,
             category=category,
@@ -226,16 +236,19 @@ async def create_ad_db(owner_id: int, category: str, title: str,
             description=description,
             price=price,
             plz=plz,
+            city=city,
             osm_id=osm_id,
             anbieter=anbieter,
             latitude=latitude,
             longitude=longitude,
         )
+
         session.add(ad)
+
         await session.commit()
         await session.refresh(ad)
-        return ad
 
+        return ad
 
 async def get_ads_by_category(category: str):
     async with session_marker() as session:
