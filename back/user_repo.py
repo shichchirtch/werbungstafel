@@ -276,6 +276,7 @@ async def get_ads_by_category(category: str):
                 "category": ad.category,
                 "title": ad.title,
                 "plz": ad.plz,
+                "city":ad.city,
                 "description": ad.description,
                 "price": ad.price,
                 "photos": [],
