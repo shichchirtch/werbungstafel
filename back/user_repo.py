@@ -331,6 +331,12 @@ async def delete_upload_folder(ad_id: int):
     if os.path.exists(folder):
         shutil.rmtree(folder)
 
+async def delete_ad_activity(session, ad_id: int):
+    await session.execute(
+        delete(AdActivity).where(
+            AdActivity.ad_id == ad_id
+        )
+    )
 
 async def delete_ad_db(ad_id: int):
     async with session_marker() as session:
@@ -347,6 +353,8 @@ async def delete_ad_db(ad_id: int):
         await delete_upload_folder(ad_id)
 
         await delete_ad_photos(session, ad_id)
+
+        await delete_ad_activity(session, ad_id)
 
         await session.delete(ad)
 
