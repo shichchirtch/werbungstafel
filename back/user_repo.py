@@ -1070,10 +1070,12 @@ async def get_ads_count_by_category(category: str):
 
 async def get_map_data_db():
     async with session_marker() as session:
+
         result = await session.execute(
 
             select(
                 Ad.plz,
+                Ad.city,
                 Ad.latitude,
                 Ad.longitude,
                 func.count(Ad.id).label("count"),
@@ -1082,12 +1084,11 @@ async def get_map_data_db():
             .where(
                 Ad.latitude.is_not(None),
                 Ad.longitude.is_not(None),
-                # Ad.anbieter == True,
-
             )
 
             .group_by(
                 Ad.plz,
+                Ad.city,
                 Ad.latitude,
                 Ad.longitude,
             )
@@ -1095,32 +1096,42 @@ async def get_map_data_db():
             .order_by(
                 func.count(Ad.id).desc()
             )
-
         )
 
         rows = result.all()
 
         return [
-
             {
-                "place": row.plz,
+                "place": row.plz if row.plz else row.city,
+                "plz": row.plz,
+                "city": row.city,
                 "latitude": row.latitude,
                 "longitude": row.longitude,
                 "count": row.count,
             }
-
             for row in rows
-
         ]
 
-
 async def get_ads_by_place_db(place: str):
+
     async with session_marker() as session:
+
+        place = place.strip()
+
+        if place.isdigit() and len(place) == 5:
+
+            condition = Ad.plz == place
+
+        else:
+
+            condition = Ad.city == place
+
         result = await session.execute(
+
             select(Ad)
             .where(
-                Ad.plz == place,
-                # Ad.anbieter == True,// потом раскомментируем, когда будет много предложений
+                condition,
+                # Ad.anbieter == True,
             )
             .order_by(
                 Ad.created_at.desc()
@@ -1141,6 +1152,7 @@ async def get_ads_by_place_db(place: str):
                 "category": ad.category,
                 "title": ad.title,
                 "plz": ad.plz,
+                "city": ad.city,
                 "description": ad.description,
                 "price": ad.price,
                 "photos": [],
@@ -1150,7 +1162,6 @@ async def get_ads_by_place_db(place: str):
             }
             for ad in ads
         ]
-
 ############################# B A N #################################
 
 async def toggle_user_ban(user_id: int):

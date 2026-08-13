@@ -261,7 +261,7 @@ function MapPage() {
                 {places.map((item) => (
 
                     <Marker
-                        key={item.place}
+                        key={`${item.place}-${item.latitude}-${item.longitude}`}
                         position={[
                             item.latitude,
                             item.longitude,
