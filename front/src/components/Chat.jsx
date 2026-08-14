@@ -208,8 +208,8 @@ function Chat({adId, senderId, receiverId,}) {
         ) {
             fileInputRef.current.value = ""
         }
-
     }
+
     useEffect(() => {
 
         async function refreshMessages() {
@@ -229,6 +229,39 @@ function Chat({adId, senderId, receiverId,}) {
             }
 
             setMessages(data.nachrichten)
+
+            // Новые входящие сообщения считаем прочитанными
+            await fetch(
+                "/api/messages/read",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        ad_id: adId,
+                        sender_id: receiverId,
+                        receiver_id: senderId,
+                    }),
+                }
+            )
+
+            // После изменения is_read снова получаем сообщения
+            const updatedResponse = await fetch(
+                `/api/messages/${adId}/${senderId}/${receiverId}`
+            )
+
+            if (!updatedResponse.ok) {
+                return
+            }
+
+            const updatedData = await updatedResponse.json()
+
+            if (!updatedData.ok) {
+                return
+            }
+
+            setMessages(updatedData.nachrichten)
         }
 
         const interval = setInterval(
@@ -241,6 +274,7 @@ function Chat({adId, senderId, receiverId,}) {
         }
 
     }, [adId, senderId, receiverId])
+
     const handleSend = async () => {
         if (isSending) {
             return
