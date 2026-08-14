@@ -415,18 +415,35 @@ function Chat({adId, senderId, receiverId,}) {
 
                                 <div
                                     className="
-                                        self-end
-                                        mt-1
-                                        text-[11px]
-                                        opacity-60
-                                    "
+        self-end
+        mt-1
+        text-[11px]
+        opacity-60
+        flex
+        items-center
+        gap-1
+    "
                                 >
-                                    {new Date(
-                                        msg.created_at
-                                    ).toLocaleTimeString([], {
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                    })}
+    <span>
+        {new Date(
+            msg.created_at
+        ).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+        })}
+    </span>
+
+                                    {msg.sender_id === senderId && (
+                                        <span
+                                            className={
+                                                msg.is_read
+                                                    ? "text-blue-400 font-bold"
+                                                    : "text-gray-500"
+                                            }
+                                        >
+            {msg.is_read ? "✓✓" : "✓"}
+        </span>
+                                    )}
                                 </div>
 
                             </div>
