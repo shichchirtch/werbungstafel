@@ -692,14 +692,9 @@ function Chat({adId, senderId, receiverId,}) {
                     >
                         {openedPhotoIndex + 1} / {chatPhotos.length}
                     </div>
-
                 </div>
-
             )}
-
-
         </div>
-
     )
 }
 

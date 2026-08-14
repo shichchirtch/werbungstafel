@@ -357,36 +357,34 @@ function NachrichtenPage() {
                 "
             >
 
-                {selectedChat.avatar ? (
+                {selectedChat.preview ? (
 
                     <img
-                        src={selectedChat.avatar}
-                        alt={selectedChat.name}
+                        src={selectedChat.preview}
+                        alt={selectedChat.title}
                         className="
-                            w-12
-                            h-12
-                            rounded-full
-                            object-cover
-                        "
+            w-12
+            h-12
+            rounded-full
+            object-cover
+        "
+                        onError={(e) => {
+                            e.currentTarget.src = "/images/no-photo.png"
+                        }}
                     />
 
                 ) : (
 
-                    <div
+                    <img
+                        src="/images/no-photo.png"
+                        alt="preview"
                         className="
-                            w-12
-                            h-12
-                            rounded-full
-                            bg-zinc-700
-                            flex
-                            items-center
-                            justify-center
-                            text-white
-                            font-bold
-                        "
-                    >
-                        {selectedChat.name[0]}
-                    </div>
+            w-12
+            h-12
+            rounded-full
+            object-cover
+        "
+                    />
 
                 )}
 
