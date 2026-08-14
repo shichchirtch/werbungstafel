@@ -210,8 +210,37 @@ function Chat({adId, senderId, receiverId,}) {
         }
 
     }
+    useEffect(() => {
 
+        async function refreshMessages() {
 
+            const response = await fetch(
+                `/api/messages/${adId}/${senderId}/${receiverId}`
+            )
+
+            if (!response.ok) {
+                return
+            }
+
+            const data = await response.json()
+
+            if (!data.ok) {
+                return
+            }
+
+            setMessages(data.nachrichten)
+        }
+
+        const interval = setInterval(
+            refreshMessages,
+            2000
+        )
+
+        return () => {
+            clearInterval(interval)
+        }
+
+    }, [adId, senderId, receiverId])
     const handleSend = async () => {
         if (isSending) {
             return
