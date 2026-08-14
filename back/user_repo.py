@@ -1468,3 +1468,49 @@ async def werbung_top(user_id, ad_id):
         await session.commit()
 
         return True, ad.pinned
+
+######################################## Чтение сообщений ############################
+
+async def mark_messages_as_read(
+    ad_id: int,
+    receiver_id: int,
+    sender_id: int,
+):
+    async with session_marker() as session:
+
+        await session.execute(
+            update(Nachricht)
+            .where(
+                Nachricht.ad_id == ad_id,
+                Nachricht.sender_id == sender_id,
+                Nachricht.receiver_id == receiver_id,
+                Nachricht.is_read == False,
+            )
+            .values(
+                is_read=True
+            )
+        )
+
+        await session.commit()
+
+async def mark_messages_as_read(
+    session,
+    ad_id: int,
+    receiver_id: int,
+    sender_id: int,
+):
+
+    await session.execute(
+        update(Nachricht)
+        .where(
+            Nachricht.ad_id == ad_id,
+            Nachricht.sender_id == sender_id,
+            Nachricht.receiver_id == receiver_id,
+            Nachricht.is_read == False,
+        )
+        .values(
+            is_read=True
+        )
+    )
+
+    await session.commit()

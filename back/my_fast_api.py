@@ -17,7 +17,7 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_user_profile_by_id, get_user_by_id, create_message_attachment,
                        get_last_user_ad, get_ad_statistics, register_ad_view_db,
                        register_ad_favorite_db, get_new_banners, werbung_top,
-                       delete_ad_admin_db)
+                       delete_ad_admin_db, mark_messages_as_read)
 import secrets
 import string, math
 from fastapi.staticfiles import StaticFiles
@@ -984,3 +984,19 @@ async def get_banners():
         }
         for banner in banners
     ]
+################################# Chat reads ###############################
+
+@f_api.post("/api/messages/read")
+async def mark_messages_read(data: dict):
+    ad_id = data.get("ad_id")
+    receiver_id = data.get("receiver_id")
+    sender_id = data.get("sender_id")
+    if not ad_id or not receiver_id or not sender_id:
+        return {
+            "ok": False,
+            "error": "Fehlende Daten",
+        }
+    await mark_messages_as_read(ad_id=ad_id,receiver_id=receiver_id,sender_id=sender_id,)
+    return {
+        "ok": True
+    }

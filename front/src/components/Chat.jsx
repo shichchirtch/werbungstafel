@@ -167,6 +167,23 @@ function Chat({adId, senderId, receiverId,}) {
             }
 
             setMessages(data.nachrichten)
+
+            // Помечаем входящие сообщения как прочитанные
+            await fetch(
+                "/api/messages/read",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        ad_id: adId,
+                        sender_id: receiverId,
+                        receiver_id: senderId,
+                    }),
+                }
+            )
+
         }
 
         loadMessages()
