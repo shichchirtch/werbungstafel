@@ -3,11 +3,12 @@ import {useSelector, useDispatch} from "react-redux"
 import Chat from "../components/Chat"
 import {selectChat, clearSelectedChat} from "../features/messages/messagesSlice.js";
 import {useTranslation} from "../features/customHoock.js";
+import {useNavigate} from 'react-router-dom'
 
 function NachrichtenPage() {
 
     const user = useSelector(state => state.user)
-
+    const navigate = useNavigate()
     const [chats, setChats] = useState([])
     const selectedChat = useSelector(
         state => state.messages.selectedChat)
@@ -390,12 +391,38 @@ function NachrichtenPage() {
 
                 <div>
 
-                    <div className="text-white font-bold">
-                        {selectedChat.name}
-                    </div>
+                    <div className="min-w-0">
 
-                    <div className="text-gray-500 text-sm">
-                        Werbungstafel Chat
+                        <button
+                            onClick={() => navigate(`/ad/${selectedChat.ad_id}`)}
+                            className="
+            text-white
+            font-bold
+            text-lg
+            text-left
+            hover:text-cyan-300
+            transition
+            truncate
+            block
+            max-w-full
+        "
+                        >
+                            {selectedChat.title}
+                        </button>
+
+                        <button
+                            onClick={() => navigate(`/profile/${selectedChat.user_id}`)}
+                            className="
+            text-gray-500
+            text-sm
+            hover:text-cyan-300
+            transition
+        "
+                        >
+                            {selectedChat.name}
+                        </button>
+
+
                     </div>
 
                 </div>
