@@ -854,11 +854,8 @@ async def get_nachrichten_db(
 
 async def get_chats_db(user_id: int, page: int):
     limit = 20
-
     offset = (page - 1) * limit
-
     async with session_marker() as session:
-
         stmt = (
             select(Nachricht)
             .where(
@@ -871,132 +868,87 @@ async def get_chats_db(user_id: int, page: int):
                 Nachricht.created_at.desc()
             )
         )
-
         result = await session.execute(stmt)
-
         nachrichten = result.scalars().all()
-
         # Собираем id всех собеседников
         other_ids = set()
-
         # Количество непрочитанных сообщений
         unread = {}
-
         for msg in nachrichten:
-
             other_id = (
                 msg.receiver_id
                 if msg.sender_id == user_id
                 else msg.sender_id
             )
-
             other_ids.add(other_id)
-
             key = (
                 msg.ad_id,
                 other_id,
             )
-
             if (
                     msg.receiver_id == user_id
                     and not msg.is_read
             ):
                 unread[key] = unread.get(key, 0) + 1
-
         if not other_ids:
             return [], 0
-
         ad_ids = {msg.ad_id for msg in nachrichten}
         result = await session.execute(
-
             select(Ad).where(
-                Ad.id.in_(ad_ids)
-            )
-
-        )
-
+                Ad.id.in_(ad_ids)))
         ads = {
             ad.id: ad
             for ad in result.scalars()
         }
-
+        # Загружаем превью фотографий объявлений
+        result = await session.execute(
+            select(AdPhoto).where(
+                AdPhoto.ad_id.in_(ad_ids)))
+        previews = {}
+        for photo in result.scalars():
+            if photo.ad_id not in previews and photo.thumb_url:
+                previews[photo.ad_id] = photo.thumb_url
         # Одним запросом загружаем всех пользователей
         result = await session.execute(
-
             select(User).where(
-                User.id.in_(other_ids)
-            )
-
-        )
-
+                User.id.in_(other_ids)))
         users = {
             user.id: user
-            for user in result.scalars()
-        }
-
+            for user in result.scalars()}
         chats = {}
-
         for msg in nachrichten:
-
             other_id = (
                 msg.receiver_id
                 if msg.sender_id == user_id
                 else msg.sender_id
             )
-
             key = (
                 msg.ad_id,
                 other_id,
             )
-
             # Уже добавили этот диалог
             if key in chats:
                 continue
-
             other_user = users.get(other_id)
             ad = ads.get(msg.ad_id)
-
             if other_user is None or ad is None:
                 continue
-
             chats[key] = {
-
                 "ad_id": msg.ad_id,
-
                 "title": ad.title,
-
                 "user_id": other_user.id,
-
                 "telegram_id": other_user.telegram_id,
-
                 "name": other_user.first_name,
-
-                "avatar": other_user.avatar,
-
+                "preview": previews.get(ad.id),
                 "last_message": msg.text,
-
                 "created_at": msg.created_at.isoformat(),
-
                 "is_read": msg.is_read,
-
-                "unread": unread.get(key, 0),
-
-            }
-
+                "unread": unread.get(key, 0)}
         chat_list = list(chats.values())
-
-        total_pages = max(
-            1,
-            math.ceil(len(chat_list) / limit),
-        )
-
+        total_pages = max(1, math.ceil(len(chat_list) / limit))
         start = offset
         end = offset + limit
-
-        return (
-            chat_list[start:end],
-            total_pages,
-        )
+        return (chat_list[start:end],total_pages )
 
 
 async def mark_messages_read_db(ad_id: int, sender_id: int, receiver_id: int):

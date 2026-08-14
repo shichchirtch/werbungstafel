@@ -144,38 +144,36 @@ function NachrichtenPage() {
 
                                 <div className="flex items-center gap-3">
 
-                                    {chat.avatar ? (
+                                    {chat.preview ? (
 
                                         <img
-                                            src={chat.avatar}
-                                            alt={chat.name}
+                                            src={chat.preview}
+                                            alt={chat.title}
                                             className="
-                w-12
-                h-12
-                shrink-0
-                rounded-full
-                object-cover
-            "
+            w-12
+            h-12
+            shrink-0
+            rounded-full
+            object-cover
+        "
+                                            onError={(e) => {
+                                                e.currentTarget.src = "/images/no-photo.png"
+                                            }}
                                         />
 
                                     ) : (
 
-                                        <div
+                                        <img
+                                            src="/images/no-photo.png"
+                                            alt="preview"
                                             className="
-                w-12
-                h-12
-                shrink-0
-                rounded-full
-                bg-zinc-700
-                flex
-                items-center
-                justify-center
-                text-white
-                font-bold
-            "
-                                        >
-                                            {chat.name[0]}
-                                        </div>
+            w-12
+            h-12
+            shrink-0
+            rounded-full
+            object-cover
+        "
+                                        />
 
                                     )}
 
