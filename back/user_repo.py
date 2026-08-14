@@ -723,101 +723,37 @@ async def create_nachricht_db(ad_id: int, sender_id: int, receiver_id: int, text
         return nachrict
 
 
-# async def get_nachrichten_db(
-#         ad_id: int,
-#         sender_id: int,
-#         receiver_id: int,
-# ):
-#     async with session_marker() as session:
-#         result = await session.execute(
-#
-#             select(Nachricht).where(
-#
-#                 Nachricht.ad_id == ad_id,
-#
-#                 or_(
-#
-#                     and_(
-#                         Nachricht.sender_id == sender_id,
-#                         Nachricht.receiver_id == receiver_id,
-#                     ),
-#
-#                     and_(
-#                         Nachricht.sender_id == receiver_id,
-#                         Nachricht.receiver_id == sender_id,
-#                     ),
-#
-#                 )
-#
-#             ).order_by(
-#                 Nachricht.created_at
-#             )
-#         )
-#         nachrichten = result.scalars().all()
-#         return [
-#
-#             {
-#                 "id": n.id,
-#                 "sender_id": n.sender_id,
-#                 "receiver_id": n.receiver_id,
-#                 "text": n.text,
-#                 "created_at": n.created_at.isoformat(),
-#                 "is_read": n.is_read,
-#             }
-#             for n in nachrichten
-#         ]
-
-
-async def get_nachrichten_db(
-        ad_id: int,
-        sender_id: int,
-        receiver_id: int,
-):
+async def get_nachrichten_db(ad_id: int, sender_id: int, receiver_id: int,):
     async with session_marker() as session:
-
         result = await session.execute(
-
             select(Nachricht).where(
-
                 Nachricht.ad_id == ad_id,
-
                 or_(
-
                     and_(
                         Nachricht.sender_id == sender_id,
                         Nachricht.receiver_id == receiver_id,
                     ),
-
                     and_(
                         Nachricht.sender_id == receiver_id,
                         Nachricht.receiver_id == sender_id,
                     ),
-
                 )
-
             ).order_by(
                 Nachricht.created_at
-            )
-        )
-
+            ))
         nachrichten = result.scalars().all()
 
         # ---------- Загружаем все вложения одним запросом ----------
 
         message_ids = [n.id for n in nachrichten]
-
         attachments_by_message = {}
-
         if message_ids:
-
             result = await session.execute(
 
                 select(MessageAttachment).where(
                     MessageAttachment.message_id.in_(message_ids)
                 )
-
             )
-
             for attachment in result.scalars():
                 attachments_by_message.setdefault(
                     attachment.message_id,
@@ -840,11 +776,7 @@ async def get_nachrichten_db(
                 "text": n.text,
                 "created_at": n.created_at.isoformat(),
                 "is_read": n.is_read,
-
-                "attachments": attachments_by_message.get(
-                    n.id,
-                    []
-                ),
+                "attachments": attachments_by_message.get(n.id,[]),
             }
 
             for n in nachrichten
@@ -1493,24 +1425,3 @@ async def mark_messages_as_read(
 
         await session.commit()
 
-async def mark_messages_as_read(
-    session,
-    ad_id: int,
-    receiver_id: int,
-    sender_id: int,
-):
-
-    await session.execute(
-        update(Nachricht)
-        .where(
-            Nachricht.ad_id == ad_id,
-            Nachricht.sender_id == sender_id,
-            Nachricht.receiver_id == receiver_id,
-            Nachricht.is_read == False,
-        )
-        .values(
-            is_read=True
-        )
-    )
-
-    await session.commit()

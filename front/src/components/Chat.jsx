@@ -228,6 +228,15 @@ function Chat({adId, senderId, receiverId,}) {
                 return
             }
 
+            console.log(
+                "POLL:",
+                data.nachrichten.map(msg => ({
+                    id: msg.id,
+                    sender: msg.sender_id,
+                    read: msg.is_read,
+                }))
+            )
+
             setMessages(data.nachrichten)
 
             // Новые входящие сообщения считаем прочитанными
