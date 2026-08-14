@@ -16,7 +16,8 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_map_data_db, get_ads_by_place_db, toggle_user_ban,
                        get_user_profile_by_id, get_user_by_id, create_message_attachment,
                        get_last_user_ad, get_ad_statistics, register_ad_view_db,
-                       register_ad_favorite_db, get_new_banners, werbung_top)
+                       register_ad_favorite_db, get_new_banners, werbung_top,
+                       delete_ad_admin_db)
 import secrets
 import string, math
 from fastapi.staticfiles import StaticFiles
@@ -575,18 +576,29 @@ async def upload_photos(ad_id: int = Form(...), photos: list[UploadFile] = File(
 
 ############################### Удаление объявления ##############################
 @f_api.delete("/api/ad/{ad_id}")
-async def delete_ad(ad_id: int):
-    ad = await delete_ad_db(ad_id)
+async def delete_ad(ad_id: int,data: dict):
+    role = data.get("role")
+    if role == "admin":
+        ad = await delete_ad_admin_db(ad_id)
+    else:
+
+        ad = await delete_ad_db(ad_id)
+
     if not ad:
+
         return {
             "ok": False,
             "error": "Anzeige nicht gefunden"
         }
-    await notify_ad_deleted(owner_id=ad.owner_id, ad=ad,)
+
+    await notify_ad_deleted(
+        owner_id=ad.owner_id,
+        ad=ad,
+    )
+
     return {
         "ok": True
     }
-
 
 ################################ Редактирование объявления ###########################
 

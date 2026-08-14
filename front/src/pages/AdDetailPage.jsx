@@ -219,24 +219,30 @@ function AdDetailsPage() {
 
     const handleDeleteAd = async () => {
 
-        const response = await fetch(
-            `/api/ad/${werbung.id}`,
-            {
-                method: 'DELETE',
-            }
-        )
-
-        const data = await response.json()
-
-        if (!data.ok) {
-
-            showToast(data.error || 'Fehler')
-
-            return
+    const response = await fetch(
+        `/api/ad/${werbung.id}`,
+        {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                role: user.role,
+            }),
         }
+    )
 
-        navigate('/my-ads')
+    const data = await response.json()
+
+    if (!data.ok) {
+
+        showToast(data.error || 'Fehler')
+
+        return
     }
+
+    navigate('/my-ads')
+}
     if (!werbung) {
         return (
             <div className="px-4 py-6 text-center text-white">

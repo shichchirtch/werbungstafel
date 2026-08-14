@@ -1,5 +1,5 @@
 from sqlalchemy import select, delete, func, and_, or_, update
-from postgres_table import (User, LoginRequest, Ad, Favorite, AdPhoto,
+from postgres_table import (User, LoginRequest, Ad, Favorite, AdPhoto, Nachricht,
                             Nachricht, MessageAttachment, AdActivity, Banner)
 from postgres_table import session_marker
 from datetime import datetime, timedelta #UTC
@@ -349,6 +349,42 @@ async def delete_ad_db(ad_id: int):
             return False
         print(f"DELETE FAVORITES {ad_id}")
         await delete_ad_favorites(session, ad_id)
+
+        await delete_upload_folder(ad_id)
+
+        await delete_ad_photos(session, ad_id)
+
+        await delete_ad_activity(session, ad_id)
+
+        await session.delete(ad)
+
+        await session.commit()
+
+        return ad
+
+async def delete_ad_messages(session, ad_id: int):
+    await session.execute(
+        delete(Nachricht).where(
+            Nachricht.ad_id == ad_id
+        )
+    )
+
+async def delete_ad_admin_db(ad_id: int):
+    async with session_marker() as session:
+        result = await session.execute(
+            select(Ad).where(
+                Ad.id == ad_id
+            )
+        )
+
+        ad = result.scalar_one_or_none()
+
+        if not ad:
+            return False
+
+        await delete_ad_favorites(session, ad_id)
+
+        await delete_ad_messages(session, ad_id)
 
         await delete_upload_folder(ad_id)
 
