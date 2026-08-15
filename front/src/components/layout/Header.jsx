@@ -11,6 +11,7 @@ function Header() {
     const navigate = useNavigate()
     const location = useLocation()
     const dispatch = useDispatch()
+    const [unreadMessages, setUnreadMessages] = useState(0)
 
     const [showLoginModal, setShowLoginModal] = useState(false)
     const [loginToken, setLoginToken] = useState(null)
@@ -29,6 +30,29 @@ function Header() {
     const isHome = location.pathname === '/'
 
     const menuRef = useRef()
+
+    useEffect(() => {
+        async function loadUnreadMessages() {
+            const response = await fetch(
+                `/api/messages/unread/${user.dbId}`
+            )
+            if (!response.ok) {
+                return
+            }
+
+            const data = await response.json()
+
+            if (!data.ok) {
+                return
+            }
+
+            setUnreadMessages(data.unread)
+
+        }
+
+        loadUnreadMessages()
+
+    }, [user.isAuth, user.dbId])
 
     async function refreshProfile(telegramId) {
 
@@ -154,7 +178,9 @@ function Header() {
 
     }, [loginToken, dispatch])
 
-
+    // const hasUnreadMessages = chats.some(
+    //     chat => chat.unread > 0
+    // )
     return (
 
         <div className="
@@ -224,11 +250,47 @@ function Header() {
                     ) : (
 
                         <>
-                            <button
-                                onClick={() =>
-                                    setShowMenu((prev) => !prev)
-                                }
-                                className="
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => {
+
+                                        dispatch(clearSelectedChat())
+
+                                        navigate('/nachrichten')
+
+                                        setShowMenu(false)
+
+                                    }}
+                                    className={`
+        w-12
+        h-10
+        rounded-xl
+
+        flex
+        items-center
+        justify-center
+
+        text-lg
+        text-white
+
+        shadow-lg
+
+        active:scale-95
+        transition
+
+        ${unreadMessages > 0
+                                        ? "bg-gradient-to-br from-purple-500 to-indigo-600 shadow-purple-500/30"
+                                        : "bg-zinc-700 shadow-black/20"
+                                    }
+    `}
+                                >
+                                    ✉
+                                </button>
+                                <button
+                                    onClick={() =>
+                                        setShowMenu((prev) => !prev)
+                                    }
+                                    className="
                     px-4 py-2 rounded-xl
                     font-semibold text-sm text-white
                     bg-gradient-to-br
@@ -236,9 +298,10 @@ function Header() {
                     shadow-lg shadow-purple-500/30
                     active:scale-95 transition
                 "
-                            >
-                                👤 {user.name}
-                            </button>
+                                >
+                                    👤
+                                </button>
+                            </div>
 
                             {showMenu && (
 
@@ -526,15 +589,10 @@ function Header() {
                         >
                             OK
                         </button>
-
                     </div>
-
                 </div>
             )}
-
         </div>
-
-
     )
 }
 

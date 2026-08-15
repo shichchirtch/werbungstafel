@@ -103,19 +103,13 @@ function NachrichtenPage() {
                 "/api/messages/read",
                 {
                     method: "PUT",
-
                     headers: {
                         "Content-Type": "application/json",
                     },
-
                     body: JSON.stringify({
-
                         ad_id: selectedChat.ad_id,
-
                         sender_id: selectedChat.user_id,
-
                         receiver_id: user.dbId,
-
                     }),
                 }
             )
@@ -123,13 +117,10 @@ function NachrichtenPage() {
             if (!response.ok) {
                 return
             }
-
             const data = await response.json()
-
             if (!data.ok) {
                 return
             }
-
             // перечитываем список чатов
             await loadChats()
 

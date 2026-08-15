@@ -17,7 +17,7 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_user_profile_by_id, get_user_by_id, create_message_attachment,
                        get_last_user_ad, get_ad_statistics, register_ad_view_db,
                        register_ad_favorite_db, get_new_banners, werbung_top,
-                       delete_ad_admin_db, mark_messages_as_read)
+                       delete_ad_admin_db, mark_messages_as_read, get_unread_messages_db)
 import secrets
 import string, math
 from fastapi.staticfiles import StaticFiles
@@ -999,4 +999,14 @@ async def mark_messages_read(data: dict):
     await mark_messages_as_read(ad_id=ad_id,receiver_id=receiver_id,sender_id=sender_id,)
     return {
         "ok": True
+    }
+
+################################# Возврат  непрочитанных сообщений во фронт #######################
+
+@f_api.get("/api/messages/unread/{user_id}")
+async def get_unread_messages(user_id: int):
+    count = await get_unread_messages_db(user_id)
+    return {
+        "ok": True,
+        "unread": count,
     }

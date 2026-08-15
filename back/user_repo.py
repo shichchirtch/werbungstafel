@@ -1445,3 +1445,16 @@ async def mark_messages_as_read(
 
         await session.commit()
 
+###################################Провека непрочитанных сообщений ####################
+
+async def get_unread_messages_db(user_id: int):
+    async with session_marker() as session:
+        result = await session.execute(
+            select(func.count(Nachricht.id))
+            .where(
+                Nachricht.receiver_id == user_id,
+                Nachricht.is_read == False,
+            )
+        )
+
+        return result.scalar_one()
