@@ -453,10 +453,10 @@ function Chat({adId, senderId, receiverId,}) {
                                 }
                                 `}
                             >
-                                   {/* DEBUG */}
-        <div className="text-xs">
-            {msg.sender_id} / {senderId}
-        </div>
+        {/*                           /!* DEBUG *!/*/}
+        {/*<div className="text-xs">*/}
+        {/*    {msg.sender_id} / {senderId}*/}
+        {/*</div>*/}
 
 
                                 {msg.attachments?.length > 0 && (
