@@ -429,12 +429,16 @@ function Chat({adId, senderId, receiverId,}) {
 
                         <div
                             key={msg.id}
-                            className={`flex mb-2 ${
+                            className={`flex mb-2${
                                 msg.sender_id === senderId
                                     ? "justify-end"
                                     : "justify-start"
                             }`}
                         >
+                             {/* ВРЕМЕННО ДЛЯ ДЕБАГА */}
+    <div className="text-xs">
+        {msg.sender_id} / {senderId}
+    </div>
 
                             <div
                                 className={`
