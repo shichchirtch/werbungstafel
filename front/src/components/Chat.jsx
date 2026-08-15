@@ -23,104 +23,62 @@ function Chat({adId, senderId, receiverId,}) {
     }
 
     const handleTouchEnd = (e) => {
-
         const delta =
             e.changedTouches[0].clientX -
             touchStartX.current
-
         if (delta > 60) {
-
             handlePrevPhoto()
-
         }
-
         if (delta < -60) {
-
             handleNextPhoto()
-
         }
-
     }
-
     const handlePrevPhoto = () => {
-
         if (openedPhotoIndex > 0) {
-
             setOpenedPhotoIndex(prev => prev - 1)
-
         }
-
     }
-
     const handleNextPhoto = () => {
-
         if (openedPhotoIndex < chatPhotos.length - 1) {
-
             setOpenedPhotoIndex(prev => prev + 1)
-
         }
-
     }
-
     const handleMessageChange = (e) => {
-
         setMessage(e.target.value)
-
         const ta = textareaRef.current
-
         ta.style.height = "auto"
-
         ta.style.height = Math.min(ta.scrollHeight, 120) + "px"
-
     }
 
     const compressImage = (file) => {
-
         return new Promise((resolve, reject) => {
-
             const img = new Image()
-
             img.onload = () => {
-
                 const canvas = document.createElement("canvas")
-
                 let width = img.width
                 let height = img.height
-
                 const maxSize = 900
-
                 if (width > height) {
-
                     if (width > maxSize) {
-
                         height *= maxSize / width
                         width = maxSize
-
                     }
-
                 } else {
-
                     if (height > maxSize) {
-
                         width *= maxSize / height
                         height = maxSize
                     }
                 }
                 canvas.width = width
                 canvas.height = height
-
                 const ctx = canvas.getContext("2d")
-
                 ctx.drawImage(img, 0, 0, width, height)
-
                 canvas.toBlob(
                     (blob) => {
-
                         if (!blob) {
                             reject("Compression failed")
                             return
                         }
-
                         resolve(
                             new File(
                                 [blob],
@@ -130,28 +88,18 @@ function Chat({adId, senderId, receiverId,}) {
                                 }
                             )
                         )
-
                     },
-
                     "image/jpeg",
                     0.7
                 )
-
             }
-
             img.onerror = reject
-
             img.src = URL.createObjectURL(file)
-
         })
-
     }
 
-
     useEffect(() => {
-
         async function loadMessages() {
-
             const response = await fetch(
                 `/api/messages/${adId}/${senderId}/${receiverId}`
             )

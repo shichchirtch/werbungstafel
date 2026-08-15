@@ -15,13 +15,13 @@ function NachrichtenPage() {
     const [page, setPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
     const {t} = useTranslation()
-
     const dispatch = useDispatch()
+
 
     async function loadChats() {
 
         if (!user.dbId) {
-            return
+            return null
         }
 
         const response = await fetch(
@@ -29,26 +29,66 @@ function NachrichtenPage() {
         )
 
         if (!response.ok) {
-            return
+            return null
         }
 
         const data = await response.json()
 
+        console.log("CHATS RESPONSE =", data)
+        console.log("CURRENT USER =", user)
+
         if (!data.ok) {
-            return
+            return null
         }
 
-        setChats(data.chats)
-        setTotalPages(data.total_pages)
-
+        return data
     }
 
-
+    // async function loadChats() {
+    //     if (!user.dbId) {
+    //         return
+    //     }
+    //     const response = await fetch(
+    //         `/api/chats/${user.dbId}?page=${page}`
+    //     )
+    //
+    //     if (!response.ok) {
+    //         return
+    //     }
+    //
+    //     const data = await response.json()
+    //     console.log("CHATS RESPONSE =", data)
+    //     console.log("CURRENT USER =", user)
+    //
+    //     if (!data.ok) {
+    //         return
+    //     }
+    //     setChats(data.chats)
+    //     setTotalPages(data.total_pages)
+    //
+    // }
     useEffect(() => {
 
-        loadChats()
+        async function load() {
+
+            const data = await loadChats()
+
+            if (!data) {
+                return
+            }
+
+            setChats(data.chats)
+            setTotalPages(data.total_pages)
+        }
+
+        load()
 
     }, [page, user.dbId])
+
+    // useEffect(() => {
+    //     loadChats()
+    //
+    // }, [page, user.dbId])
 
 
     useEffect(() => {

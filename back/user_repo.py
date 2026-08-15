@@ -363,6 +363,26 @@ async def delete_ad_db(ad_id: int):
         return ad
 
 async def delete_ad_messages(session, ad_id: int):
+
+    # Находим сообщения этого объявления
+    result = await session.execute(
+        select(Nachricht.id).where(
+            Nachricht.ad_id == ad_id
+        )
+    )
+
+    message_ids = result.scalars().all()
+
+    # Сначала удаляем вложения сообщений
+    if message_ids:
+
+        await session.execute(
+            delete(MessageAttachment).where(
+                MessageAttachment.message_id.in_(message_ids)
+            )
+        )
+
+    # Затем удаляем сами сообщения
     await session.execute(
         delete(Nachricht).where(
             Nachricht.ad_id == ad_id
