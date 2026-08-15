@@ -370,7 +370,20 @@ function Chat({adId, senderId, receiverId,}) {
         }
 
     }
-
+    console.log(
+    "CHAT DEBUG",
+    {
+        senderId,
+        receiverId,
+        messages: messages.map(msg => ({
+            id: msg.id,
+            sender_id: msg.sender_id,
+            receiver_id: msg.receiver_id,
+            isMine: msg.sender_id === senderId,
+            isRead: msg.is_read,
+        })),
+    }
+)
 
     return (
 
@@ -410,7 +423,9 @@ function Chat({adId, senderId, receiverId,}) {
 
                 ) : (
 
+
                     messages.map((msg) => (
+
 
                         <div
                             key={msg.id}
