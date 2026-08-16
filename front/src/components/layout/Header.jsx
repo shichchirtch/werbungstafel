@@ -33,26 +33,49 @@ function Header() {
 
     useEffect(() => {
         async function loadUnreadMessages() {
-            const response = await fetch(
-                `/api/messages/unread/${user.dbId}`
-            )
-            if (!response.ok) {
-                return
+            try {
+
+                const response = await fetch(
+                    `/api/messages/unread/${user.dbId}`
+                )
+
+                if (!response.ok) {
+                    return
+                }
+
+                const data = await response.json()
+
+                if (!data.ok) {
+                    return
+                }
+
+                setUnreadMessages(data.unread)
+
+            } catch (error) {
+
+                console.error(
+                    "UNREAD MESSAGES ERROR =",
+                    error
+                )
+
             }
-
-            const data = await response.json()
-
-            if (!data.ok) {
-                return
-            }
-
-            setUnreadMessages(data.unread)
 
         }
 
+        // Сразу проверяем, не ждём первые 5 секунд
         loadUnreadMessages()
 
+        const interval = setInterval(
+            loadUnreadMessages,
+            6000
+        )
+
+        return () => {
+            clearInterval(interval)
+        }
+
     }, [user.isAuth, user.dbId])
+
 
     async function refreshProfile(telegramId) {
 
@@ -262,19 +285,14 @@ function Header() {
 
                                     }}
                                     className={`
-        w-12
-        h-10
+        px-4 py-2
         rounded-xl
-
         flex
         items-center
         justify-center
-
         text-lg
         text-white
-
         shadow-lg
-
         active:scale-95
         transition
 
@@ -352,24 +370,24 @@ function Header() {
                                         ❤️ {t('Merklist')}
                                     </button>
 
-                                    <button
-                                        onClick={() => {
+                                    {/*        <button*/}
+                                    {/*            onClick={() => {*/}
 
-                                            dispatch(clearSelectedChat())
+                                    {/*                dispatch(clearSelectedChat())*/}
 
-                                            navigate('/nachrichten')
+                                    {/*                navigate('/nachrichten')*/}
 
-                                            setShowMenu(false)
+                                    {/*                setShowMenu(false)*/}
 
-                                        }}
-                                        className="
-                                w-full text-left px-4 py-3
-                                text-gray-300
-                                hover:bg-white/5
-                            "
-                                    >
-                                        💬 {t('Nachrichten')}
-                                    </button>
+                                    {/*            }}*/}
+                                    {/*            className="*/}
+                                    {/*    w-full text-left px-4 py-3*/}
+                                    {/*    text-gray-300*/}
+                                    {/*    hover:bg-white/5*/}
+                                    {/*"*/}
+                                    {/*        >*/}
+                                    {/*            💬 {t('Nachrichten')}*/}
+                                    {/*        </button>*/}
                                     {!isTelegram && (
 
                                         <button
