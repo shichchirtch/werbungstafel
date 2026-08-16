@@ -286,7 +286,7 @@ function Header() {
                                     }}
                                     className={`
         w-12
-        h-10
+        h-8
         rounded-xl
         flex
         items-center
@@ -310,7 +310,7 @@ function Header() {
                                         setShowMenu((prev) => !prev)
                                     }
                                     className="
-                     w-12 h-10 rounded-xl
+                     w-12 h-8 rounded-xl
                     font-semibold text-sm text-white
                     bg-gradient-to-br
                     from-purple-500 to-indigo-600
