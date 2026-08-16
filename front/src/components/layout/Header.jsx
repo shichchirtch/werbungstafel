@@ -221,7 +221,7 @@ function Header() {
                     <button
                         onClick={() => navigate(-1)}
                         className="
-                            px-4 py-2 rounded-xl
+                            w-14 h-9 rounded-xl
                             font-semibold text-sm text-black
                             bg-gradient-to-br
                             from-cyan-300 via-cyan-400 to-blue-500
