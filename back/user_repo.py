@@ -456,6 +456,9 @@ async def get_ads_by_owner(owner_id: int):
                 "createdAt": ad.created_at.isoformat(),
                 "anbieter": ad.anbieter,
                 "preview": preview_photos.get(ad.id),
+                "archived": ad.archived,
+                "untouch": ad.untouch,
+                "sh_banned": ad.sh_banned,
             }
             for ad in ads
         ]
@@ -1081,6 +1084,9 @@ async def get_map_data_db():
                 "latitude": row.latitude,
                 "longitude": row.longitude,
                 "count": row.count,
+                    # "archived": row.archived,
+                    # "untouch": row.untouch,
+                    # "sh_banned": row.sh_banned,
             }
             for row in rows
         ]
@@ -1501,9 +1507,7 @@ async def is_user_blocked(session, blocker_id: int, blocked_id: int,):
 ##################################Архивирование объявления
 
 async def archive_ad_db(ad_id: int):
-
     async with session_marker() as session:
-
         result = await session.execute(
             select(Ad).where(
                 Ad.id == ad_id

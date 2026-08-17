@@ -1028,7 +1028,6 @@ async def get_unread_messages(user_id: int):
 
 @f_api.patch("/api/ad/{ad_id}/archive")
 async def archive_ad(ad_id: int):
-
     ad = await archive_ad_db(ad_id)
 
     if not ad:
