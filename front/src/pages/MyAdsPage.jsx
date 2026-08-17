@@ -53,17 +53,21 @@ function MyAdsPage() {
                         <div
                             key={item.id}
                             className="
-            rounded-3xl
-            border
-            border-white/10
-            bg-white/5
-            backdrop-blur-md
-            p-4
-            shadow-xl
-        "
+                rounded-3xl
+                border
+                border-white/10
+                bg-white/5
+                backdrop-blur-md
+                p-4
+                shadow-xl
+            "
                         >
 
                             <div className="relative">
+
+                                {/* ========================= */}
+                                {/* ОСНОВНОЕ СОДЕРЖИМОЕ */}
+                                {/* ========================= */}
 
                                 <div
                                     className={
@@ -73,9 +77,11 @@ function MyAdsPage() {
                                     }
                                 >
 
-                                    {/* ЗДЕСЬ всё содержимое объявления */}
+                                    {/* ФОТО + НАЗВАНИЕ + МЕСТО */}
 
                                     <div className="flex gap-4">
+
+                                        {/* PHOTO */}
 
                                         <img
                                             src={
@@ -88,130 +94,144 @@ function MyAdsPage() {
                                                     "/images/no-photo.png"
                                             }}
                                             className="
-                    w-36
-                    h-36
-                    rounded-2xl
-                    object-cover
-                    shrink-0
-                "
+                                w-36
+                                h-36
+                                rounded-2xl
+                                object-cover
+                                shrink-0
+                            "
                                         />
 
-                                        {/* остальная разметка объявления */}
+
+                                        {/* TITLE + LOCATION + ARCHIVED */}
+
+                                        <div className="flex-1 min-w-0">
+
+                                            <h2
+                                                className="
+                                    text-xl
+                                    font-bold
+                                    text-white
+                                    line-clamp-2
+                                    mb-2
+                                "
+                                            >
+                                                {item.title}
+                                            </h2>
+
+
+                                            <p className="text-gray-400 mb-3">
+                                                {item.plz
+                                                    ? `${t('PLZ')}: ${item.plz} / ${item.city}`
+                                                    : `${t('PLZ')}: ${item.city}`
+                                                }
+                                            </p>
+
+
+                                            {item.price && (
+
+                                                <p
+                                                    className="
+                                        text-cyan-300
+                                        font-semibold
+                                        mb-2
+                                    "
+                                                >
+                                                    {item.price}
+                                                </p>
+
+                                            )}
+
+                                        </div>
 
                                     </div>
+
+
+                                    {/* ========================= */}
+                                    {/* ОПИСАНИЕ */}
+                                    {/* ========================= */}
+
+                                    <p
+                                        className="
+                            text-gray-300
+                            text-sm
+                            line-clamp-3
+                            mt-4
+                        "
+                                    >
+                                        {item.description}
+                                    </p>
+
+
+                                    {/* ========================= */}
+                                    {/* OPEN */}
+                                    {/* ========================= */}
+
+                                    <button
+                                        onClick={() =>
+                                            navigate(`/ad/${item.id}`)
+                                        }
+                                        className="
+                            w-full
+                            mt-4
+                            py-3
+                            rounded-2xl
+                            font-bold
+                            text-black
+                            bg-gradient-to-br
+                            from-cyan-300
+                            to-blue-500
+                            shadow-lg
+                            shadow-cyan-400/30
+                            active:scale-95
+                            transition
+                        "
+                                    >
+                                        {t('Oeffnen')}
+                                    </button>
 
                                 </div>
 
 
-                                {item.archived && (
+                                {/* ========================= */}
+                                {/* ARCHIVIERT */}
+                                {/* ========================= */}
 
-                                    <div
-                                        className="
-                absolute
-                inset-0
-                z-10
-                flex
-                items-center
-                justify-center
-                pointer-events-none
-            "
-                                    >
-                                        <div
-                                            className="
-                    px-5
-                    py-2
-                    rounded-xl
-                    bg-black/70
-                    border
-                    border-white/20
-                    text-white
-                    font-bold
-                    text-sm
-                    uppercase
-                    tracking-wider
-                "
-                                        >
-                                            Archiviert
-                                        </div>
+                                {item.archived && (
+                                    <div className="
+        inline-block
+        px-4
+        py-2
+        rounded-xl
+        bg-black/80
+        border
+        border-white/20
+        text-white
+        font-bold
+        text-sm
+        uppercase
+        tracking-wider
+    ">
+                                        {t('Archiviert')}
                                     </div>
 
-                                )}
-
-
-                            <div className="flex-1 flex flex-col min-w-0">
-
-                                <h2
-                                    className="
-                                        text-xl
-                                        font-bold
-                                        text-white
-                                        line-clamp-2
-                                        mb-2
-                                    "
-                                >
-                                    {item.title}
-                                </h2>
-
-                                <p className="text-gray-400 mb-2">
-                                    {item.plz
-                                        ? `${t('PLZ')}: ${item.plz} / ${item.city}`
-                                        : `${t('PLZ')}: ${item.city}`
-                                    }
-                                </p>
-
-                                {item.price && (
-
-                                    <p className="text-cyan-300 font-semibold mb-2">
-                                        {item.price}
-                                    </p>
 
                                 )}
-
-                                <p
-                                    className="
-                                        text-gray-300
-                                        text-sm
-                                        line-clamp-3
-                                        flex-1
-                                    "
-                                >
-                                    {item.description}
-                                </p>
-
-                                <button
-                                    onClick={() => navigate(`/ad/${item.id}`)}
-                                    className="
-                                        mt-4
-                                        py-3
-                                        rounded-2xl
-                                        font-bold
-                                        text-black
-                                        bg-gradient-to-br
-                                        from-cyan-300
-                                        to-blue-500
-                                        shadow-lg
-                                        shadow-cyan-400/30
-                                        active:scale-95
-                                        transition
-                                    "
-                                >
-                                    {t('Oeffnen')}
-                                </button>
 
                             </div>
 
                         </div>
 
-                        </div>
-
-                        ))}
+                    ))}
 
                 </div>
 
             )}
 
-</div>
-)
+        </div>
+
+    );
+
 }
 
 export default MyAdsPage

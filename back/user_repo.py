@@ -1508,12 +1508,9 @@ async def is_user_blocked(session, blocker_id: int, blocked_id: int,):
 
 async def archive_ad_db(ad_id: int):
     async with session_marker() as session:
-        result = await session.execute(
-            select(Ad).where(
-                Ad.id == ad_id
-            )
+        result = await session.execute(select(Ad).where(
+                Ad.id == ad_id)
         )
-
         ad = result.scalar_one_or_none()
 
         if not ad:
@@ -1523,7 +1520,5 @@ async def archive_ad_db(ad_id: int):
             return ad
 
         ad.archived = True
-
         await session.commit()
-
         return ad
