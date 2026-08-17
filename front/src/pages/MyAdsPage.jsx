@@ -32,206 +32,203 @@ function MyAdsPage() {
     }, [user.id, user.isAuth])
 
     return (
-        <div className="px-4 py-6">
+    <div className="px-4 py-6">
 
-            <h1 className="text-3xl text-white font-bold text-center mb-6">
-                {t('MeineAnzeigen')}
-            </h1>
+        <h1 className="text-3xl text-white font-bold text-center mb-6">
+            {t('MeineAnzeigen')}
+        </h1>
 
-            {myAds.length === 0 ? (
+        {myAds.length === 0 ? (
 
-                <p className="text-center text-gray-400">
-                    {t('DuHastNochKeineAnzeigenErstellt')}
-                </p>
+            <p className="text-center text-gray-400">
+                {t('DuHastNochKeineAnzeigenErstellt')}
+            </p>
 
-            ) : (
+        ) : (
 
-                <div className="max-w-xl mx-auto flex flex-col gap-4">
+            <div className="max-w-xl mx-auto flex flex-col gap-4">
 
-                    {myAds.map((item) => (
+                {myAds.map((item) => (
+
+                    <div
+                        key={item.id}
+                        className="
+                            rounded-3xl
+                            border
+                            border-white/10
+                            bg-white/5
+                            backdrop-blur-md
+                            p-4
+                            shadow-xl
+                        "
+                    >
 
                         <div
-                            key={item.id}
-                            className="
-                rounded-3xl
-                border
-                border-white/10
-                bg-white/5
-                backdrop-blur-md
-                p-4
-                shadow-xl
-            "
+                            className={
+                                item.archived
+                                    ? "opacity-60 grayscale"
+                                    : ""
+                            }
                         >
 
-                            <div className="relative">
+                            {/* ========================= */}
+                            {/* ФОТО + ИНФОРМАЦИЯ */}
+                            {/* ========================= */}
 
-                                {/* ========================= */}
-                                {/* ОСНОВНОЕ СОДЕРЖИМОЕ */}
-                                {/* ========================= */}
+                            <div className="flex gap-4">
 
-                                <div
-                                    className={
-                                        item.archived
-                                            ? "opacity-60 grayscale"
-                                            : ""
+                                {/* PHOTO */}
+
+                                <img
+                                    src={
+                                        item.preview ||
+                                        "/images/no-photo.png"
                                     }
-                                >
-
-                                    {/* ФОТО + НАЗВАНИЕ + МЕСТО */}
-
-                                    <div className="flex gap-4">
-
-                                        {/* PHOTO */}
-
-                                        <img
-                                            src={
-                                                item.preview ||
-                                                "/images/no-photo.png"
-                                            }
-                                            alt="preview"
-                                            onError={(e) => {
-                                                e.currentTarget.src =
-                                                    "/images/no-photo.png"
-                                            }}
-                                            className="
-                                w-36
-                                h-36
-                                rounded-2xl
-                                object-cover
-                                shrink-0
-                            "
-                                        />
-
-
-                                        {/* TITLE + LOCATION + ARCHIVED */}
-
-                                        <div className="flex-1 min-w-0">
-
-                                            <h2
-                                                className="
-                                    text-xl
-                                    font-bold
-                                    text-white
-                                    line-clamp-2
-                                    mb-2
-                                "
-                                            >
-                                                {item.title}
-                                            </h2>
-
-
-                                            <p className="text-gray-400 mb-3">
-                                                {item.plz
-                                                    ? `${t('PLZ')}: ${item.plz} / ${item.city}`
-                                                    : `${t('PLZ')}: ${item.city}`
-                                                }
-                                            </p>
-
-
-                                            {item.price && (
-
-                                                <p
-                                                    className="
-                                        text-cyan-300
-                                        font-semibold
-                                        mb-2
+                                    alt="preview"
+                                    onError={(e) => {
+                                        e.currentTarget.src =
+                                            "/images/no-photo.png"
+                                    }}
+                                    className="
+                                        w-36
+                                        h-36
+                                        rounded-2xl
+                                        object-cover
+                                        shrink-0
                                     "
-                                                >
-                                                    {item.price}
-                                                </p>
+                                />
 
-                                            )}
 
+                                {/* TITLE + LOCATION + STATUS + PRICE */}
+
+                                <div className="flex-1 min-w-0">
+
+                                    <h2
+                                        className="
+                                            text-xl
+                                            font-bold
+                                            text-white
+                                            line-clamp-2
+                                            mb-2
+                                        "
+                                    >
+                                        {item.title}
+                                    </h2>
+
+
+                                    <p className="text-gray-400 mb-3">
+                                        {item.plz
+                                            ? `${t('PLZ')}: ${item.plz} / ${item.city}`
+                                            : `${t('PLZ')}: ${item.city}`
+                                        }
+                                    </p>
+                                    {/* PRICE */}
+
+                                    {item.price && (
+
+                                        <p
+                                            className="
+                                                text-cyan-300
+                                                font-semibold
+                                                mb-2
+                                            "
+                                        >
+                                            {item.price}
+                                        </p>
+
+                                    )}
+
+
+                                    {/* ARCHIVIERT */}
+
+                                    {item.archived && (
+
+                                        <div
+                                            className="
+                                                inline-block
+                                                px-4
+                                                py-2
+                                                rounded-xl
+                                                bg-black/80
+                                                border
+                                                border-white/20
+                                                text-white
+                                                font-bold
+                                                text-sm
+                                                uppercase
+                                                tracking-wider
+                                                mb-3
+                                            "
+                                        >
+                                            {t('Archiviert')}
                                         </div>
 
-                                    </div>
+                                    )}
 
 
-                                    {/* ========================= */}
-                                    {/* ОПИСАНИЕ */}
-                                    {/* ========================= */}
 
-                                    <p
-                                        className="
-                            text-gray-300
-                            text-sm
-                            line-clamp-3
-                            mt-4
-                        "
-                                    >
-                                        {item.description}
-                                    </p>
-
-
-                                    {/* ========================= */}
-                                    {/* OPEN */}
-                                    {/* ========================= */}
-
-                                    <button
-                                        onClick={() =>
-                                            navigate(`/ad/${item.id}`)
-                                        }
-                                        className="
-                            w-full
-                            mt-4
-                            py-3
-                            rounded-2xl
-                            font-bold
-                            text-black
-                            bg-gradient-to-br
-                            from-cyan-300
-                            to-blue-500
-                            shadow-lg
-                            shadow-cyan-400/30
-                            active:scale-95
-                            transition
-                        "
-                                    >
-                                        {t('Oeffnen')}
-                                    </button>
 
                                 </div>
 
-
-                                {/* ========================= */}
-                                {/* ARCHIVIERT */}
-                                {/* ========================= */}
-
-                                {item.archived && (
-                                    <div className="
-        inline-block
-        px-4
-        py-2
-        rounded-xl
-        bg-black/80
-        border
-        border-white/20
-        text-white
-        font-bold
-        text-sm
-        uppercase
-        tracking-wider
-    ">
-                                        {t('Archiviert')}
-                                    </div>
-
-
-                                )}
-
                             </div>
+
+
+                            {/* ========================= */}
+                            {/* ОПИСАНИЕ */}
+                            {/* ========================= */}
+
+                            <p
+                                className="
+                                    text-gray-300
+                                    text-sm
+                                    line-clamp-3
+                                    mt-4
+                                "
+                            >
+                                {item.description}
+                            </p>
+
+
+                            {/* ========================= */}
+                            {/* OPEN */}
+                            {/* ========================= */}
+
+                            <button
+                                onClick={() =>
+                                    navigate(`/ad/${item.id}`)
+                                }
+                                className="
+                                    w-full
+                                    mt-4
+                                    py-3
+                                    rounded-2xl
+                                    font-bold
+                                    text-black
+                                    bg-gradient-to-br
+                                    from-cyan-300
+                                    to-blue-500
+                                    shadow-lg
+                                    shadow-cyan-400/30
+                                    active:scale-95
+                                    transition
+                                "
+                            >
+                                {t('Oeffnen')}
+                            </button>
 
                         </div>
 
-                    ))}
+                    </div>
 
-                </div>
+                ))}
 
-            )}
+            </div>
 
-        </div>
+        )}
 
-    );
+    </div>
+);
 
 }
 
-export default MyAdsPage
+export default MyAdsPage;
