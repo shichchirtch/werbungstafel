@@ -217,32 +217,56 @@ function AdDetailsPage() {
 
     }
 
-    const handleDeleteAd = async () => {
+    const handleArchiveAd = async () => {
 
-    const response = await fetch(
-        `/api/ad/${werbung.id}`,
-        {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                role: user.role,
-            }),
+        const response = await fetch(
+            `/api/ad/${werbung.id}/archive`,
+            {
+                method: "PATCH",
+            }
+        )
+
+        if (!response.ok) {
+            showToast("Fehler beim Archivieren")
+            return
         }
-    )
 
-    const data = await response.json()
+        const data = await response.json()
 
-    if (!data.ok) {
+        if (!data.ok) {
+            showToast(data.error || "Fehler")
+            return
+        }
 
-        showToast(data.error || 'Fehler')
-
-        return
+        navigate('/my-ads')
     }
 
-    navigate('/my-ads')
-}
+    const handleDeleteAd = async () => {
+
+        const response = await fetch(
+            `/api/ad/${werbung.id}`,
+            {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    role: user.role,
+                }),
+            }
+        )
+
+        const data = await response.json()
+
+        if (!data.ok) {
+
+            showToast(data.error || 'Fehler')
+
+            return
+        }
+
+        navigate('/my-ads')
+    }
     if (!werbung) {
         return (
             <div className="px-4 py-6 text-center text-white">
@@ -506,6 +530,7 @@ transition
                         </div>
 
                     </div>
+
                     {/* TITLE */}
                     <h1
                         className="
@@ -539,6 +564,7 @@ transition
 
                 </div>
 
+
                 {/* ACTION */}
                 <div className="flex flex-row gap-4">
 
@@ -559,17 +585,51 @@ transition
                     ) : isOwner ? (
 
                         <>
-                            <button
-                                onClick={() => setShowDeleteModal(true)}
-                                className="
-                    flex-1 py-3 rounded-2xl font-bold text-white
-                    bg-gradient-to-br from-gray-700 to-gray-900
-                    shadow-lg shadow-cyan-500/20
-                    active:scale-95 transition
-                "
-                            >
-                                {t('Loeschen')}
-                            </button>
+                            {werbung.untouch ? (
+
+                                <button
+                                    onClick={() => setShowDeleteModal(true)}
+                                    className="
+            flex-1
+            py-3
+            rounded-2xl
+            font-bold
+            text-white
+            bg-gradient-to-br
+            from-gray-700
+            to-gray-900
+            shadow-lg
+            shadow-cyan-500/20
+            active:scale-95
+            transition
+        "
+                                >
+                                    {t('Loeschen')}
+                                </button>
+
+                            ) : (
+
+                                <button
+                                    onClick={handleArchiveAd}
+                                    className="
+            flex-1
+            py-3
+            rounded-2xl
+            font-bold
+            text-white
+            bg-gradient-to-br
+            from-gray-700
+            to-gray-900
+            shadow-lg
+            shadow-cyan-500/20
+            active:scale-95
+            transition
+        "
+                                >
+                                    {t('Archivieren')}
+                                </button>
+
+                            )}
 
                             <button
                                 onClick={() => navigate(`/edit/${werbung.id}`)}

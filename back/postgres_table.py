@@ -52,6 +52,9 @@ class Ad(Base):
     latitude: Mapped[float] = mapped_column(Float)
     longitude: Mapped[float] = mapped_column(Float)
     pinned: Mapped[bool] = mapped_column(default=False)
+    archived: Mapped[bool] = mapped_column(default=False)
+    untouch: Mapped[bool] = mapped_column(default=True)
+    sh_banned: Mapped[bool] = mapped_column(default=False)
 
 
 class LoginRequest(Base):
@@ -120,7 +123,24 @@ class Banner(Base):
     active: Mapped[bool] = mapped_column(Boolean, default=True,)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=False),default=lambda: datetime.now(),)
 
+class UserMessageBlock(Base):
+    __tablename__ = "user_message_blocks"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    blocker_id: Mapped[int] = mapped_column( ForeignKey("users.id"),nullable=False)
+    blocked_id: Mapped[int] = mapped_column(ForeignKey("users.id"),nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=False), default=lambda: datetime.now())
+
+# __table_args__ = (
+#     UniqueConstraint(
+#         "blocker_id",
+#         "blocked_id",
+#         name="uq_user_message_block"
+#     ),
+# )
+
+
 async def init_models():
     async with engine.begin() as conn:
-        # await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)

@@ -17,7 +17,8 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_user_profile_by_id, get_user_by_id, create_message_attachment,
                        get_last_user_ad, get_ad_statistics, register_ad_view_db,
                        register_ad_favorite_db, get_new_banners, werbung_top,
-                       delete_ad_admin_db, mark_messages_as_read, get_unread_messages_db)
+                       delete_ad_admin_db, mark_messages_as_read, get_unread_messages_db,
+                       archive_ad_db)
 import secrets
 import string, math
 from fastapi.staticfiles import StaticFiles
@@ -702,12 +703,21 @@ async def create_nachricht(ad_id: int = Form(...), sender_id: int = Form(...),re
             "error": "Ihr Konto wurde gesperrt."
         }
 
+
+
     nachricht = await create_nachricht_db(
         ad_id=ad_id,
         sender_id=sender_id,
         receiver_id=receiver_id,
         text=text,
     )
+
+    if nachricht is None:
+        return {
+            "ok": False,
+            "error": "Dieser Benutzer kann keine Nachrichten von Ihnen empfangen."
+        }
+
     folder = f"uploads/messages/{nachricht.id}"
     os.makedirs(folder, exist_ok=True)
     attachments = []
@@ -1009,4 +1019,21 @@ async def get_unread_messages(user_id: int):
     return {
         "ok": True,
         "unread": count,
+    }
+
+#############################################Архивация объявления
+
+@f_api.patch("/api/ad/{ad_id}/archive")
+async def archive_ad(ad_id: int):
+
+    ad = await archive_ad_db(ad_id)
+
+    if not ad:
+        return {
+            "ok": False,
+            "error": "Anzeige nicht gefunden"
+        }
+
+    return {
+        "ok": True
     }

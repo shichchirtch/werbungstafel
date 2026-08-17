@@ -94,7 +94,7 @@ const translations = {
         Nachricht: 'Nachricht...',
         Zuruck: '← Zurück',
         TelegramEoffnen:'Telegram öffnen',
-
+        Archivieren:'Archivieren',
 
     },
 
@@ -190,6 +190,7 @@ const translations = {
         Nachricht: 'Сообщение...',
         Zuruck: '← Назад',
         TelegramEoffnen:'Открыть Telegram',
+        Archivieren:'Archivieren',
     },
 
     uk: {
@@ -283,6 +284,7 @@ const translations = {
         Nachricht: 'Повідомлення...',
         Zuruck: '← Назад',
         TelegramEoffnen:'Відкрити Telegram',
+        Archivieren:'Архівувати',
 
     },
 
@@ -377,6 +379,7 @@ const translations = {
         Nachricht: 'Mesaj...',
         Zuruck: '← Geri',
         TelegramEoffnen:"Telegram'ı açın",
+        Archivieren:'arşiv',
 
     }
 

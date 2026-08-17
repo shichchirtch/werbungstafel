@@ -1,6 +1,6 @@
 from sqlalchemy import select, delete, func, and_, or_, update
 from postgres_table import (User, LoginRequest, Ad, Favorite, AdPhoto, Nachricht,
-                            Nachricht, MessageAttachment, AdActivity, Banner)
+                            Nachricht, MessageAttachment, AdActivity, Banner, UserMessageBlock)
 from postgres_table import session_marker
 from datetime import datetime, timedelta #UTC
 from geopy.geocoders import Nominatim
@@ -255,6 +255,8 @@ async def get_ads_by_category(category: str):
         stmt = (
             select(Ad)
             .where(
+                Ad.archived == False,
+                Ad.sh_banned == False,
                 Ad.category == category
             )
             .order_by(
@@ -522,6 +524,12 @@ async def create_favorite(user_id: int, ad_id: int, ):
 
         session.add(favorite)
 
+        await session.execute(
+            update(Ad)
+            .where(Ad.id == ad_id)
+            .values(untouch=False)
+        )
+
         await session.commit()
 
         return True
@@ -727,6 +735,15 @@ async def update_profile_and_get_user_db(telegram_id: int, bio: str, location: s
 
 async def create_nachricht_db(ad_id: int, sender_id: int, receiver_id: int, text: str):
     async with session_marker() as session:
+        blocked = await is_user_blocked(
+            session,
+            blocker_id=receiver_id,
+            blocked_id=sender_id,
+        )
+
+        if blocked:
+            return None
+
         nachrict = Nachricht(
             ad_id=ad_id,
             sender_id=sender_id,
@@ -735,6 +752,12 @@ async def create_nachricht_db(ad_id: int, sender_id: int, receiver_id: int, text
         )
 
         session.add(nachrict)
+
+        await session.execute(
+            update(Ad)
+            .where(Ad.id == ad_id)
+            .values(untouch=False)
+        )
 
         await session.commit()
 
@@ -1030,6 +1053,8 @@ async def get_map_data_db():
             )
 
             .where(
+                Ad.archived == False,
+                Ad.sh_banned == False,
                 Ad.latitude.is_not(None),
                 Ad.longitude.is_not(None),
             )
@@ -1061,7 +1086,6 @@ async def get_map_data_db():
         ]
 
 async def get_ads_by_place_db(place: str):
-
     async with session_marker() as session:
 
         place = place.strip()
@@ -1078,6 +1102,8 @@ async def get_ads_by_place_db(place: str):
 
             select(Ad)
             .where(
+                Ad.archived == False,
+                Ad.sh_banned == False,
                 condition,
                 # Ad.anbieter == True,
             )
@@ -1458,3 +1484,42 @@ async def get_unread_messages_db(user_id: int):
         )
 
         return result.scalar_one()
+
+####################################### Блокировка сообщени от юзера
+
+async def is_user_blocked(session, blocker_id: int, blocked_id: int,):
+        result = await session.execute(
+            select(UserMessageBlock.id)
+            .where(
+                UserMessageBlock.blocker_id == blocker_id,
+                UserMessageBlock.blocked_id == blocked_id,
+            )
+        )
+
+        return result.scalar_one_or_none() is not None
+
+##################################Архивирование объявления
+
+async def archive_ad_db(ad_id: int):
+
+    async with session_marker() as session:
+
+        result = await session.execute(
+            select(Ad).where(
+                Ad.id == ad_id
+            )
+        )
+
+        ad = result.scalar_one_or_none()
+
+        if not ad:
+            return False
+
+        if ad.archived:
+            return ad
+
+        ad.archived = True
+
+        await session.commit()
+
+        return ad
