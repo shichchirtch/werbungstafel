@@ -88,6 +88,9 @@ function AdDetailsPage() {
             `/api/ad/${werbung.id}/shadow-ban`,
             {
                 method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
                 body: JSON.stringify({
                     user_id: user.dbId,
                 }),
