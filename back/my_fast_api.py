@@ -399,6 +399,9 @@ async def get_ad(ad_id: int):
         "ownerName": owner_name,
         "views": stats["views"],
         "favorites": stats["favorites"],
+        "archived": ad.archived,
+        "untouch": ad.untouch,
+        "sh_banned": ad.sh_banned,
         "photos": [
             {
                 "id": photo.id,
