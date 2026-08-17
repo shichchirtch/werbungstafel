@@ -109,14 +109,14 @@ function MyAdsPage() {
                                             font-bold
                                             text-white
                                             line-clamp-2
-                                            mb-2
+                                            mb-1
                                         "
                                     >
                                         {item.title}
                                     </h2>
 
 
-                                    <p className="text-gray-400 mb-3">
+                                    <p className="text-gray-400 mb-1">
                                         {item.plz
                                             ? `${t('PLZ')}: ${item.plz} / ${item.city}`
                                             : `${t('PLZ')}: ${item.city}`
@@ -130,7 +130,7 @@ function MyAdsPage() {
                                             className="
                                                 text-cyan-300
                                                 font-semibold
-                                                mb-2
+                                                mb-1
                                             "
                                         >
                                             {item.price}

@@ -123,7 +123,7 @@ const translations = {
         TitelDerAnzeige: 'Название Вербунга',
         Biete: 'Предлагаю',
         Suche: 'Ищу',
-        PLZ: 'Почтовый индекс / Город',
+        PLZ: 'Индекс / Город',
         BeschreibungAnzeige: 'Описание',
         PreisInfo: 'Стоимость (не обязательно)',
         FotoAufladen: 'Загрузить фото',

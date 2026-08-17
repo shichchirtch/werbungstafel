@@ -78,6 +78,44 @@ function AdDetailsPage() {
         loadAd()
     }, [id, user.id, user.isAuth])
 
+    async function handleToggleShadowBan() {
+
+        if (user.role !== 'admin') {
+            return
+        }
+
+        const response = await fetch(
+            `/api/ad/${werbung.id}/shadow-ban`,
+            {
+                method: "PATCH",
+                body: JSON.stringify({
+                    user_id: user.dbId,
+                }),
+            }
+        )
+
+        if (!response.ok) {
+            showToast("Fehler beim Shadow-Ban")
+            return
+        }
+
+        const data = await response.json()
+
+        if (!data.ok) {
+            showToast(
+                data.error || "Fehler beim Shadow-Ban"
+            )
+            return
+        }
+
+        // Обновляем локальное состояние объявления
+        setWerbung((prev) => ({
+            ...prev,
+            sh_banned: data.sh_banned,
+        }))
+
+    }
+
     const handleTogglePinned = async () => {
 
         const response = await fetch(
@@ -677,6 +715,32 @@ transition
                             >
                                 {isPinned ? '📌 TOP' : 'TOP'}
                             </button>
+                            {/* SHADOW BAN */}
+
+                            <button
+                                onClick={handleToggleShadowBan}
+                                className={`
+                flex-1
+                py-3
+                rounded-2xl
+                font-bold
+                text-white
+                transition
+                active:scale-95
+
+                ${
+                                    werbung.sh_banned
+                                        ? 'bg-gradient-to-br from-red-500 to-red-700 shadow-lg shadow-red-500/40'
+                                        : 'bg-gradient-to-br from-gray-500 to-gray-700'
+                                }
+            `}
+                            >
+                                {werbung.sh_banned
+                                    ? 'UNSHADOW'
+                                    : 'SHADOW BAN'
+                                }
+                            </button>
+
 
                             {!showChat && (
 

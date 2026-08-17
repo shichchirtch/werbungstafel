@@ -1522,3 +1522,40 @@ async def archive_ad_db(ad_id: int):
         ad.archived = True
         await session.commit()
         return ad
+
+#################################### SHADOW BAN ##########################
+
+async def toggle_shadow_ban_db(ad_id: int):
+    async with session_marker() as session:
+
+        result = await session.execute(
+            select(Ad).where(
+                Ad.id == ad_id
+            )
+        )
+
+        ad = result.scalar_one_or_none()
+
+        if not ad:
+            return None
+
+        ad.sh_banned = not ad.sh_banned
+
+        await session.commit()
+
+        await session.refresh(ad)
+
+        return ad.sh_banned
+
+async def is_admin(user_id: int) -> bool:
+    async with session_marker() as session:
+
+        result = await session.execute(
+            select(User.role).where(
+                User.id == user_id
+            )
+        )
+
+        role = result.scalar_one_or_none()
+
+        return role == "admin"

@@ -18,7 +18,7 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_last_user_ad, get_ad_statistics, register_ad_view_db,
                        register_ad_favorite_db, get_new_banners, werbung_top,
                        delete_ad_admin_db, mark_messages_as_read, get_unread_messages_db,
-                       archive_ad_db)
+                       archive_ad_db, toggle_shadow_ban_db, is_admin)
 import secrets
 import string, math
 from fastapi.staticfiles import StaticFiles
@@ -55,6 +55,8 @@ class AdCreate(BaseModel):
     plz: str
     anbieter: bool = True
 
+class ShadowBanRequest(BaseModel):
+    user_id: int
 
 class Favorite(BaseModel):
     telegram_id: int
@@ -1038,4 +1040,31 @@ async def archive_ad(ad_id: int):
 
     return {
         "ok": True
+    }
+################################### Теневой бан
+@f_api.patch("/api/ad/{ad_id}/shadow-ban")
+async def toggle_shadow_ban(
+    ad_id: int,
+    data: ShadowBanRequest,
+):
+
+    if not await is_admin(data.user_id):
+        return {
+            "ok": False,
+            "error": "Keine Berechtigung",
+        }
+
+    sh_banned = await toggle_shadow_ban_db(
+        ad_id=ad_id,
+    )
+
+    if sh_banned is None:
+        return {
+            "ok": False,
+            "error": "Anzeige nicht gefunden",
+        }
+
+    return {
+        "ok": True,
+        "sh_banned": sh_banned,
     }
