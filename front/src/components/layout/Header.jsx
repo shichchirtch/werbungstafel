@@ -257,14 +257,22 @@ function Header() {
 
                             onClick={() => setShowLoginModal(true)}
 
-                            className="
-            w-14 h-9 rounded-xl
-            font-semibold text-sm text-gray-300
-            bg-gradient-to-br
-            from-gray-700 to-gray-900
-            shadow-lg shadow-gray-500/20
-            active:scale-95 transition
-        "
+                             className="
+        px-4
+        py-2
+        rounded-xl
+        whitespace-nowrap
+        font-semibold
+        text-sm
+        text-gray-300
+        bg-gradient-to-br
+        from-gray-700
+        to-gray-900
+        shadow-lg
+        shadow-gray-500/20
+        active:scale-95
+        transition
+    "
                         >
                             📲 Telegram Login
                         </button>

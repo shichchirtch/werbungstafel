@@ -1559,3 +1559,20 @@ async def is_admin(user_id: int) -> bool:
         role = result.scalar_one_or_none()
 
         return role == "admin"
+
+############################ Выдача адмтину шбана
+
+async def get_shadow_banned_ads_db():
+    async with session_marker() as session:
+
+        result = await session.execute(
+            select(Ad)
+            .where(
+                Ad.sh_banned == True
+            )
+            .order_by(
+                Ad.created_at.desc()
+            )
+        )
+
+        return result.scalars().all()
