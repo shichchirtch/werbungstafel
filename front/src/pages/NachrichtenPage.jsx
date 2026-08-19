@@ -271,63 +271,67 @@ function NachrichtenPage() {
                 </div>
 
 
-                <div
-                    className="
+                {chats.length > 0 && (
+
+                    <div className="
         flex
         items-center
         justify-center
         gap-4
-        mt-8
-    "
-                >
+        mt-6
+    ">
 
-                    <button
-                        disabled={page === 1}
-                        onClick={() => setPage(page - 1)}
-                        className="
-            w-10
-            h-10
-            rounded-full
-            bg-white/10
-            text-white
-            disabled:opacity-30
-            hover:bg-white/20
-            transition
-        "
-                    >
-                        ◀
-                    </button>
+                        <button
+                            disabled={page === 1}
+                            onClick={() => setPage(page - 1)}
+                            className="
+                w-10
+                h-10
+                rounded-full
+                bg-white/10
+                text-white
+                disabled:opacity-30
+                hover:bg-white/20
+                transition
+            "
+                        >
+                            ◀
+                        </button>
 
-                    <div
-                        className="
-            text-gray-300
-            text-sm
-            font-medium
-            min-w-20
-            text-center
-        "
-                    >
-                        {page} / {totalPages}
+
+                        <div
+                            className="
+                text-gray-300
+                text-sm
+                font-medium
+                min-w-20
+                text-center
+            "
+                        >
+                            {page} / {totalPages}
+                        </div>
+
+
+                        <button
+                            disabled={page >= totalPages}
+                            onClick={() => setPage(page + 1)}
+                            className="
+                w-10
+                h-10
+                rounded-full
+                bg-white/10
+                text-white
+                disabled:opacity-30
+                hover:bg-white/20
+                transition
+            "
+                        >
+                            ▶
+                        </button>
+
                     </div>
 
-                    <button
-                        disabled={page >= totalPages}
-                        onClick={() => setPage(page + 1)}
-                        className="
-            w-10
-            h-10
-            rounded-full
-            bg-white/10
-            text-white
-            disabled:opacity-30
-            hover:bg-white/20
-            transition
-        "
-                    >
-                        ▶
-                    </button>
-
-                </div>
+                )}
             </div>
         )
     }
