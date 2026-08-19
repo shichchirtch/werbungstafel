@@ -257,7 +257,7 @@ function Header() {
 
                             onClick={() => setShowLoginModal(true)}
 
-                             className="
+                            className="
         px-4
         py-2
         rounded-xl
@@ -352,6 +352,7 @@ function Header() {
                                         👤 {t('Profile')}
                                     </button>
 
+
                                     <button
                                         onClick={() => {
                                             navigate('/my-ads')
@@ -365,6 +366,29 @@ function Header() {
                                     >
                                         📦 {t('MeineAnzeigen')}
                                     </button>
+
+
+                                    {/* ТОЛЬКО ДЛЯ АДМИНА */}
+
+                                    {user.role === "admin" && (
+
+                                        <button
+                                            onClick={() => {
+                                                navigate('/admin/shadow-banned')
+                                                setShowMenu(false)
+                                            }}
+                                            className="
+                    w-full text-left px-4 py-3
+                    text-red-400
+                    hover:bg-red-500/10
+                "
+                                        >
+                                            🚫 Shadow Banned
+                                        </button>
+
+                                    )}
+
+
                                     <button
                                         onClick={() => {
                                             navigate('/favorites')
@@ -379,24 +403,6 @@ function Header() {
                                         ❤️ {t('Merklist')}
                                     </button>
 
-                                    {/*        <button*/}
-                                    {/*            onClick={() => {*/}
-
-                                    {/*                dispatch(clearSelectedChat())*/}
-
-                                    {/*                navigate('/nachrichten')*/}
-
-                                    {/*                setShowMenu(false)*/}
-
-                                    {/*            }}*/}
-                                    {/*            className="*/}
-                                    {/*    w-full text-left px-4 py-3*/}
-                                    {/*    text-gray-300*/}
-                                    {/*    hover:bg-white/5*/}
-                                    {/*"*/}
-                                    {/*        >*/}
-                                    {/*            💬 {t('Nachrichten')}*/}
-                                    {/*        </button>*/}
                                     {!isTelegram && (
 
                                         <button
