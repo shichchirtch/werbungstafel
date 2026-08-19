@@ -44,29 +44,6 @@ function NachrichtenPage() {
         return data
     }
 
-    // async function loadChats() {
-    //     if (!user.dbId) {
-    //         return
-    //     }
-    //     const response = await fetch(
-    //         `/api/chats/${user.dbId}?page=${page}`
-    //     )
-    //
-    //     if (!response.ok) {
-    //         return
-    //     }
-    //
-    //     const data = await response.json()
-    //     console.log("CHATS RESPONSE =", data)
-    //     console.log("CURRENT USER =", user)
-    //
-    //     if (!data.ok) {
-    //         return
-    //     }
-    //     setChats(data.chats)
-    //     setTotalPages(data.total_pages)
-    //
-    // }
     useEffect(() => {
 
         async function load() {
@@ -79,16 +56,15 @@ function NachrichtenPage() {
 
             setChats(data.chats)
             setTotalPages(data.total_pages)
+
+            if (page > data.total_pages) {
+                setPage(data.total_pages)
+            }
         }
 
         load()
 
     }, [page, user.dbId])
-
-    // useEffect(() => {
-    //     loadChats()
-    //
-    // }, [page, user.dbId])
 
 
     useEffect(() => {
@@ -335,7 +311,7 @@ function NachrichtenPage() {
                     </div>
 
                     <button
-                        disabled={page === totalPages}
+                        disabled={page >= totalPages}
                         onClick={() => setPage(page + 1)}
                         className="
             w-10
