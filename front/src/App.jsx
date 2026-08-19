@@ -85,7 +85,7 @@ const router = createBrowserRouter([
                 element: <ShadowBanPage />
             },
             {
-                path: "/admin/shadow-banned",
+                path: "/user/:userId/ads",
                 element: <UserAdsPage />
             }
 
