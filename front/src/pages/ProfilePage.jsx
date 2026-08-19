@@ -139,22 +139,14 @@ function ProfilePage() {
                     flex justify-around text-center
                 ">
 
-                    <button
-                        onClick={() => navigate(`/user/${profile.id}/ads`)}
-                        className="
-        text-left
-        active:scale-95
-        transition
-    "
-                    >
+                    <div>
                         <p className="text-xl font-bold text-gray-300">
                             {profile.ads_count}
                         </p>
-
                         <p className="text-gray-400 text-sm">
                             {t('Anzeigen')}
                         </p>
-                    </button>
+                    </div>
 
                     <div>
                         <p className="text-xl font-bold text-gray-300">

@@ -167,8 +167,14 @@ function UserProfilePage() {
                     "
                 >
 
-                    <div>
-
+                    <button
+                        onClick={() => navigate(`/user/${profile.id}/ads`)}
+                        className="
+        text-left
+        active:scale-95
+        transition
+    "
+                    >
                         <p className="text-xl font-bold text-gray-300">
                             {profile.ads_count}
                         </p>
@@ -176,8 +182,7 @@ function UserProfilePage() {
                         <p className="text-gray-400 text-sm">
                             {t('Anzeigen')}
                         </p>
-
-                    </div>
+                    </button>
 
                     <div>
 
