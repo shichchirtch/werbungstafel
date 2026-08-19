@@ -1164,17 +1164,17 @@ async def toggle_user_ban(user_id: int):
 
 async def get_ads_count(user_id: int):
     async with session_marker() as session:
-        return await session.scalar(
 
-            select(func.count())
-
-            .select_from(Ad)
-
+        result = await session.execute(
+            select(func.count(Ad.id))
             .where(
-                Ad.owner_id == user_id
+                Ad.owner_id == user_id,
+                Ad.archived == False,
+                Ad.sh_banned == False,
             )
-
         )
+
+        return result.scalar() or 0
 
 
 async def get_favorites_count(user_id: int):

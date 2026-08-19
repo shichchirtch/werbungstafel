@@ -175,13 +175,15 @@ function UserProfilePage() {
         transition
     "
                     >
-                        <p className="text-xl font-bold text-gray-300">
-                            {profile.ads_count}
-                        </p>
+                        <div className="flex flex-col items-center">
+                            <p className="text-xl font-bold text-gray-300">
+                                {profile.ads_count}
+                            </p>
 
-                        <p className="text-gray-400 text-sm">
-                            {t('Anzeigen')}
-                        </p>
+                            <p className="text-gray-400 text-sm">
+                                {t('Anzeigen')}
+                            </p>
+                        </div>
                     </button>
 
                     <div>
