@@ -15,6 +15,7 @@ import MapPage from './pages/MapPage';
 import PlaceAdsPage from './pages/PlaceAdsPage';
 import UserProfielePage from './pages/UserProfilePage.jsx';
 import ShadowBanPage from "./pages/ShadowBanPage"
+import UserAdsPage from "./pages/UserAdsPage"
 
 const router = createBrowserRouter([
     {
@@ -82,6 +83,10 @@ const router = createBrowserRouter([
             {
                 path: "/admin/shadow-banned",
                 element: <ShadowBanPage />
+            },
+            {
+                path: "/admin/shadow-banned",
+                element: <UserAdsPage />
             }
 
         ],

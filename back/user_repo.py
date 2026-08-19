@@ -1576,3 +1576,46 @@ async def get_shadow_banned_ads_db():
         )
 
         return result.scalars().all()
+
+######################################Вывод вербунгов юзера
+
+async def get_user_ads_db(user_id: int):
+
+    async with session_marker() as session:
+
+        result = await session.execute(
+            select(Ad)
+            .where(
+                Ad.owner_id == user_id,
+                Ad.archived == False,
+                Ad.sh_banned == False,
+            )
+            .order_by(
+                Ad.created_at.desc()
+            )
+        )
+
+        ads = result.scalars().all()
+
+        preview_photos = await get_preview_photos(
+            session,
+            [ad.id for ad in ads]
+        )
+
+        return [
+            {
+                "id": ad.id,
+                "ownerId": ad.owner_id,
+                "category": ad.category,
+                "title": ad.title,
+                "plz": ad.plz,
+                "city": ad.city,
+                "description": ad.description,
+                "price": ad.price,
+                "photos": [],
+                "createdAt": ad.created_at.isoformat(),
+                "anbieter": ad.anbieter,
+                "preview": preview_photos.get(ad.id),
+            }
+            for ad in ads
+        ]

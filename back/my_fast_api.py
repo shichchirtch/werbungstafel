@@ -18,7 +18,8 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_last_user_ad, get_ad_statistics, register_ad_view_db,
                        register_ad_favorite_db, get_new_banners, werbung_top,
                        delete_ad_admin_db, mark_messages_as_read, get_unread_messages_db,
-                       archive_ad_db, toggle_shadow_ban_db, is_admin, get_shadow_banned_ads_db)
+                       archive_ad_db, toggle_shadow_ban_db,
+                       is_admin, get_shadow_banned_ads_db, get_user_ads_db)
 import secrets
 import string, math
 from fastapi.staticfiles import StaticFiles
@@ -1080,6 +1081,20 @@ async def get_shadow_banned_ads(user_id: int):
         }
 
     ads = await get_shadow_banned_ads_db()
+
+    return {
+        "ok": True,
+        "ads": ads,
+    }
+
+################################################Хэндлер собирающий вербунги юзера
+
+@f_api.get("/api/user/{user_id}/ads")
+async def get_user_ads(user_id: int):
+
+    ads = await get_user_ads_db(
+        user_id=user_id
+    )
 
     return {
         "ok": True,
