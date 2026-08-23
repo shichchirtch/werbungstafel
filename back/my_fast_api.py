@@ -19,7 +19,7 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        register_ad_favorite_db, get_new_banners, werbung_top,
                        delete_ad_admin_db, mark_messages_as_read, get_unread_messages_db,
                        archive_ad_db, toggle_shadow_ban_db,
-                       is_admin, get_shadow_banned_ads_db, get_user_ads_db)
+                       is_admin, get_shadow_banned_ads_db, get_user_ads_db, get_public_user_profile_by_id)
 import secrets
 import string, math
 from fastapi.staticfiles import StaticFiles
@@ -914,6 +914,22 @@ async def get_user_profile(user_id: int):
         **profile
     }
 
+############### Чужой профиль
+@f_api.get("/api/public-user-profile/{user_id}")
+async def get_public_user_profile(user_id: int):
+
+    profile = await get_public_user_profile_by_id(user_id)
+
+    if not profile:
+        return {
+            "ok": False,
+            "error": "Benutzer wurde nicht gefunden"
+        }
+
+    return {
+        "ok": True,
+        **profile
+    }
 
 ##################################### Melden ################################
 

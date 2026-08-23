@@ -19,7 +19,7 @@ function UserProfilePage() {
         async function loadProfile() {
 
             const response = await fetch(
-                `/api/user-profile/${userId}`
+                 `/api/public-user-profile/${userId}`
             )
 
             if (!response.ok) {

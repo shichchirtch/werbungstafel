@@ -131,13 +131,7 @@ class UserMessageBlock(Base):
     blocked_id: Mapped[int] = mapped_column(ForeignKey("users.id"),nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=False), default=lambda: datetime.now())
 
-# __table_args__ = (
-#     UniqueConstraint(
-#         "blocker_id",
-#         "blocked_id",
-#         name="uq_user_message_block"
-#     ),
-# )
+
 
 
 async def init_models():
