@@ -699,6 +699,25 @@ transition
                             >
                                 {t('Loeschen')}
                             </button>
+
+                            <button
+                                onClick={handleToggleFavorite}
+                                className={`
+                flex-1 py-3 rounded-2xl font-bold
+                transition active:scale-95
+                ${
+                                    isFavorite
+                                        ? 'bg-gray-500 text-white'
+                                        : 'bg-gray-700 text-gray-300'
+                                }
+            `}
+                            >
+                                {isFavorite
+                                    ? t('Gespeichert')
+                                    : t('Merken')
+                                }
+                            </button>
+
                             <button
                                 onClick={handleTogglePinned}
                                 className={`

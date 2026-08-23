@@ -1192,20 +1192,14 @@ async def get_favorites_count(user_id: int):
         )
 
 async def get_received_favorites_count(user_id: int):
-
     async with session_marker() as session:
-
         return await session.scalar(
-
             select(func.count(Favorite.id))
-
             .select_from(Favorite)
-
             .join(
                 Ad,
                 Favorite.ad_id == Ad.id
             )
-
             .where(
                 Ad.owner_id == user_id,
                 Favorite.user_id != user_id,
