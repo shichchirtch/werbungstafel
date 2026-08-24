@@ -1,4 +1,5 @@
-from sqlalchemy import Integer, BigInteger, String, Boolean, ForeignKey, DateTime, Float
+from sqlalchemy import (Integer, BigInteger, UniqueConstraint,
+                        String, Boolean, ForeignKey, DateTime, Float)
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from config import settings
@@ -132,7 +133,19 @@ class UserMessageBlock(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=False), default=lambda: datetime.now())
 
 
+class UserBlock(Base):
+    __tablename__ = "user_blocks"
 
+    id: Mapped[int] = mapped_column(Integer,primary_key=True)
+    blocker_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    blocked_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    __table_args__ = (
+        UniqueConstraint(
+            "blocker_id",
+            "blocked_id",
+            name="uq_user_block"
+        ),
+    )
 
 async def init_models():
     async with engine.begin() as conn:

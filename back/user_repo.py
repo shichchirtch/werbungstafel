@@ -1,6 +1,7 @@
 from sqlalchemy import select, delete, func, and_, or_, update
 from postgres_table import (User, LoginRequest, Ad, Favorite, AdPhoto, Nachricht,
-                            Nachricht, MessageAttachment, AdActivity, Banner, UserMessageBlock)
+                            Nachricht, MessageAttachment, AdActivity,
+                            Banner, UserMessageBlock, UserBlock)
 from postgres_table import session_marker
 from datetime import datetime, timedelta #UTC
 from geopy.geocoders import Nominatim
@@ -736,8 +737,14 @@ async def update_profile_and_get_user_db(telegram_id: int, bio: str, location: s
 
 ########################## Сообщения ###############################
 
-async def create_nachricht_db(ad_id: int, sender_id: int, receiver_id: int, text: str):
+async def create_nachricht_db(
+    ad_id: int,
+    sender_id: int,
+    receiver_id: int,
+    text: str,
+):
     async with session_marker() as session:
+
         blocked = await is_user_blocked(
             session,
             blocker_id=receiver_id,
@@ -768,13 +775,53 @@ async def create_nachricht_db(ad_id: int, sender_id: int, receiver_id: int, text
 
         return nachrict
 
-
-async def get_nachrichten_db(ad_id: int, sender_id: int, receiver_id: int,):
+async def get_nachrichten_db(
+    ad_id: int,
+    sender_id: int,
+    receiver_id: int,
+):
     async with session_marker() as session:
-        result = await session.execute(
-            select(Nachricht).where(
-                Nachricht.ad_id == ad_id,
-                or_(
+
+        # ---------- ADMIN BLOCK ----------
+
+        blocked = await is_user_blocked(
+            session,
+            blocker_id=sender_id,
+            blocked_id=receiver_id,
+        )
+
+        if blocked:
+
+            message_condition = and_(
+                Nachricht.sender_id == sender_id,
+                Nachricht.receiver_id == receiver_id,
+            )
+
+        else:
+
+            # ---------- PRIVATE USER BLOCK ----------
+
+            blocked_private = await is_user_blocked_private(
+                session,
+                blocker_id=sender_id,
+                blocked_id=receiver_id,
+            )
+
+            if blocked_private:
+
+                # Текущий пользователь заблокировал собеседника.
+                # Показываем ему только его собственные сообщения.
+
+                message_condition = and_(
+                    Nachricht.sender_id == sender_id,
+                    Nachricht.receiver_id == receiver_id,
+                )
+
+            else:
+
+                # Обычный чат — оба направления.
+
+                message_condition = or_(
                     and_(
                         Nachricht.sender_id == sender_id,
                         Nachricht.receiver_id == receiver_id,
@@ -784,37 +831,48 @@ async def get_nachrichten_db(ad_id: int, sender_id: int, receiver_id: int,):
                         Nachricht.receiver_id == sender_id,
                     ),
                 )
-            ).order_by(
+
+        result = await session.execute(
+            select(Nachricht)
+            .where(
+                Nachricht.ad_id == ad_id,
+                message_condition,
+            )
+            .order_by(
                 Nachricht.created_at
-            ))
+            )
+        )
+
         nachrichten = result.scalars().all()
 
-        # ---------- Загружаем все вложения одним запросом ----------
+        # ---------- Вложения ----------
 
         message_ids = [n.id for n in nachrichten]
-        attachments_by_message = {}
-        if message_ids:
-            result = await session.execute(
 
-                select(MessageAttachment).where(
+        attachments_by_message = {}
+
+        if message_ids:
+
+            result = await session.execute(
+                select(MessageAttachment)
+                .where(
                     MessageAttachment.message_id.in_(message_ids)
                 )
             )
+
             for attachment in result.scalars():
+
                 attachments_by_message.setdefault(
                     attachment.message_id,
                     []
                 ).append({
-
                     "type": attachment.type,
                     "file_url": attachment.file_url,
-
                 })
 
-        # ---------- Формируем ответ ----------
+        # ---------- Ответ ----------
 
         return [
-
             {
                 "id": n.id,
                 "sender_id": n.sender_id,
@@ -822,13 +880,13 @@ async def get_nachrichten_db(ad_id: int, sender_id: int, receiver_id: int,):
                 "text": n.text,
                 "created_at": n.created_at.isoformat(),
                 "is_read": n.is_read,
-                "attachments": attachments_by_message.get(n.id,[]),
+                "attachments": attachments_by_message.get(
+                    n.id,
+                    []
+                ),
             }
-
             for n in nachrichten
-
         ]
-
 
 async def get_chats_db(user_id: int, page: int):
     limit = 20
@@ -1660,3 +1718,75 @@ async def get_user_ads_db(user_id: int):
             }
             for ad in ads
         ]
+
+##################################### Users Block
+
+async def is_user_blocked_private(session,blocker_id: int, blocked_id: int,):
+    result = await session.execute(
+        select(UserBlock).where(
+            UserBlock.blocker_id == blocker_id,
+            UserBlock.blocked_id == blocked_id,
+        )
+    )
+
+    return result.scalar_one_or_none() is not None
+
+async def toggle_user_block_db(
+    blocker_id: int,
+    blocked_id: int,
+):
+    async with session_marker() as session:
+
+        result = await session.execute(
+            select(UserBlock).where(
+                UserBlock.blocker_id == blocker_id,
+                UserBlock.blocked_id == blocked_id,
+            )
+        )
+
+        block = result.scalar_one_or_none()
+
+        if block:
+
+            await session.delete(block)
+            await session.commit()
+
+            return False
+
+        block = UserBlock(
+            blocker_id=blocker_id,
+            blocked_id=blocked_id,
+        )
+
+        session.add(block)
+
+        await session.commit()
+
+        return True
+
+
+async def get_user_block_status_db(
+    blocker_id: int,
+    blocked_id: int,
+):
+    async with session_marker() as session:
+
+        return await is_user_blocked_private(
+            session,
+            blocker_id=blocker_id,
+            blocked_id=blocked_id,
+        )
+
+async def should_notify_receiver(
+    receiver_id: int,
+    sender_id: int,
+):
+    async with session_marker() as session:
+
+        blocked_private = await is_user_blocked_private(
+            session,
+            blocker_id=receiver_id,
+            blocked_id=sender_id,
+        )
+
+        return not blocked_private

@@ -10,7 +10,7 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        get_ad_by_id, delete_ad_db, get_ads_by_owner,
                        get_user_favorites, create_favorite, delete_favorite_db, check_favorite,
                        get_ad_photos, create_ad_photo, update_ad_db, delete_photo_db,
-                       get_profile_db,  get_ads_by_radius_db,
+                       get_profile_db, get_ads_by_radius_db,
                        create_nachricht_db, get_nachrichten_db, get_ads_count_by_category,
                        get_chats_db, mark_messages_read_db, update_profile_and_get_user_db,
                        get_map_data_db, get_ads_by_place_db, toggle_user_ban,
@@ -19,7 +19,10 @@ from user_repo import (create_user_if_not_exists, get_user_by_tg_id,
                        register_ad_favorite_db, get_new_banners, werbung_top,
                        delete_ad_admin_db, mark_messages_as_read, get_unread_messages_db,
                        archive_ad_db, toggle_shadow_ban_db,
-                       is_admin, get_shadow_banned_ads_db, get_user_ads_db, get_public_user_profile_by_id)
+                       is_admin, get_shadow_banned_ads_db,
+                       get_user_ads_db, get_public_user_profile_by_id,
+                       toggle_user_block_db, get_user_block_status_db, should_notify_receiver,
+                       )
 import secrets
 import string, math
 from fastapi.staticfiles import StaticFiles
@@ -44,8 +47,10 @@ class ReportAd(BaseModel):
     reporter_id: int
     reason: str
 
+
 class AdView(BaseModel):
     telegram_id: int
+
 
 class AdCreate(BaseModel):
     telegram_id: int
@@ -56,8 +61,10 @@ class AdCreate(BaseModel):
     plz: str
     anbieter: bool = True
 
+
 class ShadowBanRequest(BaseModel):
     user_id: int
+
 
 class Favorite(BaseModel):
     telegram_id: int
@@ -197,7 +204,6 @@ async def auth_telegram(data: dict):
 
 @f_api.post("/api/ads")
 async def create_ad(data: AdCreate):
-
     user = await get_user_by_tg_id(data.telegram_id)
 
     if not user:
@@ -219,7 +225,6 @@ async def create_ad(data: AdCreate):
         delta = datetime.now() - last_ad.created_at
 
         if delta < timedelta(minutes=30):
-
             remaining = timedelta(minutes=30) - delta
 
             minutes = math.ceil(
@@ -301,11 +306,11 @@ async def create_ad(data: AdCreate):
         address = location.raw.get("address", {})
 
         city = (
-            address.get("city")
-            or address.get("town")
-            or address.get("village")
-            or address.get("municipality")
-            or location.raw.get("name", entered_place)
+                address.get("city")
+                or address.get("town")
+                or address.get("village")
+                or address.get("municipality")
+                or location.raw.get("name", entered_place)
         )
 
     osm_id = location.raw["osm_id"]
@@ -341,6 +346,7 @@ async def create_ad(data: AdCreate):
         "ok": True,
         "ad_id": ad.id
     }
+
 
 @f_api.get("/api/ads/{category}")
 async def get_ads(category: str, place: str = "Deutschland", radius: str = "Alle", ):
@@ -396,7 +402,7 @@ async def get_ad(ad_id: int):
         "description": ad.description,
         "price": ad.price,
         "plz": ad.plz,
-        "city":ad.city,
+        "city": ad.city,
         "pinned": ad.pinned,
         "anbieter": ad.anbieter,
         "ownerName": owner_name,
@@ -581,9 +587,10 @@ async def upload_photos(ad_id: int = Form(...), photos: list[UploadFile] = File(
         "photos": urls,
     }
 
+
 ############################### Удаление объявления ##############################
 @f_api.delete("/api/ad/{ad_id}")
-async def delete_ad(ad_id: int,data: dict):
+async def delete_ad(ad_id: int, data: dict):
     role = data.get("role")
     if role == "admin":
         ad = await delete_ad_admin_db(ad_id)
@@ -592,7 +599,6 @@ async def delete_ad(ad_id: int,data: dict):
         ad = await delete_ad_db(ad_id)
 
     if not ad:
-
         return {
             "ok": False,
             "error": "Anzeige nicht gefunden"
@@ -606,6 +612,7 @@ async def delete_ad(ad_id: int,data: dict):
     return {
         "ok": True
     }
+
 
 ################################ Редактирование объявления ###########################
 
@@ -693,10 +700,17 @@ async def update_profile(telegram_id: int, data: ProfileUpdate):
 
 ############################### Nachricht #########################################
 
-
 @f_api.post("/api/messages")
-async def create_nachricht(ad_id: int = Form(...), sender_id: int = Form(...),receiver_id: int = Form(...),text: str = Form(""), photos: list[UploadFile] = File(default=[]),):
+async def create_nachricht(
+    ad_id: int = Form(...),
+    sender_id: int = Form(...),
+    receiver_id: int = Form(...),
+    text: str = Form(""),
+    photos: list[UploadFile] = File(default=[]),
+):
+
     sender = await get_user_by_id(sender_id)
+
     if not sender:
         return {
             "ok": False,
@@ -709,7 +723,9 @@ async def create_nachricht(ad_id: int = Form(...), sender_id: int = Form(...),re
             "error": "Ihr Konto wurde gesperrt."
         }
 
-
+    # --------------------------------
+    # СОЗДАЁМ СООБЩЕНИЕ
+    # --------------------------------
 
     nachricht = await create_nachricht_db(
         ad_id=ad_id,
@@ -718,21 +734,27 @@ async def create_nachricht(ad_id: int = Form(...), sender_id: int = Form(...),re
         text=text,
     )
 
+    # Административная блокировка
     if nachricht is None:
         return {
             "ok": False,
             "error": "Dieser Benutzer kann keine Nachrichten von Ihnen empfangen."
         }
 
+    # --------------------------------
+    # ВЛОЖЕНИЯ
+    # --------------------------------
+
     folder = f"uploads/messages/{nachricht.id}"
     os.makedirs(folder, exist_ok=True)
+
     attachments = []
 
     for photo in photos:
 
         filename = (
-                os.path.splitext(photo.filename or "photo")[0]
-                + ".jpg"
+            os.path.splitext(photo.filename or "photo")[0]
+            + ".jpg"
         )
 
         file_path = f"{folder}/{filename}"
@@ -764,7 +786,9 @@ async def create_nachricht(ad_id: int = Form(...), sender_id: int = Form(...),re
             f"/uploads/messages/"
             f"{nachricht.id}/{filename}"
         )
+
         print(file_url)
+
         await create_message_attachment(
             message_id=nachricht.id,
             type="photo",
@@ -776,12 +800,25 @@ async def create_nachricht(ad_id: int = Form(...), sender_id: int = Form(...),re
             "file_url": file_url,
         })
 
-    print("received ID =", receiver_id)
+    # --------------------------------
+    # TELEGRAM УВЕДОМЛЕНИЕ
+    # --------------------------------
 
-    await notify_receiver(receiver_id)
+    should_notify = await should_notify_receiver(
+        receiver_id=receiver_id,
+        sender_id=sender_id,
+    )
+
+    if should_notify:
+        await notify_receiver(receiver_id)
+
+    # --------------------------------
+
+    print("received ID =", receiver_id)
     print("=" * 60)
     print("MESSAGE ID =", nachricht.id)
     print("PHOTOS =", len(photos))
+
 
     return {
         "ok": True,
@@ -796,7 +833,6 @@ async def create_nachricht(ad_id: int = Form(...), sender_id: int = Form(...),re
             "attachments": attachments,
         }
     }
-
 
 @f_api.get("/api/messages/{ad_id}/{sender_id}/{receiver_id}")
 async def get_nachrichten(ad_id: int, sender_id: int, receiver_id: int):
@@ -874,8 +910,9 @@ async def ban_user(user_id: int):
         "is_banned": is_banned,
     }
 
+
 @f_api.post("/api/ad/{ad_id}/pin")
-async def toggle_ad_pin(ad_id: int,data: dict):
+async def toggle_ad_pin(ad_id: int, data: dict):
     user_id = data.get("user_id")
 
     if not user_id:
@@ -914,10 +951,10 @@ async def get_user_profile(user_id: int):
         **profile
     }
 
+
 ############### Чужой профиль
 @f_api.get("/api/public-user-profile/{user_id}")
 async def get_public_user_profile(user_id: int):
-
     profile = await get_public_user_profile_by_id(user_id)
 
     if not profile:
@@ -930,6 +967,7 @@ async def get_public_user_profile(user_id: int):
         "ok": True,
         **profile
     }
+
 
 ##################################### Melden ################################
 
@@ -978,6 +1016,7 @@ async def report_ad(data: ReportAd):
     return {
         "ok": True}
 
+
 ################################### Каунтер просмотров ####################################
 class AdView(BaseModel):
     telegram_id: int
@@ -1005,7 +1044,6 @@ async def register_ad_view(
 
 @f_api.get("/api/banners")
 async def get_banners():
-
     banners = await get_new_banners()
 
     return [
@@ -1016,6 +1054,8 @@ async def get_banners():
         }
         for banner in banners
     ]
+
+
 ################################# Chat reads ###############################
 
 @f_api.post("/api/messages/read")
@@ -1028,10 +1068,11 @@ async def mark_messages_read(data: dict):
             "ok": False,
             "error": "Fehlende Daten",
         }
-    await mark_messages_as_read(ad_id=ad_id,receiver_id=receiver_id,sender_id=sender_id,)
+    await mark_messages_as_read(ad_id=ad_id, receiver_id=receiver_id, sender_id=sender_id, )
     return {
         "ok": True
     }
+
 
 ################################# Возврат  непрочитанных сообщений во фронт #######################
 
@@ -1042,6 +1083,7 @@ async def get_unread_messages(user_id: int):
         "ok": True,
         "unread": count,
     }
+
 
 #############################################Архивация объявления
 
@@ -1058,13 +1100,14 @@ async def archive_ad(ad_id: int):
     return {
         "ok": True
     }
+
+
 ################################### Теневой бан
 @f_api.patch("/api/ad/{ad_id}/shadow-ban")
 async def toggle_shadow_ban(
-    ad_id: int,
-    data: ShadowBanRequest,
+        ad_id: int,
+        data: ShadowBanRequest,
 ):
-
     if not await is_admin(data.user_id):
         return {
             "ok": False,
@@ -1086,10 +1129,10 @@ async def toggle_shadow_ban(
         "sh_banned": sh_banned,
     }
 
+
 ############################################# Admin Sh_BAN
 @f_api.get("/api/admin/shadow-banned")
 async def get_shadow_banned_ads(user_id: int):
-
     if not await is_admin(user_id):
         return {
             "ok": False,
@@ -1103,11 +1146,11 @@ async def get_shadow_banned_ads(user_id: int):
         "ads": ads,
     }
 
+
 ################################################Хэндлер собирающий вербунги юзера
 
 @f_api.get("/api/user/{user_id}/ads")
 async def get_user_ads(user_id: int):
-
     ads = await get_user_ads_db(
         user_id=user_id
     )
@@ -1115,4 +1158,40 @@ async def get_user_ads(user_id: int):
     return {
         "ok": True,
         "ads": ads,
+    }
+
+
+###################################### Пользовательски блок переписки
+@f_api.get("/api/user-block/{blocked_id}")
+async def get_user_block_status(
+    blocked_id: int,
+    blocker_id: int,
+):
+    blocked = await get_user_block_status_db(
+        blocker_id=blocker_id,
+        blocked_id=blocked_id,
+    )
+
+    return {
+        "ok": True,
+        "blocked": blocked,
+    }
+
+
+@f_api.patch("/api/user-block/{blocked_id}")
+async def toggle_user_block(blocked_id: int, blocker_id: int,):
+    if blocker_id == blocked_id:
+        return {
+            "ok": False,
+            "error": "Sie können sich nicht selbst blockieren."
+        }
+
+    blocked = await toggle_user_block_db(
+        blocker_id=blocker_id,
+        blocked_id=blocked_id,
+    )
+
+    return {
+        "ok": True,
+        "blocked": blocked,
     }

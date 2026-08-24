@@ -10,12 +10,63 @@ function Chat({adId, senderId, receiverId,}) {
     const [isSending, setIsSending] = useState(false)
     const textareaRef = useRef(null)
     const [openedPhotoIndex, setOpenedPhotoIndex] = useState(null)
+    const [isBlockedPrivate, setIsBlockedPrivate] = useState(false)
     const chatPhotos = messages.flatMap(msg =>
         (msg.attachments || []).filter(a => a.type === "photo")
     )
 
     const touchStartX = useRef(0)
     const {t} = useTranslation()
+
+    useEffect(() => {
+
+        async function loadBlockStatus() {
+
+            const response = await fetch(
+                `/api/user-block/${receiverId}?blocker_id=${senderId}`
+            )
+
+            if (!response.ok) {
+                return
+            }
+
+            const data = await response.json()
+
+            if (!data.ok) {
+                return
+            }
+
+            setIsBlockedPrivate(data.blocked)
+        }
+
+        if (receiverId && senderId) {
+            loadBlockStatus()
+        }
+
+    }, [receiverId, senderId])
+
+    async function handleToggleBlock() {
+
+        const response = await fetch(
+            `/api/user-block/${receiverId}?blocker_id=${senderId}`,
+            {
+                method: "PATCH",
+            }
+        )
+
+        if (!response.ok) {
+            return
+        }
+
+        const data = await response.json()
+
+        if (!data.ok) {
+            return
+        }
+
+        setIsBlockedPrivate(data.blocked)
+    }
+
     const handleTouchStart = (e) => {
 
         touchStartX.current = e.touches[0].clientX
@@ -318,20 +369,7 @@ function Chat({adId, senderId, receiverId,}) {
         }
 
     }
-    console.log(
-    "CHAT DEBUG",
-    {
-        senderId,
-        receiverId,
-        messages: messages.map(msg => ({
-            id: msg.id,
-            sender_id: msg.sender_id,
-            receiver_id: msg.receiver_id,
-            isMine: msg.sender_id === senderId,
-            isRead: msg.is_read,
-        })),
-    }
-)
+
 
     return (
 
@@ -346,7 +384,37 @@ function Chat({adId, senderId, receiverId,}) {
                 backdrop-blur-md
             "
         >
+            <div className="flex items-center justify-between mb-3">
 
+                <div className="text-gray-400 text-sm">
+                    {t('Nachrichten')}
+                </div>
+
+                <button
+                    onClick={handleToggleBlock}
+                    className={`
+            px-3
+            py-2
+            rounded-xl
+            text-sm
+            font-semibold
+            transition
+            active:scale-95
+
+            ${
+                        isBlockedPrivate
+                            ? "bg-red-500/20 text-red-300 border border-red-500/30"
+                            : "bg-white/10 text-gray-300 hover:bg-white/20"
+                    }
+        `}
+                >
+                    {isBlockedPrivate
+                        ? `🔓 ${t('Entsperren')}`
+                        : `🚫 ${t('Blockieren')}`
+                    }
+                </button>
+
+            </div>
             <div
                 className="
         h-60
@@ -401,10 +469,6 @@ function Chat({adId, senderId, receiverId,}) {
                                 }
                                 `}
                             >
-        {/*                           /!* DEBUG *!/*/}
-        {/*<div className="text-xs">*/}
-        {/*    {msg.sender_id} / {senderId}*/}
-        {/*</div>*/}
 
 
                                 {msg.attachments?.length > 0 && (
