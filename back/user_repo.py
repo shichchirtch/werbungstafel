@@ -737,44 +737,6 @@ async def update_profile_and_get_user_db(telegram_id: int, bio: str, location: s
 
 ########################## Сообщения ###############################
 
-async def create_nachricht_db(
-    ad_id: int,
-    sender_id: int,
-    receiver_id: int,
-    text: str,
-):
-    async with session_marker() as session:
-
-        blocked = await is_user_blocked(
-            session,
-            blocker_id=receiver_id,
-            blocked_id=sender_id,
-        )
-
-        if blocked:
-            return None
-
-        nachrict = Nachricht(
-            ad_id=ad_id,
-            sender_id=sender_id,
-            receiver_id=receiver_id,
-            text=text,
-        )
-
-        session.add(nachrict)
-
-        await session.execute(
-            update(Ad)
-            .where(Ad.id == ad_id)
-            .values(untouch=False)
-        )
-
-        await session.commit()
-
-        await session.refresh(nachrict)
-
-        return nachrict
-
 async def get_nachrichten_db(
     ad_id: int,
     sender_id: int,
@@ -782,55 +744,16 @@ async def get_nachrichten_db(
 ):
     async with session_marker() as session:
 
-        # ---------- ADMIN BLOCK ----------
-
-        blocked = await is_user_blocked(
-            session,
-            blocker_id=sender_id,
-            blocked_id=receiver_id,
-        )
-
-        if blocked:
-
-            message_condition = and_(
+        message_condition = or_(
+            and_(
                 Nachricht.sender_id == sender_id,
                 Nachricht.receiver_id == receiver_id,
-            )
-
-        else:
-
-            # ---------- PRIVATE USER BLOCK ----------
-
-            blocked_private = await is_user_blocked_private(
-                session,
-                blocker_id=sender_id,
-                blocked_id=receiver_id,
-            )
-
-            if blocked_private:
-
-                # Текущий пользователь заблокировал собеседника.
-                # Показываем ему только его собственные сообщения.
-
-                message_condition = and_(
-                    Nachricht.sender_id == sender_id,
-                    Nachricht.receiver_id == receiver_id,
-                )
-
-            else:
-
-                # Обычный чат — оба направления.
-
-                message_condition = or_(
-                    and_(
-                        Nachricht.sender_id == sender_id,
-                        Nachricht.receiver_id == receiver_id,
-                    ),
-                    and_(
-                        Nachricht.sender_id == receiver_id,
-                        Nachricht.receiver_id == sender_id,
-                    ),
-                )
+            ),
+            and_(
+                Nachricht.sender_id == receiver_id,
+                Nachricht.receiver_id == sender_id,
+            ),
+        )
 
         result = await session.execute(
             select(Nachricht)
@@ -844,8 +767,6 @@ async def get_nachrichten_db(
         )
 
         nachrichten = result.scalars().all()
-
-        # ---------- Вложения ----------
 
         message_ids = [n.id for n in nachrichten]
 
@@ -870,8 +791,6 @@ async def get_nachrichten_db(
                     "file_url": attachment.file_url,
                 })
 
-        # ---------- Ответ ----------
-
         return [
             {
                 "id": n.id,
@@ -887,6 +806,7 @@ async def get_nachrichten_db(
             }
             for n in nachrichten
         ]
+
 
 async def get_chats_db(user_id: int, page: int):
     limit = 20
@@ -1731,11 +1651,18 @@ async def is_user_blocked_private(session,blocker_id: int, blocked_id: int,):
 
     return result.scalar_one_or_none() is not None
 
+
 async def toggle_user_block_db(
     blocker_id: int,
     blocked_id: int,
 ):
     async with session_marker() as session:
+
+        print(
+            "TOGGLE BLOCK:",
+            "blocker_id =", blocker_id,
+            "blocked_id =", blocked_id,
+        )
 
         result = await session.execute(
             select(UserBlock).where(
@@ -1746,12 +1673,18 @@ async def toggle_user_block_db(
 
         block = result.scalar_one_or_none()
 
+        print("EXISTING BLOCK =", block)
+
         if block:
+
+            print("UNBLOCKING")
 
             await session.delete(block)
             await session.commit()
 
             return False
+
+        print("BLOCKING")
 
         block = UserBlock(
             blocker_id=blocker_id,
@@ -1763,7 +1696,6 @@ async def toggle_user_block_db(
         await session.commit()
 
         return True
-
 
 async def get_user_block_status_db(
     blocker_id: int,
