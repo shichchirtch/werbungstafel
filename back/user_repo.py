@@ -744,16 +744,36 @@ async def get_nachrichten_db(
 ):
     async with session_marker() as session:
 
-        message_condition = or_(
-            and_(
+        blocked_private = await is_user_blocked_private(
+            session,
+            blocker_id=sender_id,
+            blocked_id=receiver_id,
+        )
+
+        if blocked_private:
+
+            # Текущий пользователь заблокировал собеседника.
+            # Показываем только сообщения текущего пользователя.
+
+            message_condition = and_(
                 Nachricht.sender_id == sender_id,
                 Nachricht.receiver_id == receiver_id,
-            ),
-            and_(
-                Nachricht.sender_id == receiver_id,
-                Nachricht.receiver_id == sender_id,
-            ),
-        )
+            )
+
+        else:
+
+            # Обычный чат — показываем оба направления.
+
+            message_condition = or_(
+                and_(
+                    Nachricht.sender_id == sender_id,
+                    Nachricht.receiver_id == receiver_id,
+                ),
+                and_(
+                    Nachricht.sender_id == receiver_id,
+                    Nachricht.receiver_id == sender_id,
+                ),
+            )
 
         result = await session.execute(
             select(Nachricht)
@@ -767,6 +787,8 @@ async def get_nachrichten_db(
         )
 
         nachrichten = result.scalars().all()
+
+        # ---------- Вложения ----------
 
         message_ids = [n.id for n in nachrichten]
 
@@ -791,6 +813,8 @@ async def get_nachrichten_db(
                     "file_url": attachment.file_url,
                 })
 
+        # ---------- Ответ ----------
+
         return [
             {
                 "id": n.id,
@@ -806,7 +830,6 @@ async def get_nachrichten_db(
             }
             for n in nachrichten
         ]
-
 
 async def get_chats_db(user_id: int, page: int):
     limit = 20
