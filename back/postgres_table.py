@@ -139,6 +139,7 @@ class UserBlock(Base):
     id: Mapped[int] = mapped_column(Integer,primary_key=True)
     blocker_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     blocked_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    blocked_at: Mapped[datetime] = mapped_column(DateTime(timezone=False), default=lambda: datetime.now())
     __table_args__ = (
         UniqueConstraint(
             "blocker_id",
