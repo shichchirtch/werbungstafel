@@ -1722,3 +1722,19 @@ async def should_notify_receiver(
         )
 
         return not blocked_private
+
+async def create_nachricht_db( ad_id: int, sender_id: int, receiver_id: int, text: str, ):
+    async with session_marker() as session:
+        blocked = await is_user_blocked( session, blocker_id=receiver_id, blocked_id=sender_id, )
+        if blocked:
+            return None
+
+        nachricht = Nachricht( ad_id=ad_id, sender_id=sender_id, receiver_id=receiver_id, text=text, )
+
+        session.add(nachricht)
+        await session.execute( update(Ad) .where(Ad.id == ad_id) .values(untouch=False))
+        await session.commit()
+        await session.refresh(nachricht)
+        return nachricht
+
+
