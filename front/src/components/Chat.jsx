@@ -370,25 +370,6 @@ function Chat({adId, senderId, receiverId,}) {
 
     }
 
-    function formatMessageTime(createdAt) {
-        const [datePart, timePart] = createdAt.split("T")
-
-        const [year, month, day] = datePart.split("-").map(Number)
-        const [hour, minute] = timePart.split(":").map(Number)
-
-        const date = new Date(
-            year,
-            month - 1,
-            day,
-            hour,
-            minute
-        )
-
-        return date.toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-        })
-    }
 
     return (
 
@@ -547,8 +528,8 @@ function Chat({adId, senderId, receiverId,}) {
         gap-1
     "
                                 >
-    <span>
-    {formatMessageTime(msg.created_at)}
+  <span>
+    {msg.created_at.split("T")[1].slice(0, 5)}
 </span>
 
                                     {msg.sender_id === senderId && (
