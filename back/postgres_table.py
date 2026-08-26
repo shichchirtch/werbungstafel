@@ -94,7 +94,8 @@ class Nachricht(Base):
     receiver_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     text: Mapped[str] = mapped_column(String(3900))
     is_read: Mapped[bool] = mapped_column(default=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=False), default=lambda: datetime.now())
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=False),
+                                                 default=lambda: datetime.now())
 
 
 class MessageAttachment(Base):

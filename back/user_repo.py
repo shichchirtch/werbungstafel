@@ -1,3 +1,5 @@
+from zoneinfo import ZoneInfo
+
 from sqlalchemy import select, delete, func, and_, or_, update
 from postgres_table import (User, LoginRequest, Ad, Favorite, AdPhoto, Nachricht,
                             Nachricht, MessageAttachment, AdActivity,
@@ -1767,7 +1769,12 @@ async def create_nachricht_db( ad_id: int, sender_id: int, receiver_id: int, tex
         if blocked:
             return None
 
-        nachricht = Nachricht( ad_id=ad_id, sender_id=sender_id, receiver_id=receiver_id, text=text, )
+        created_at = datetime.now(
+            ZoneInfo("Europe/Berlin")
+        ).replace(tzinfo=None)
+
+        nachricht = Nachricht( ad_id=ad_id, sender_id=sender_id,
+                               receiver_id=receiver_id, text=text,  created_at = created_at)
 
         session.add(nachricht)
         await session.execute( update(Ad) .where(Ad.id == ad_id) .values(untouch=False))
