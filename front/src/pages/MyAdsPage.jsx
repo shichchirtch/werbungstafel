@@ -101,7 +101,7 @@ function MyAdsPage() {
 
                                 {/* TITLE + LOCATION + STATUS + PRICE */}
 
-                                <div className="flex-1 min-w-0">
+                                <div className="flex-1 min-w-0 pr-2">
 
                                     <h2
                                         className="
@@ -147,7 +147,7 @@ function MyAdsPage() {
                                             className="
                                                 inline-block
                                                 px-4
-                                                py-2 mr-2 rounded-xl bg-black/80
+                                                py-2 rounded-xl bg-black/80
                                                 border
                                                 border-white/20
                                                 text-white
