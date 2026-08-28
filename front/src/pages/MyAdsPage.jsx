@@ -147,10 +147,7 @@ function MyAdsPage() {
                                             className="
                                                 inline-block
                                                 px-4
-                                                py-2
-                                                mr-2
-                                                rounded-xl
-                                                bg-black/80
+                                                py-2 mr-2 rounded-xl bg-black/80
                                                 border
                                                 border-white/20
                                                 text-white
