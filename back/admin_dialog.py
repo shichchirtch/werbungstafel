@@ -70,7 +70,7 @@ admin_id = 6685637602
 
 
 async def message_text_acc(message: Message, widget: MessageInput, dialog_manager: DialogManager) -> None:
-    '''Функция посылаем мне сообщения юзеров'''
+    '''Функция посылает мне сообщения юзеров'''
     name = message.from_user.first_name
     user_name = message.from_user.username
     user_id = message.from_user.id

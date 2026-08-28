@@ -198,20 +198,34 @@ async def notify_receiver(receiver_id: int):
 
             print(e)
 
-async def notify_ad_created(owner_id: int, ad: Ad, lan:str):
+async def notify_ad_created(
+    owner_id: int,
+    ad: Ad,
+    lan: str
+):
     user = await get_user_by_id(owner_id)
+
     if not user:
         return
+
+    location = (
+        f"{ad.plz}, {ad.city}"
+        if ad.plz
+        else ad.city
+    )
+
     try:
         await bot.send_message(
             chat_id=user.telegram_id,
             text=(
                 f"✅ <b>{erfolgreich_veroffentlich_erste[lan]}</b>\n\n"
                 f"📌 <b>{ad.title}</b>\n"
-                f"📍 {ad.plz}\n\n"
-                f"{erfolgreich_veroffentlich_zweite[lan]}"),
+                f"📍 {location}\n\n"
+                f"{erfolgreich_veroffentlich_zweite[lan]}"
+            ),
             parse_mode="HTML"
         )
+
     except Exception as e:
         print(e)
 

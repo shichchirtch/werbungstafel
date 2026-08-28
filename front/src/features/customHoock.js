@@ -190,7 +190,7 @@ const translations = {
         Nachricht: 'Сообщение...',
         Zuruck: '← Назад',
         TelegramEoffnen:'Открыть Telegram',
-        Archivieren:'Archivieren',
+        Archivieren:'Заархивировать',
     },
 
     uk: {

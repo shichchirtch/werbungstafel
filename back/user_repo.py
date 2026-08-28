@@ -1023,7 +1023,9 @@ async def get_ads_by_radius_db(center_lat: float, center_lon: float, radius: int
         stmt = (
             select(Ad)
             .where(
-                Ad.category == category
+                Ad.category == category,
+                Ad.archived == False,
+                Ad.sh_banned == False,
             )
             .order_by(
                 Ad.pinned.desc(),
@@ -1073,6 +1075,8 @@ async def get_ads_count_by_category(category: str):
             .select_from(Ad)
             .where(
                 Ad.category == category,
+                Ad.archived == False,
+                Ad.sh_banned == False,
             )
         )
 
@@ -1749,12 +1753,8 @@ async def get_user_block_status_db(
             blocked_id=blocked_id,
         )
 
-async def should_notify_receiver(
-    receiver_id: int,
-    sender_id: int,
-):
+async def should_notify_receiver(receiver_id: int,sender_id: int):
     async with session_marker() as session:
-
         blocked_private = await is_user_blocked_private(
             session,
             blocker_id=receiver_id,

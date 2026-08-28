@@ -626,63 +626,80 @@ transition
                     ) : isOwner ? (
 
                         <>
-                            {werbung.untouch ? (
+                            {!werbung.archived && (
 
-                                <button
-                                    onClick={() => setShowDeleteModal(true)}
-                                    className="
-            flex-1
-            py-3
-            rounded-2xl
-            font-bold
-            text-white
-            bg-gradient-to-br
-            from-gray-700
-            to-gray-900
-            shadow-lg
-            shadow-cyan-500/20
-            active:scale-95
-            transition
-        "
-                                >
-                                    {t('Loeschen')}
-                                </button>
+                                <>
+                                    {werbung.untouch ? (
 
-                            ) : (
+                                        <button
+                                            onClick={() => setShowDeleteModal(true)}
+                                            className="
+                            flex-1
+                            py-3
+                            rounded-2xl
+                            font-bold
+                            text-white
+                            bg-gradient-to-br
+                            from-gray-700
+                            to-gray-900
+                            shadow-lg
+                            shadow-cyan-500/20
+                            active:scale-95
+                            transition
+                        "
+                                        >
+                                            {t('Loeschen')}
+                                        </button>
 
-                                <button
-                                    onClick={handleArchiveAd}
-                                    className="
-            flex-1
-            py-3
-            rounded-2xl
-            font-bold
-            text-white
-            bg-gradient-to-br
-            from-gray-700
-            to-gray-900
-            shadow-lg
-            shadow-cyan-500/20
-            active:scale-95
-            transition
-        "
-                                >
-                                    {t('Archivieren')}
-                                </button>
+                                    ) : (
+
+                                        <button
+                                            onClick={handleArchiveAd}
+                                            className="
+                            flex-1
+                            py-3
+                            rounded-2xl
+                            font-bold
+                            text-white
+                            bg-gradient-to-br
+                            from-gray-700
+                            to-gray-900
+                            shadow-lg
+                            shadow-cyan-500/20
+                            active:scale-95
+                            transition
+                        "
+                                        >
+                                            {t('Archivieren')}
+                                        </button>
+
+                                    )}
+
+                                    <button
+                                        onClick={() =>
+                                            navigate(`/edit/${werbung.id}`)
+                                        }
+                                        className="
+                        flex-1
+                        py-3
+                        rounded-2xl
+                        font-bold
+                        text-white
+                        bg-gradient-to-br
+                        from-gray-500
+                        to-gray-700
+                        shadow-lg
+                        shadow-cyan-500/20
+                        active:scale-95
+                        transition
+                    "
+                                    >
+                                        {t('Bearbeiten')}
+                                    </button>
+
+                                </>
 
                             )}
-
-                            <button
-                                onClick={() => navigate(`/edit/${werbung.id}`)}
-                                className="
-                    flex-1 py-3 rounded-2xl font-bold text-white
-                    bg-gradient-to-br from-gray-500 to-gray-700
-                    shadow-lg shadow-cyan-500/20
-                    active:scale-95 transition
-                "
-                            >
-                                {t('Bearbeiten')}
-                            </button>
                         </>
 
                     ) : user.role === "admin" ? (
