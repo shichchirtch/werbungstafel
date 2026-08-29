@@ -146,19 +146,20 @@ function MyAdsPage() {
                                             <div className="flex">
                                                 <div
                                                     className="
-                px-4
-                py-2
-                rounded-xl
-                bg-black/80
-                border
-                border-white/20
-                text-white
-                font-bold
-                text-sm
-                uppercase
-                tracking-wider
-                mb-3
-            "
+    inline-block
+    px-3
+    py-1
+    rounded-xl
+    bg-black/80
+    border
+    border-white/20
+    text-white
+    font-semibold
+    text-xs
+    uppercase
+    tracking-wide
+    mb-3
+"
                                                 >
                                                     {t('Archiviert')}
                                                 </div>
