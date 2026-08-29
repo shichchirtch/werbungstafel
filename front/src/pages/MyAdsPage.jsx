@@ -143,25 +143,25 @@ function MyAdsPage() {
 
                                         {item.archived && (
 
-                                            <div
-                                                className="
-        w-fit
-        px-4
-        py-2
-        rounded-xl
-        bg-black/80
-        border
-        border-white/20
-        text-white
-        font-bold
-        text-sm
-        uppercase
-        tracking-wider
-        mb-3
-        mr-2
-    "
-                                            >
-                                                {t('Archiviert')}
+                                            <div className="flex">
+                                                <div
+                                                    className="
+                px-4
+                py-2
+                rounded-xl
+                bg-black/80
+                border
+                border-white/20
+                text-white
+                font-bold
+                text-sm
+                uppercase
+                tracking-wider
+                mb-3
+            "
+                                                >
+                                                    {t('Archiviert')}
+                                                </div>
                                             </div>
 
                                         )}
