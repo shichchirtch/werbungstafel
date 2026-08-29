@@ -32,27 +32,27 @@ function MyAdsPage() {
     }, [user.id, user.isAuth])
 
     return (
-    <div className="px-4 py-6">
+        <div className="px-4 py-6">
 
-        <h1 className="text-3xl text-white font-bold text-center mb-6">
-            {t('MeineAnzeigen')}
-        </h1>
+            <h1 className="text-3xl text-white font-bold text-center mb-6">
+                {t('MeineAnzeigen')}
+            </h1>
 
-        {myAds.length === 0 ? (
+            {myAds.length === 0 ? (
 
-            <p className="text-center text-gray-400">
-                {t('DuHastNochKeineAnzeigenErstellt')}
-            </p>
+                <p className="text-center text-gray-400">
+                    {t('DuHastNochKeineAnzeigenErstellt')}
+                </p>
 
-        ) : (
+            ) : (
 
-            <div className="max-w-xl mx-auto flex flex-col gap-4">
+                <div className="max-w-xl mx-auto flex flex-col gap-4">
 
-                {myAds.map((item) => (
+                    {myAds.map((item) => (
 
-                    <div
-                        key={item.id}
-                        className="
+                        <div
+                            key={item.id}
+                            className="
                             rounded-3xl
                             border
                             border-white/10
@@ -61,141 +61,142 @@ function MyAdsPage() {
                             p-4
                             shadow-xl
                         "
-                    >
-
-                        <div
-                            className={
-                                item.archived
-                                    ? "opacity-60 grayscale"
-                                    : ""
-                            }
                         >
 
-                            {/* ========================= */}
-                            {/* ФОТО + ИНФОРМАЦИЯ */}
-                            {/* ========================= */}
+                            <div
+                                className={
+                                    item.archived
+                                        ? "opacity-60 grayscale"
+                                        : ""
+                                }
+                            >
 
-                            <div className="flex gap-4">
+                                {/* ========================= */}
+                                {/* ФОТО + ИНФОРМАЦИЯ */}
+                                {/* ========================= */}
 
-                                {/* PHOTO */}
+                                <div className="flex gap-4">
 
-                                <img
-                                    src={
-                                        item.preview ||
-                                        "/images/no-photo.png"
-                                    }
-                                    alt="preview"
-                                    onError={(e) => {
-                                        e.currentTarget.src =
+                                    {/* PHOTO */}
+
+                                    <img
+                                        src={
+                                            item.preview ||
                                             "/images/no-photo.png"
-                                    }}
-                                    className="
+                                        }
+                                        alt="preview"
+                                        onError={(e) => {
+                                            e.currentTarget.src =
+                                                "/images/no-photo.png"
+                                        }}
+                                        className="
                                         w-36
                                         h-36
                                         rounded-2xl
                                         object-cover
                                         shrink-0
                                     "
-                                />
+                                    />
 
 
-                                {/* TITLE + LOCATION + STATUS + PRICE */}
+                                    {/* TITLE + LOCATION + STATUS + PRICE */}
 
-                                <div className="flex-1 min-w-0 pr-2">
+                                    <div className="flex-1 min-w-0 pr-2">
 
-                                    <h2
-                                        className="
+                                        <h2
+                                            className="
                                             text-xl
                                             font-bold
                                             text-white
                                             line-clamp-2
                                             mb-1
                                         "
-                                    >
-                                        {item.title}
-                                    </h2>
+                                        >
+                                            {item.title}
+                                        </h2>
 
 
-                                    <p className="text-gray-400 mb-1">
-                                        {item.plz
-                                            ? `${t('PLZ')}: ${item.plz} / ${item.city}`
-                                            : `${t('PLZ')}: ${item.city}`
-                                        }
-                                    </p>
-                                    {/* PRICE */}
+                                        <p className="text-gray-400 mb-1">
+                                            {item.plz
+                                                ? `${t('PLZ')}: ${item.plz} / ${item.city}`
+                                                : `${t('PLZ')}: ${item.city}`
+                                            }
+                                        </p>
+                                        {/* PRICE */}
 
-                                    {item.price && (
+                                        {item.price && (
 
-                                        <p
-                                            className="
+                                            <p
+                                                className="
                                                 text-cyan-300
                                                 font-semibold
                                                 mb-1
                                             "
-                                        >
-                                            {item.price}
-                                        </p>
+                                            >
+                                                {item.price}
+                                            </p>
 
-                                    )}
-
-
-                                    {/* ARCHIVIERT */}
-
-                                    {item.archived && (
-
-                                        <div
-                                            className="
-                                                inline-block
-                                                px-4
-                                                py-2 rounded-xl bg-black/80
-                                                border
-                                                border-white/20
-                                                text-white
-                                                font-bold
-                                                text-sm
-                                                uppercase
-                                                tracking-wider
-                                                mb-3
-                                            "
-                                        >
-                                            {t('Archiviert')}
-                                        </div>
-
-                                    )}
+                                        )}
 
 
+                                        {/* ARCHIVIERT */}
 
+                                        {item.archived && (
+
+                                            <div
+                                                className="
+        w-fit
+        px-4
+        py-2
+        rounded-xl
+        bg-black/80
+        border
+        border-white/20
+        text-white
+        font-bold
+        text-sm
+        uppercase
+        tracking-wider
+        mb-3
+        mr-2
+    "
+                                            >
+                                                {t('Archiviert')}
+                                            </div>
+
+                                        )}
+
+
+                                    </div>
 
                                 </div>
 
-                            </div>
 
+                                {/* ========================= */}
+                                {/* ОПИСАНИЕ */}
+                                {/* ========================= */}
 
-                            {/* ========================= */}
-                            {/* ОПИСАНИЕ */}
-                            {/* ========================= */}
-
-                            <p
-                                className="
+                                <p
+                                    className="
                                     text-gray-300
                                     text-sm
                                     line-clamp-3
                                     mt-4
                                 "
-                            >
-                                {item.description}
-                            </p>
+                                >
+                                    {item.description}
+                                </p>
 
 
-                            {/* ========================= */}
-                            {/* OPEN */}
-                            {/* ========================= */}
+                                {/* ========================= */}
+                                {/* OPEN */}
+                                {/* ========================= */}
 
-                            <button
-                                onClick={() =>
-                                    navigate(`/ad/${item.id}`)
-                                }
-                                className="
+                                <button
+                                    onClick={() =>
+                                        navigate(`/ad/${item.id}`)
+                                    }
+                                    className="
                                     w-full
                                     mt-4
                                     py-3
@@ -210,22 +211,22 @@ function MyAdsPage() {
                                     active:scale-95
                                     transition
                                 "
-                            >
-                                {t('Oeffnen')}
-                            </button>
+                                >
+                                    {t('Oeffnen')}
+                                </button>
+
+                            </div>
 
                         </div>
 
-                    </div>
+                    ))}
 
-                ))}
+                </div>
 
-            </div>
+            )}
 
-        )}
-
-    </div>
-);
+        </div>
+    );
 
 }
 
