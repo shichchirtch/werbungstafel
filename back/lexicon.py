@@ -154,7 +154,7 @@ erfolgreich_veroffentlich_erste = {
     'tr':'İlan başarıyla yayınlandı!'
 }
 erfolgreich_veroffentlich_zweite = {
-    'ru':'И теперь доступно друним пользователям\n\nСпасибо что пользуетесь Werbungstafel!',
+    'ru':'И теперь доступно другим пользователям\n\nСпасибо что пользуетесь Werbungstafel!',
     'uk':'І тепер доступно іншим користувачам\n\nДякую що користуєтеся Werbungstafel !',
     'de':'Und ist jetzt für andere Benutzer sichtbar.'
          '\n\nVielen Dank für Ihre Nutzung von Werbungstafel!',
@@ -169,36 +169,16 @@ anzeige_entfernen = {
     'tr':'İlanınız kaldırıldı!'
 }
 
+
+
 help_msg = {
-    'ru': '<b>Бот поможет Вам правильно учитывать Ваши доходы и расходы !</b>\n\n'
-          '🔵 Просто нажмите на кнопку <b>spar</b> и в открывшемся окне приложения следуйте'
-          ' навигационному меню\n\n'
-          '📅 В течение текущего месяца в Бот рисует наглядную диаграмму Ваших расходов\n\n'
-          '✉️А также он может отправить Вам сообщение в Телегарам выпиской из расходов за месяц\n\n'
-          '📝На стороне Телеграма Вы можете создавать заметки на экономические, или любые другие темы\n\n',
-
-    'uk': '<b>Бот допоможе Вам правильно враховувати Ваші доходи та витрати!</b>\n\n'
-          '🔵 Просто натисніть кнопку <b>spar</b> і у вікні програми, що відкрилося, виконайте'
-          'навігаційне меню\n\n'
-          '📅 Протягом поточного місяця в Бот малює наочну діаграму Ваших витрат\n\n'
-          '✉️А також він може надіслати Вам повідомлення в Телегарам випискою з витрат за місяць\n\n'
-          '📝На стороні Телеграма Ви можете створювати нотатки на економічні або будь-які інші теми\n\n',
-
-    'de': '<b>Der Bot hilft dir, deine Einnahmen und Ausgaben übersichtlich zu erfassen!</b>\n\n'
-          '🔵 Klicke einfach auf den <b>spar</b>-Button und folge den Anweisungen im Menü des sich öffnenden App-Fensters.\n\n'
-          '📅 Der Bot erstellt dir für den aktuellen Monat ein übersichtliches Diagramm deiner Ausgaben.\n\n'
-          '✉️ Er kann dir außerdem eine monatliche Ausgabenübersicht per Telegram-Nachricht senden.\n\n'
-          '📝 In Telegram kannst du Notizen zu wirtschaftlichen oder anderen Themen erstellen.',
-
-    'tr': '<b>Bot, gelir ve giderlerinizi doğru bir şekilde takip etmenize yardımcı olacak!/b>\n\n'
-          '🔵 Sadece <b>par</b> düğmesine tıklayın ve açılan uygulama penceresindeki gezinme menüsünü takip edin\n\n'
-          '📅 Bot, mevcut ay boyunca giderlerinizin görsel bir diyagramını çizecektir.\n\n'
-          '✉️Ayrıca size aylık gider dökümünüzü içeren bir Telegram mesajı da gönderebilir.\n\n'
-          '📝Telegram tarafında, ekonomik veya başka herhangi bir konuda notlar oluşturabilirsiniz.'
-
+    'ru':'Подробная видеоинструкия доступна по ссылке.\n\n если проблема более серьёзная'
+         'или вы хотите связаться с разаработчиком нажмите\n\n\n /send_message',
+    'uk':'Детальна відеоінструкція доступна за посиланням.\n\n якщо проблема більш серйозна '
+         'або ви хочете зв\'язатися з розробником натисніть \n\n\n /send_message',
+    'de':'Unter dem angegebenen Link finden Sie eine ausführliche Videoanleitung.\n\nBei schwerwiegenderen Problemen oder wenn Sie den Entwickler kontaktieren möchten, klicken Sie hier \n\n\n /send_message',
+    'tr':'Ayrıntılı bir video eğitimine aşağıdaki bağlantıdan ulaşabilirsiniz.\n\nEğer sorun daha ciddiyse veya geliştiriciyle iletişime geçmek istiyorsanız, tıklayın \n\n\n /send_message'
 }
-
-
 
 senden = {
     'ru': 'Отправьте следующее сообщение разработчику или нажмите на ◀️',

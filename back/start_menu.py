@@ -12,9 +12,6 @@ async def set_main_menu(bot):
         BotCommand(command='/login',
                    description='login through Smartphone'),
 
-        BotCommand(command='/send_message',
-                   description='Contact the developer')
-
     ]
 
     await bot.set_my_commands(main_menu_commands)
