@@ -410,6 +410,7 @@ function EditAdPage() {
                     placeholder={t('BeschreibungAnzeige')}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
+                    required
                     className="
                         bg-black/40 text-gray-300
                         p-4 rounded-2xl
