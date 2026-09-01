@@ -252,18 +252,24 @@ async def notify_ad_changed(owner_id: int, ad: Ad,):
     if not user:
         return
     try:
+
+        location = (
+            f"{ad.plz} / {ad.city}"
+            if ad.plz and ad.plz.isdigit() and len(ad.plz) == 5
+            else ad.city
+        )
         await bot.send_message(
             chat_id=user.telegram_id,
             text=(
                 "✅ <b>Ihre Anzeige wurde verändert!</b>\n\n"
                 f"📌 <b>{ad.title}</b>\n"
-                f"📍 {ad.plz}\n\n"
+                  f"📍 {location}\n\n"
             ),
             parse_mode="HTML"
         )
     except Exception as e:
-
         print(e)
+
 
 async def notify_user_ban_changed(
     user_id: int,
