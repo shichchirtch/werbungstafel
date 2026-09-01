@@ -23,7 +23,7 @@ function EditAdPage() {
             const response = await fetch(`/api/ad/${id}`)
             const data = await response.json()
             console.log("EDIT AD =", data)
-            setWerbung(data)
+            setWerbung(data.ad)
         }
 
         loadAd()
@@ -33,7 +33,7 @@ function EditAdPage() {
 
         if (!werbung) return
         setTitle(werbung.title)
-        setPlz(werbung.plz)
+        setPlz(werbung.city || werbung.plz)
         setDescription(werbung.description)
         setPrice(werbung.price || '')
         setAnbieter(werbung.anbieter)
@@ -54,7 +54,7 @@ function EditAdPage() {
         return (
 
             <div className="px-4 py-6 text-center text-white">
-                Anzeige wird geladen...
+                {t('AnzeigeWirdGeladen')}
             </div>
 
         )
@@ -225,14 +225,7 @@ function EditAdPage() {
 
             }
 
-            setWerbung({
-                ...werbung,
-                title,
-                description,
-                price,
-                plz,
-                anbieter
-            })
+            setWerbung(data.ad)
             setSuccessModal(true)
         } catch
             (error) {
@@ -403,6 +396,7 @@ function EditAdPage() {
                     value={plz}
                     placeholder={t('PLZ')}
                     onChange={(e) => setPlz(e.target.value)}
+                    required
                     className="
                         bg-black/40 text-gray-300
                         p-4 rounded-2xl

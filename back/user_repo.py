@@ -610,7 +610,13 @@ async def get_ad_photos(ad_id: int):
         return result.scalars().all()
 
 
-async def update_ad_db(ad_id: int, title: str, description: str, price: str, plz: str, anbieter: bool):
+async def update_ad_db(ad_id: int, title: str, description: str,
+                       price: str, plz: str, city:str,
+                       osm_id: int,
+                       anbieter: bool,
+                       latitude: float,
+                       longitude: float,
+                       ):
     async with session_marker() as session:
         ad = await session.get(Ad, ad_id, )
 
@@ -622,6 +628,10 @@ async def update_ad_db(ad_id: int, title: str, description: str, price: str, plz
         ad.price = price
         ad.plz = plz
         ad.anbieter = anbieter
+        ad.latitude = latitude
+        ad.longitude = longitude
+        ad.city = city
+        ad.osm_id = osm_id
 
         await session.commit()
 

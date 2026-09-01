@@ -618,13 +618,105 @@ async def delete_ad(ad_id: int, data: dict):
 
 @f_api.put("/api/ad/{ad_id}")
 async def update_ad(ad_id: int, data: AdUpdate):
+
+    ad = await get_ad_by_id(ad_id)
+
+    if not ad:
+        return {
+            "ok": False,
+            "error": "Anzeige nicht gefunden"
+        }
+
+    # Ищем место по тому, что ввёл пользователь:
+    # PLZ или название города
+    try:
+        location = geolocator.geocode(
+            f"{data.plz.strip()}, Germany"
+        )
+    except Exception:
+        return {
+            "ok": False,
+            "error": "Fehler beim Suchen des Ortes"
+        }
+
+    if location is None:
+        return {
+            "ok": False,
+            "error": "Ort oder Postleitzahl wurde nicht gefunden"
+        }
+
+    # -----------------------------------------
+    # PLZ / CITY
+    # -----------------------------------------
+
+    entered_place = data.plz.strip()
+
+    if entered_place.isdigit() and len(entered_place) == 5:
+
+        # Пользователь ввёл PLZ
+        plz = entered_place
+
+        # Для PLZ делаем reverse geocoding
+        try:
+            reverse_location = geolocator.reverse(
+                (location.latitude, location.longitude),
+                exactly_one=True,
+                language="de",
+            )
+
+        except Exception:
+            reverse_location = None
+
+        if reverse_location:
+
+            address = reverse_location.raw.get("address", {})
+
+            city = (
+                address.get("city")
+                or address.get("town")
+                or address.get("village")
+                or address.get("municipality")
+                or ""
+            )
+
+        else:
+            city = ""
+
+    else:
+
+        # Пользователь ввёл название города
+        plz = ""
+
+        address = location.raw.get("address", {})
+
+        city = (
+            address.get("city")
+            or address.get("town")
+            or address.get("village")
+            or address.get("municipality")
+            or location.raw.get("name", entered_place)
+        )
+
+    osm_id = location.raw["osm_id"]
+
+    latitude = round(location.latitude, 6)
+    longitude = round(location.longitude, 6)
+
+    # -----------------------------------------
+    # UPDATE AD
+    # -----------------------------------------
+
     ad = await update_ad_db(
         ad_id=ad_id,
         title=data.title,
         description=data.description,
         price=data.price,
-        plz=data.plz,
+        plz=plz,
+        city=city,
+        osm_id=osm_id,
         anbieter=data.anbieter,
+        latitude=latitude,
+        longitude=longitude,
     )
 
     if not ad:
@@ -639,7 +731,8 @@ async def update_ad(ad_id: int, data: AdUpdate):
     )
 
     return {
-        "ok": True
+        "ok": True,
+        "ad": ad
     }
 
 
