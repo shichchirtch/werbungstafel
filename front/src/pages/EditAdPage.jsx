@@ -19,15 +19,21 @@ function EditAdPage() {
     const {t} = useTranslation()
 
     useEffect(() => {
-        async function loadAd() {
-            const response = await fetch(`/api/ad/${id}`)
-            const data = await response.json()
-            console.log("EDIT AD =", data)
-            setWerbung(data.ad)
-        }
+    async function loadAd() {
+        const response = await fetch(`/api/ad/${id}`)
 
-        loadAd()
-    }, [id])
+        console.log("GET AD STATUS =", response.status)
+        console.log("GET AD OK =", response.ok)
+
+        const data = await response.json()
+
+        console.log("EDIT AD =", data)
+
+        setWerbung(data)
+    }
+
+    loadAd()
+}, [id])
 
     useEffect(() => {
 
