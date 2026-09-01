@@ -148,7 +148,7 @@ const translations = {
         NochKeineAnzeigen: 'Ещё нет объявлений',
         SeiErste: 'Опубликуйте первое объявление',
         AnzeigeErstellen: 'Создать вербунг',
-        KeineAnzeigenGefunden: 'Объвлений не найдено',
+        KeineAnzeigenGefunden: 'Объявлений не найдено',
         Suchradius: 'Попробуйте выбрать больший радиус поиска или всю Германию',
         Oeffnen: 'Открыть',
         Meldung: '✅ Спасибо Большое. Жалоба Принята',
