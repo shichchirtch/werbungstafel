@@ -1074,6 +1074,11 @@ async def report_ad(data: ReportAd):
             "ok": False,
             "error": "Benutzer nicht gefunden."
         }
+    if reporter.is_banned:
+        return {
+            "ok": False,
+            "error": "Ihr Konto wurde gesperrt."
+        }
 
     ad, owner_name = await get_ad_by_id(data.ad_id)
 
