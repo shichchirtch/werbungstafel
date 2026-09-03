@@ -176,7 +176,7 @@ function PlaceAdsPage() {
                     </div>
 
                 ))}
-            {ads.length > 0 && totalPages > 1 && (
+            {ads.length > 0 && (
 
                 <div className="
         flex

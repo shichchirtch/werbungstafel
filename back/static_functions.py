@@ -198,11 +198,7 @@ async def notify_receiver(receiver_id: int):
 
             print(e)
 
-async def notify_ad_created(
-    owner_id: int,
-    ad: Ad,
-    lan: str
-):
+async def notify_ad_created(owner_id: int, ad: Ad, lan: str):
     user = await get_user_by_id(owner_id)
 
     if not user:
@@ -229,6 +225,7 @@ async def notify_ad_created(
     except Exception as e:
         print(e)
 
+# -5463943155
 
 async def notify_ad_deleted(owner_id: int,ad: Ad):
     user = await get_user_by_id(owner_id)
