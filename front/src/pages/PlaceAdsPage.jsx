@@ -11,6 +11,8 @@ function PlaceAdsPage() {
     const [ads, setAds] = useState([])
     const {t} = useTranslation()
     const [loading, setLoading] = useState(true)
+    const [page, setPage] = useState(1)
+    const adsPerPage = 10
 
     useEffect(() => {
 
@@ -27,6 +29,7 @@ function PlaceAdsPage() {
                 console.log("PLACE ADS =", data)
 
                 setAds(data)
+                setPage(1)
 
             } catch (err) {
 
@@ -41,6 +44,12 @@ function PlaceAdsPage() {
         loadAds()
 
     }, [place])
+
+    const totalPages = Math.ceil(ads.length / adsPerPage)
+
+    const startIndex = (page - 1) * adsPerPage
+
+    const currentAds = ads.slice(startIndex, startIndex + adsPerPage)
 
     if (loading) {
 
@@ -79,7 +88,7 @@ function PlaceAdsPage() {
 
             {
 
-                ads.map((item) => (
+                currentAds.map((item) => (
 
                     <div
                         key={item.id}
@@ -167,6 +176,65 @@ function PlaceAdsPage() {
                     </div>
 
                 ))}
+            {ads.length > 0 && totalPages > 1 && (
+
+                <div className="
+        flex
+        items-center
+        justify-center
+        gap-4
+        mt-6
+    ">
+
+                    <button
+                        disabled={page === 1}
+                        onClick={() => setPage(page - 1)}
+                        className="
+                w-10
+                h-10
+                rounded-full
+                bg-white/10
+                text-white
+                disabled:opacity-30
+                hover:bg-white/20
+                transition
+            "
+                    >
+                        ◀
+                    </button>
+
+                    <div
+                        className="
+                text-gray-300
+                text-sm
+                font-medium
+                min-w-20
+                text-center
+            "
+                    >
+                        {page} / {totalPages}
+                    </div>
+
+                    <button
+                        disabled={page >= totalPages}
+                        onClick={() => setPage(page + 1)}
+                        className="
+                w-10
+                h-10
+                rounded-full
+                bg-white/10
+                text-white
+                disabled:opacity-30
+                hover:bg-white/20
+                transition
+            "
+                    >
+                        ▶
+                    </button>
+
+                </div>
+
+            )}
         </div>
     )
 }
