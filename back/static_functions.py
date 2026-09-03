@@ -8,6 +8,7 @@ from aiogram_dialog import ShowMode
 from pathlib import Path
 from geopy.distance import geodesic
 from lexicon import *
+import asyncio
 
 
 
@@ -210,6 +211,8 @@ async def notify_ad_created(owner_id: int, ad: Ad, lan: str):
         else ad.city
     )
 
+    link = f"https://werbungstafel.org/ad/{ad.id}"
+
     try:
         await bot.send_message(
             chat_id=user.telegram_id,
@@ -221,11 +224,26 @@ async def notify_ad_created(owner_id: int, ad: Ad, lan: str):
             ),
             parse_mode="HTML"
         )
-
     except Exception as e:
         print(e)
 
-# -5463943155
+    await asyncio.sleep(0.2)
+
+    try:
+        await bot.send_message(
+            chat_id=-5463943155,
+            text=(
+                "🆕 <b>Neue Anzeige veröffentlicht</b>\n\n"
+                f"🆔 Anzeige #{ad.id}\n"
+                f"📌 <b>{ad.title}</b>\n"
+                f"👤 von {user.first_name}\n"
+                f"📍 {location}\n\n"
+                f"🔗 {link}"
+            ),
+            parse_mode="HTML"
+        )
+    except Exception as e:
+        print(e)
 
 async def notify_ad_deleted(owner_id: int,ad: Ad):
     user = await get_user_by_id(owner_id)
