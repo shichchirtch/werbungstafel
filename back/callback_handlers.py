@@ -31,7 +31,7 @@ async def login_callback(callback: CallbackQuery,):
 async def help_video(callback: CallbackQuery):
     lan = callback.from_user.language_code
     await callback.message.answer_video(
-        video= '', #video_movie,
+        video= 'BAACAgIAAxkBAAIF_Gqd7gcy289EAu9DubkpVmzXyPBwAAKLnQACFbLoSPe2S7_sgeGUPQQ', #video_movie,
         caption=opisanie_rolika[lan]
     )
     await callback.answer()

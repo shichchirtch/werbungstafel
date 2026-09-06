@@ -18,6 +18,10 @@ export const categoryNames = {
 
     babysitting: 'Babysitting',
 
+    kinderpartys: 'Kinderpartys',
+
+    'nachhilfe-unterricht': 'Nachhilfe / Unterricht',
+
     'foto-video-kunst': 'Foto / Video / Kunst',
 
     'it-computer-electronics':
@@ -31,6 +35,14 @@ export const categoryNames = {
     'physio-spa': 'Physio / Spa',
 
     haustiere: 'Haustiere',
+
+    immobilie: 'Immobilie',
+
+    garten: 'Garten',
+
+    sport: 'Sport',
+
+    reisen: 'Reisen / Exkursion',
 
     weitere: 'Weitere',
 }
