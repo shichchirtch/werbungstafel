@@ -21,6 +21,8 @@ function CategoryAdsPage() {
         "umzug-transport": "Umzug / Transport",
         "makeup-friseur": "MakeUp / Friseur",
         "babysitting": "Babysitting",
+        "kinderpartys":"Kinderpartys",
+        "nachhilfe-unterricht":"Nachhilfe / Unterricht",
         "foto-video-kunst": "Foto / Video / Kunst",
         "it-computer-electronics": "IT / Computer / Electronics",
         "translators": "Translators",
