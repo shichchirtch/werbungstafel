@@ -22,6 +22,8 @@ function HomePage() {
         {title: 'Umzug / Transport', slug: 'umzug-transport'},
         {title: 'MakeUp / Friseur', slug: 'makeup-friseur'},
         {title: 'Babysitting', slug: 'babysitting'},
+        {title: 'Kinderpartys', slug: 'kinderpartys'},
+        {title: 'Nachhilfe / Unterricht', slug: 'nachhilfe-unterricht'},
         {title: 'Foto / Video / Kunst', slug: 'foto-video-kunst'},
         {title: 'IT / Computer / Electronics', slug: 'it-computer-electronics'},
         {title: 'Translators', slug: 'translators'},
