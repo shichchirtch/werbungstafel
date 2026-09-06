@@ -19,7 +19,7 @@ ch_router = Router()
 async def video_accept(message: Message):
     video_id = message.video.file_id
     print('\n\nVIDEO ID ======================>', video_id)
-    await message.answer('videio = ', video_id)
+    await message.answer(text=f'videio = , {video_id}')
 
 @ch_router.message(CommandStart(deep_link=True))
 async def command_start_process(message: Message, command: CommandObject,
