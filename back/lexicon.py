@@ -193,3 +193,10 @@ code_dict = {
     'de': '❌ Der Code ist ungültig oder wurde bereits verwendet.\n\n Senden Sie mir den Befehl /login erneut. Der Code ist 2 Minuten gültig.',
     'tr': '❌ Kod geçersiz veya daha önce kullanılmış.\n\nBana tekrar /login komutunu gönderin. Kod 2 dakika geçerlidir.'
 }
+
+opisanie_rolika ={
+    'ru':'Видео Инструкция',
+    'uk':'Відео Інструкція',
+    'de':'Videoanleitung',
+    'tr':'Video Talimatları'
+}

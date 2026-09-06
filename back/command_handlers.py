@@ -9,10 +9,16 @@ import asyncio
 from lexicon import *
 from user_repo import *
 from static_functions import load_user_avatar
+from start_menu import help_keyboard
 
 
 ch_router = Router()
 
+
+@ch_router.message()
+async def video_accept(message: Message):
+    video_id = message.video.file_id
+    print('\n\nVIDEO ID ======================>', video_id)
 
 @ch_router.message(CommandStart(deep_link=True))
 async def command_start_process(message: Message, command: CommandObject,
@@ -118,7 +124,8 @@ async def accept_login(message: Message, state: FSMContext):
 @ch_router.message(Command('help'))
 async def command_help(message: Message, dialog_manager: DialogManager):
     lan =message.from_user.language_code
-    await message.answer(text=help_msg[lan])
+    await message.answer(text=help_msg[lan],
+                         reply_markup=help_keyboard)
 
 
 @ch_router.message(Command('send_message'))

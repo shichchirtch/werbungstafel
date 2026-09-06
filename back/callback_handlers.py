@@ -25,3 +25,13 @@ async def login_callback(callback: CallbackQuery,):
         return
 
     await callback.message.edit_text( bestatigt[lan]  )
+
+
+@cb_router.callback_query(F.data == "help_video")
+async def help_video(callback: CallbackQuery):
+    lan = callback.from_user.language_code
+    await callback.message.answer_video(
+        video= '', #video_movie,
+        caption=opisanie_rolika[lan]
+    )
+    await callback.answer()

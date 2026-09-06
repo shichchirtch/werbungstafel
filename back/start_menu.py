@@ -1,5 +1,7 @@
 from aiogram.types import BotCommand
 
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+
 
 async def set_main_menu(bot):
     main_menu_commands = [
@@ -15,3 +17,15 @@ async def set_main_menu(bot):
     ]
 
     await bot.set_my_commands(main_menu_commands)
+
+
+help_keyboard = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(
+                text="🎥 Video",
+                callback_data="help_video"
+            )
+        ]
+    ]
+)
