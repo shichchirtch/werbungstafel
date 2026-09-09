@@ -32,7 +32,7 @@ async def help_video(callback: CallbackQuery):
     lan = callback.from_user.language_code
     await callback.message.delete()
     await callback.message.answer_video(
-        video= 'BAACAgIAAxkBAAIF_Gqd7gcy289EAu9DubkpVmzXyPBwAAKLnQACFbLoSPe2S7_sgeGUPQQ', #video_movie,
+        video= 'BAACAgIAAxkBAAIGKmqh3IzVhUaA9tIsz3y8ThpPFjLdAALerAAC_VsQSeBE1DsBedoNPQQ', #video_movie,
         caption=opisanie_rolika[lan]
     )
     await callback.answer()
