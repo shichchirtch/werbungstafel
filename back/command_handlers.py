@@ -15,11 +15,11 @@ from start_menu import help_keyboard
 ch_router = Router()
 
 
-# @ch_router.message(F.video)
-# async def video_accept(message: Message):
-#     video_id = message.video.file_id
-#     print('\n\nVIDEO ID ======================>', video_id)
-#     await message.answer(text=f'videio = , {video_id}')
+@ch_router.message(F.video)
+async def video_accept(message: Message):
+    video_id = message.video.file_id
+    print('\n\nVIDEO ID ======================>', video_id)
+    await message.answer(text=f'videio = , {video_id}')
 
 
 @ch_router.message(CommandStart(deep_link=True))
