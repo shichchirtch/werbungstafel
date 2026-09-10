@@ -81,6 +81,8 @@ async def command_login(message: Message, state: FSMContext):
     print("ENTER /LOGIN")
     await load_user_avatar(message)
     lan = message.from_user.language_code
+    if lan not in ('ru', 'uk', 'tr', 'de'):
+        lan = 'ru'
     await state.set_state(FSM_ST.accept_login)
     await message.answer(captura_code[lan])
 
@@ -91,6 +93,8 @@ async def accept_login(message: Message, state: FSMContext):
     print("TEXT =", message.text)
     user_id = int(message.from_user.id)
     us_lan = message.from_user.language_code
+    if us_lan not in ('ru', 'uk', 'tr', 'de'):
+        us_lan = 'ru'
 
     token = message.text.strip().upper()
 
@@ -130,6 +134,8 @@ async def accept_login(message: Message, state: FSMContext):
 @ch_router.message(Command('help'))
 async def command_help(message: Message, dialog_manager: DialogManager):
     lan =message.from_user.language_code
+    if lan not in ('ru', 'uk', 'tr', 'de'):
+        lan = 'ru'
     await message.answer(text=help_msg[lan],
                          reply_markup=help_keyboard)
 

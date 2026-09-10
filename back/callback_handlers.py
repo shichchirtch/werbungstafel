@@ -12,6 +12,8 @@ async def login_callback(callback: CallbackQuery,):
     token = callback.data.split(":")[1]
     tg_id = callback.from_user.id
     lan  = callback.from_user.language_code
+    if lan not in ('ru', 'uk', 'tr', 'de'):
+        lan = 'ru'
 
     success = await confirm_login(
         token=token,
@@ -30,6 +32,8 @@ async def login_callback(callback: CallbackQuery,):
 @cb_router.callback_query(F.data == "help_video")
 async def help_video(callback: CallbackQuery):
     lan = callback.from_user.language_code
+    if lan not in ('ru', 'uk', 'tr', 'de'):
+        lan = 'ru'
     await callback.message.delete()
     await callback.message.answer_video(
         video= 'BAACAgIAAxkBAAIGKmqh3IzVhUaA9tIsz3y8ThpPFjLdAALerAAC_VsQSeBE1DsBedoNPQQ', #video_movie,
