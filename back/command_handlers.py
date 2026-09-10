@@ -30,6 +30,8 @@ async def command_start_process(message: Message, command: CommandObject,
     user_id = message.from_user.id
     first_name = message.from_user.first_name
     user_lan = message.from_user.language_code
+    if user_lan not in ('ru', 'uk', 'tr', 'de'):
+        user_lan = 'ru'
     user_name = message.from_user.username
     token = command.args
     print(first_name, user_id,'\n\ntoken = ', token, 'LAN = ', user_lan)
@@ -60,6 +62,8 @@ async def command_start_process(message: Message, command: CommandObject,
 async def start_common(message: Message, dialog_manager: DialogManager, state: FSMContext):
     await load_user_avatar(message)
     lan = message.from_user.language_code
+    if lan not in ('ru', 'uk', 'tr', 'de'):
+        lan = 'ru'
     user_id = message.from_user.id
     first_name = message.from_user.first_name
     user_name = message.from_user.username
@@ -146,6 +150,8 @@ trash_router = Router()
 @trash_router.message()
 async def message_trasher(message: Message, dialog_manager: DialogManager):
     lan = message.from_user.language_code
+    if lan not in ('ru', 'uk', 'tr', 'de'):
+        lan = 'ru'
     print("=== TRASH ===", repr(message.text))
     otwet = await message.answer(trasher[lan])
     await asyncio.sleep(2)
