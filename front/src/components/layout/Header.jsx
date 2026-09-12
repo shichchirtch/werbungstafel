@@ -32,9 +32,12 @@ function Header() {
     const menuRef = useRef()
 
     useEffect(() => {
+        if (!user.dbId) {
+            return
+        }
+
         async function loadUnreadMessages() {
             try {
-
                 const response = await fetch(
                     `/api/messages/unread/${user.dbId}`
                 )
@@ -57,12 +60,9 @@ function Header() {
                     "UNREAD MESSAGES ERROR =",
                     error
                 )
-
             }
-
         }
 
-        // Сразу проверяем, не ждём первые 5 секунд
         loadUnreadMessages()
 
         const interval = setInterval(
@@ -75,7 +75,6 @@ function Header() {
         }
 
     }, [user.isAuth, user.dbId])
-
 
     async function refreshProfile(telegramId) {
 
