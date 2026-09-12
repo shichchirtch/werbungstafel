@@ -400,7 +400,7 @@ function CategoryAdsPage() {
                                             text-gray-300
                                             text-sm
                                             line-clamp-3
-                                            flex-1
+                                            flex-1 whitespace-pre-wrap
                                         "
                                     >
                                         {item.description}
