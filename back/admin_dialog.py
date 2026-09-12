@@ -101,6 +101,7 @@ async def wie_viel_schon_gestarted(callback: CallbackQuery, widget: Button, dial
     await callback.message.answer(
         f"📦 Сегодня опубликовано объявлений: {count_werbungs}\n\n"
         f"👥 Пользователей в базе: {count}")
+    dialog_manager.show_mode = ShowMode.DELETE_AND_SEND
     await dialog_manager.done()
 
 
@@ -108,11 +109,6 @@ async def wie_viel_schon_gestarted(callback: CallbackQuery, widget: Button, dial
 
 async def downloads_users_db(callback, button, manager):
     file_path = Path("data/telegram_users.json")
-
-    print("PWD =", os.getcwd())
-    # print("FILE =", USERS_FILE)
-    # print("EXISTS =", USERS_FILE.exists())
-    print('file_path = ', file_path.exists())
     if not file_path.exists():
         await callback.message.answer(
             "❌ Файл telegram_users.json не найден."
