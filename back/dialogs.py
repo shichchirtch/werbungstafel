@@ -58,9 +58,6 @@ async def message_not_text_handler_login(message: Message, widget: MessageInput,
 async def message_text_handler_for_login_first(message: Message, widget: MessageInput,
                                         dialog_manager: DialogManager, *args, **kwargs) -> None:
 
-    lan = message.from_user.language_code
-    user_id = str(message.from_user.id)
-    user_name = message.from_user.first_name
     await message.answer('ACCEPTED')
     await dialog_manager.done()
 

@@ -598,7 +598,7 @@ transition
                         </p>
                     )}
 
-                    <p className="text-gray-300 leading-relaxed">
+                    <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">
                         {werbung.description}
                     </p>
 

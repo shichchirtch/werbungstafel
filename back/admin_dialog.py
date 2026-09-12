@@ -98,11 +98,14 @@ async def get_users(redis) -> list[int]:
 async def wie_viel_schon_gestarted(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
     count = await get_users_count()
     count_werbungs = await get_ads_today_count()
+    await dialog_manager.done()
+
     await callback.message.answer(
         f"📦 Сегодня опубликовано объявлений: {count_werbungs}\n\n"
-        f"👥 Пользователей в базе: {count}")
-    dialog_manager.show_mode = ShowMode.DELETE_AND_SEND
-    await dialog_manager.done()
+        f"👥 Пользователей в базе: {count}"
+    )
+
+    await callback.answer()
 
 
 
