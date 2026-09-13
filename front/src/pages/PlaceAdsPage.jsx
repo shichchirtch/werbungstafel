@@ -7,7 +7,7 @@ function PlaceAdsPage() {
     const {place} = useParams()
 
     const navigate = useNavigate()
-
+    const [city, setCity] = useState('')
     const [ads, setAds] = useState([])
     const {t} = useTranslation()
     const [loading, setLoading] = useState(true)
@@ -28,7 +28,8 @@ function PlaceAdsPage() {
 
                 console.log("PLACE ADS =", data)
 
-                setAds(data)
+                setAds(data.ads)
+                setCity(data.city || '')
                 setPage(1)
 
             } catch (err) {
@@ -77,7 +78,7 @@ function PlaceAdsPage() {
                     textShadow: '0 0 8px rgba(255,255,255,0.6)',
                 }}
             >
-                📍 {decodeURIComponent(place)}
+                📍 {city || decodeURIComponent(place)}
             </h1>
 
             <p className="text-center text-gray-400 mb-8">

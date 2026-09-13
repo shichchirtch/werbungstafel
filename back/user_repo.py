@@ -1147,7 +1147,7 @@ async def get_ads_by_place_db(place: str):
 
         if place.isdigit() and len(place) == 5:
 
-            condition = Ad.plz == place
+            condition = func.trim(Ad.plz) == place
 
         else:
 

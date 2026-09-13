@@ -979,7 +979,12 @@ async def get_map():
 async def get_place_ads(place: str):
     ads = await get_ads_by_place_db(place)
 
-    return ads
+    city = ads[0]["city"] if ads else place
+
+    return {
+        "city": city,
+        "ads": ads,
+    }
 
 
 ################################ B A N & T O P #####################################
