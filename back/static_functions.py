@@ -419,6 +419,9 @@ def build_daily_report_text(
 
     count = len(ads)
 
+    if lan not in ('ru', 'uk', 'tr', 'de'):
+        lan = 'ru'
+
     texts = {
         "de": {
             "title": "📦 Neue Anzeigen des Tages",
