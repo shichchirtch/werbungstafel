@@ -50,7 +50,9 @@ async def background_worker():
 
 async def send_daily_report():
     users = await get_users_for_daily_report()
-
+# 321557275 - artemii
+    if 321557275 in users:
+        users.remove(321557275)
     for user in users:
 
         if user["latitude"] is None:
