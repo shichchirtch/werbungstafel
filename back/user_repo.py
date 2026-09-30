@@ -102,18 +102,11 @@ async def create_user_if_not_exists(tg_id: int, first_name: str, lan: str, usern
     return user
 
 
-async def update_avatar_db(
-        telegram_id: int,
-        avatar: str,
-) -> bool:
+async def update_avatar_db(telegram_id: int, avatar: str) -> bool:
     async with session_marker() as session:
         result = await session.execute(
-
             select(User).where(
-                User.telegram_id == telegram_id
-            )
-
-        )
+                User.telegram_id == telegram_id))
 
         user = result.scalar_one_or_none()
 

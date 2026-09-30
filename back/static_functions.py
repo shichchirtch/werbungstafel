@@ -10,6 +10,47 @@ from geopy.distance import geodesic
 from lexicon import *
 import asyncio
 
+async def load_user_avatar_from_cb(cb: CallbackQuery):
+    print("LOAD AVATAR = ", cb.from_user.id)
+    user_id = cb.from_user.id
+
+    photos = await cb.bot.get_user_profile_photos(
+        user_id,
+        limit=1,
+    )
+    print("TOTAL FOTO =", photos.total_count)
+
+    avatar_dir = Path("uploads/avatar")
+    avatar_dir.mkdir(parents=True, exist_ok=True)
+
+    # Пользователь удалил аватарку в Telegram
+    if photos.total_count == 0:
+
+        path = avatar_dir / f"{user_id}.jpg"
+
+        if path.exists():
+            path.unlink()
+
+        await update_avatar_db(
+            telegram_id=user_id,
+            avatar="",
+        )
+
+        return
+
+    # Пользователь имеет аватарку
+    file_id = photos.photos[0][-1].file_id
+
+    await cb.bot.download(
+        file=file_id,
+        destination=avatar_dir / f"{user_id}.jpg",
+    )
+
+    await update_avatar_db(
+        telegram_id=user_id,
+        avatar=f"/uploads/avatar/{user_id}.jpg",
+    )
+    print("AVATAR FROM CALLBACK SAVED")
 
 
 
@@ -31,6 +72,7 @@ async def ru_stellen(callback: CallbackQuery, widget: Button, dialog_manager: Di
             "Ошибка: пользователь не найден"
         )
         return
+    await load_user_avatar_from_cb(callback)
     await callback.message.answer('В качестве языка интерфейса выбран <b>русский</b> язык')
     dialog_manager.show_mode = ShowMode.SEND
     await dialog_manager.done()
@@ -53,17 +95,12 @@ async def uk_stellen(callback: CallbackQuery, widget: Button, dialog_manager: Di
             "Ошибка: пользователь не найден"
         )
         return
+    await load_user_avatar_from_cb(callback)
     await callback.message.answer('В якості мови інтерфейсу обрано <b>українську</b> мову')
     dialog_manager.show_mode = ShowMode.SEND
     await dialog_manager.done()
 
-async def de_stellen(
-    callback: CallbackQuery,
-    widget: Button,
-    dialog_manager: DialogManager,
-    *args,
-    **kwargs,
-):
+async def de_stellen(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
     ok = await update_user_language(
         telegram_id=callback.from_user.id,
         language="de",
@@ -74,7 +111,7 @@ async def de_stellen(
             "Ошибка: пользователь не найден"
         )
         return
-
+    await load_user_avatar_from_cb(callback)
     await callback.message.answer(
         "Als Benutzerschnittstellensprache wurde <b>Deutsch</b> ausgewählt."
     )
@@ -100,6 +137,7 @@ async def tr_stellen(callback: CallbackQuery, widget: Button, dialog_manager: Di
             "Ошибка: пользователь не найден"
         )
         return
+    await load_user_avatar_from_cb(callback)
     await callback.message.answer('Arayüz dili olarak <b>Türkçe</b> seçilmiştir.')
     dialog_manager.show_mode = ShowMode.SEND
     await dialog_manager.done()
