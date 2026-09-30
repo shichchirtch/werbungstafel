@@ -141,7 +141,7 @@ function UserProfilePage() {
                     </h1>
 
                     <p className="text-gray-400 mb-3">
-                        {profile.bio || t("NochKeineBeschreibung")}
+                        {profile.bio || t("NochKeineBeschreibungFurGeste")}
                     </p>
 
                     <p className="text-cyan-300 text-sm">

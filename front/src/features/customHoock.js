@@ -95,6 +95,7 @@ const translations = {
         Zuruck: '← Zurück',
         TelegramEoffnen:'Telegram öffnen',
         Archivieren:'Archivieren',
+        NochKeineBeschreibungFurGeste:'Das Profil ist nicht ausgefüllt',
 
     },
 
@@ -179,6 +180,7 @@ const translations = {
         LogoutProfile:'🚪 Выйти',
         Speichern: 'Сохранить',
         NochKeineBeschreibung:'Заполнить профиль',
+        NochKeineBeschreibungFurGeste:'Профиль незаполнен',
         Deutschland: 'Германия',
         Name:'Имя',
         UberMich:'Обо мне',
@@ -285,6 +287,7 @@ const translations = {
         Zuruck: '← Назад',
         TelegramEoffnen:'Відкрити Telegram',
         Archivieren:'Архівувати',
+        NochKeineBeschreibungFurGeste:'профіль не заповнений',
 
     },
 
@@ -380,6 +383,8 @@ const translations = {
         Zuruck: '← Geri',
         TelegramEoffnen:"Telegram'ı açın",
         Archivieren:'arşiv',
+        NochKeineBeschreibungFurGeste:'Profil doldurulmamış',
+
 
     }
 
